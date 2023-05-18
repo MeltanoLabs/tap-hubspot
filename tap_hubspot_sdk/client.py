@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import sys
 from pathlib import Path
 from typing import Any, Callable, Iterable
@@ -43,7 +45,13 @@ class HubspotStream(RESTStream):
         Returns:
             An authenticator instance.
         """
-        return tapHubspotAuthenticator.create_for_stream(self)
+
+        url = "https://api.hubapi.com/contacts/v1"
+        login_api = requests.post(url).text
+        access_token = json.loads(login_api).get("access_token")
+
+        return BearerTokenAuthenticator.create_for_stream(self,
+                                                          token=access_token, )
 
     @property
     def http_headers(self) -> dict:

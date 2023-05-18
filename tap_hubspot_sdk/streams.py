@@ -18,19 +18,22 @@ BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
 
-class AccountStream(HubspotStream):
+class ListsStream(HubspotStream):
     columns = """
-
+                offset, total, lists, has-more
               """
 
-    name = "account"
-    path = "/query?q=SELECT+{}+from+Account".format(columns)
-    primary_keys = ["Id"]
-    replication_key = "LastModifiedDate"
-    replication_method = "incremental"
+    name = "lists"
+    path = "/lists"
+    primary_keys = ["lists"]
+    #replication_key = "LastModifiedDate"
+    #replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("Id", StringType),
+        Property("offset", StringType),
+        Property("total", StringType),
+        Property("lists", StringType),
+        Property("has-more", StringType),
 
 
     ).to_dict()

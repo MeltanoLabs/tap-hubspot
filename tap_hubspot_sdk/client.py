@@ -11,7 +11,7 @@ from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator  # noqa: TCH002
 from singer_sdk.streams import RESTStream
 
-from tap_hubspot_sdk.auth import tap-hubspot-sdkAuthenticator
+from tap_hubspot_sdk.auth import tapHubspotAuthenticator
 
 if sys.version_info >= (3, 8):
     from functools import cached_property
@@ -19,7 +19,7 @@ else:
     from cached_property import cached_property
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
+#SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class HubspotStream(RESTStream):
@@ -27,9 +27,9 @@ class HubspotStream(RESTStream):
 
     @property
     def url_base(self) -> str:
-        """Return the API URL root, configurable via tap settings."""
-        # TODO: hardcode a value here, or retrieve it from self.config
-        return "https://api.mysample.com"
+        #version = self.config.get("api_version", "")
+        base_url = "https://api.hubapi.com/contacts/v1"#.format(version)
+        return base_url
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
@@ -43,7 +43,7 @@ class HubspotStream(RESTStream):
         Returns:
             An authenticator instance.
         """
-        return tap-hubspot-sdkAuthenticator.create_for_stream(self)
+        return tapHubspotAuthenticator.create_for_stream(self)
 
     @property
     def http_headers(self) -> dict:

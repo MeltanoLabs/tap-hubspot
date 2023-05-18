@@ -1,4 +1,4 @@
-"""REST client handling, including tap-hubspot-sdkStream base class."""
+"""REST client handling, including HubspotStream base class."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
-class tap-hubspot-sdkStream(RESTStream):
+class HubspotStream(RESTStream):
     """tap-hubspot-sdk stream class."""
 
     @property

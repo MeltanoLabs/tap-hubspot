@@ -9,7 +9,7 @@ from singer_sdk import typing as th  # JSON schema typing helpers
 from tap_hubspot_sdk import streams
 
 
-class Taptap-hubspot-sdk(Tap):
+class TapHubspot(Tap):
     """tap-hubspot-sdk tap class."""
 
     name = "tap-hubspot-sdk"
@@ -42,7 +42,7 @@ class Taptap-hubspot-sdk(Tap):
         ),
     ).to_dict()
 
-    def discover_streams(self) -> list[streams.tap-hubspot-sdkStream]:
+    def discover_streams(self) -> list[streams.HubspotStream]:
         """Return a list of discovered streams.
 
         Returns:
@@ -55,4 +55,4 @@ class Taptap-hubspot-sdk(Tap):
 
 
 if __name__ == "__main__":
-    Taptap-hubspot-sdk.cli()
+    TapHubspot.cli()

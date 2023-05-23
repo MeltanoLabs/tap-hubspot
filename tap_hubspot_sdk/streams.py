@@ -43,15 +43,15 @@ class ListsStream(HubspotStream):
                             Property("company", StringType),
                             Property("createddate", StringType),
                             Property("firstname", StringType),
-                            Property("hs_all_contact_vids", StringType),
+                            Property("hs_all_contact_vids", IntegerType),
                             Property("hs_date_entered_lead", StringType),
                             Property("hs_marketable_reason_id", StringType),
-                            Property("hs_is_unworked", StringType),
-                            Property("hs_marketable_until_renewal", StringType),
+                            Property("hs_is_unworked", BooleanType),
+                            Property("hs_marketable_until_renewal", BooleanType),
                             Property("hs_latest_source_timestamp", StringType),
                             Property("hs_marketable_reason_type", StringType),
-                            Property("hs_marketable_status", StringType),
-                            Property("hs_is_contact", StringType),
+                            Property("hs_marketable_status", BooleanType),
+                            Property("hs_is_contact", BooleanType),
                             Property("hs_email_domain", StringType),
                             Property("hs_pipeline", StringType),
                             Property("hs_sequences_actively_enrolled_count", StringType),
@@ -214,7 +214,4 @@ class UsersStream(HubspotStream):
             results = resp_json
 
         yield from results
-
-                    
-
-
+        

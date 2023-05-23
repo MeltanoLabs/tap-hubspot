@@ -20,6 +20,8 @@ if sys.version_info >= (3, 8):
 else:
     from cached_property import cached_property
 
+from singer_sdk.authenticators import BearerTokenAuthenticator    
+
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 #SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
@@ -29,8 +31,7 @@ class HubspotStream(RESTStream):
 
     @property
     def url_base(self) -> str:
-        #version = self.config.get("api_version", "")
-        base_url = "https://api.hubapi.com/contacts/v1"#.format(version)
+        base_url = "https://api.hubapi.com/"
         return base_url
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
@@ -46,9 +47,10 @@ class HubspotStream(RESTStream):
             An authenticator instance.
         """
 
-        url = "https://api.hubapi.com/contacts/v1"
-        login_api = requests.post(url).text
-        access_token = json.loads(login_api).get("access_token")
+        #url = "https://api.hubapi.com/contacts/v1"
+        #login_api = requests.post(url).text
+        #access_token = json.loads(login_api).get("access_token")
+        access_token = self.config.get("access_token")
 
         return BearerTokenAuthenticator.create_for_stream(self,
                                                           token=access_token, )
@@ -149,3 +151,4 @@ class HubspotStream(RESTStream):
         """
         # TODO: Delete this method if not needed.
         return row
+  

@@ -36,7 +36,11 @@ class TapHubspot(Tap):
         """
         return [
             streams.ListsStream(self),
-            streams.UsersStream(self)
+            streams.UsersStream(self),
+            streams.OwnersStream(self),
+            streams.TicketPipelineStream(self),
+            streams.DealPipelineStream(self),
+            streams.EmailSubscriptionStream(self),
         ]
 
 

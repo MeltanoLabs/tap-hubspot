@@ -102,7 +102,7 @@ class ListsStream(HubspotStream):
 
     def get_url_params(
             self,
-            context: dict | None,  # noqa: ARG002
+            context: dict | None,
             next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
@@ -122,6 +122,7 @@ class ListsStream(HubspotStream):
             params["order_by"] = self.replication_key    
 
         params["property"] = "message","email","city","company","createddate","firstname","hs_all_contact_vids","hs_date_entered_lead","hs_marketable_reason_id","hs_is_unworked","hs_marketable_until_renewal","hs_latest_source_timestamp","hs_marketable_reason_type","hs_marketable_status","hs_is_contact","hs_email_domain","hs_pipeline","hs_sequences_actively_enrolled_count","hs_object_id","hs_time_in_lead","num_conversion_events","num_unique_conversion_events","lastname","hs_analytics_num_page_views","hs_analytics_num_event_completions","hs_analytics_first_timestamp","hs_social_twitter_clicks","hs_analytics_num_visits","twitterprofilephoto","twitterhandle","hs_analytics_source_data_2","hs_social_facebook_clicks","hs_analytics_source","hs_analytics_source_data_1","hs_latest_source","hs_latest_source_data_1","hs_latest_source_data_2","hs_social_google_plus_clicks","hs_social_num_broadcast_clicks","state","hs_social_linkedin_clicks","hs_lifecyclestage_lead_date","hs_analytics_revenue","hs_analytics_average_page_views","website","lifecyclestage","jobtitle"
+        params["propertyMode"] = "value_and_history"
 
         return params
     
@@ -173,7 +174,7 @@ class UsersStream(HubspotStream):
 
     def get_url_params(
             self,
-            context: dict | None,  # noqa: ARG002
+            context: dict | None, 
             next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
@@ -214,4 +215,301 @@ class UsersStream(HubspotStream):
             results = resp_json
 
         yield from results
-        
+
+class OwnersStream(HubspotStream):
+    columns = """
+                id, email, firstName, lastName, userId, createdAt, updatedAt, archived
+              """
+
+    name = "owners"
+    path = "/owners?fields={}".format(columns)
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", IntegerType),
+        Property("email", StringType),
+        Property("firstName", StringType),
+        Property("lastName", StringType),
+        Property("userId", IntegerType),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+
+    def get_url_params(
+            self,
+            context: dict | None, 
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+class TicketPipelineStream(HubspotStream):
+    columns = """
+                label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
+              """
+
+    name = "ticketpipeline"
+    path = "/pipelines/tickets?fields={}".format(columns)
+    primary_keys = ["createdAt"]
+    replication_key = "createdAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("label", StringType),
+        Property("displayOrder", StringType),
+        Property("active", BooleanType),
+        Property("stages", StringType),
+        Property("objectType", StringType),
+        Property("objectTypeId", StringType),
+        Property("pipelineId", StringType),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("default", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_1", "")
+        base_url = "https://api.hubapi.com/crm-pipelines/{}".format(version)
+        return base_url
+
+    def get_url_params(
+            self,
+            context: dict | None,
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results  
+
+class DealPipelineStream(HubspotStream):
+    columns = """
+                label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
+              """
+
+    name = "dealpipeline"
+    path = "/pipelines/deals?fields={}".format(columns)
+    primary_keys = ["createdAt"]
+    replication_key = "createdAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("label", StringType),
+        Property("displayOrder", StringType),
+        Property("active", BooleanType),
+        Property("stages", StringType),
+        Property("objectType", StringType),
+        Property("objectTypeId", StringType),
+        Property("pipelineId", StringType),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("default", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_1", "")
+        base_url = "https://api.hubapi.com/crm-pipelines/{}".format(version)
+        return base_url
+
+    def get_url_params(
+            self,
+            context: dict | None,
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results                          
+
+class EmailSubscriptionStream(HubspotStream):
+    columns = """
+                id, portalId, name, description, active, internal, category, channel, internalName, businessUnitId
+              """
+
+    name = "emailsubscription"
+    path = "/subscriptions/?fields={}".format(columns)
+    primary_keys = ["id"]
+    replication_key = "id"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", IntegerType),
+        Property("portalId", IntegerType),
+        Property("name", StringType),
+        Property("description", StringType),
+        Property("active", BooleanType),
+        Property("internal", StringType),
+        Property("category", StringType),
+        Property("channel", StringType),
+        Property("internalName", StringType),
+        Property("businessUnitId", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_1", "")
+        base_url = "https://api.hubapi.com/email/public/{}".format(version)
+        return base_url
+
+    def get_url_params(
+            self,
+            context: dict | None,
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("subscriptionDefinitions") is not None:
+            results = resp_json["subscriptionDefinitions"]
+        else:
+            results = resp_json
+
+        yield from results

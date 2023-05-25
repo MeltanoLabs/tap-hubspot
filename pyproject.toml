@@ -53,4 +53,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 # CLI declaration
-tap-hubspot-sdk = 'tap_hubspot_sdk.tap:Taptap-hubspot-sdk.cli'
+tap-hubspot-sdk = 'tap_hubspot_sdk.tap:TapHubspot.cli'

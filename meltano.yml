@@ -1,9 +1,7 @@
 version: 1
 send_anonymous_usage_stats: true
 project_id: "tap-hubspot-sdk"
-default_environment: test
-environments:
-- name: test
+default_environment: dev
 plugins:
   extractors:
   - name: "tap-hubspot-sdk"
@@ -15,14 +13,45 @@ plugins:
     - discover
     - about
     - stream-maps
-    config:
-      start_date: '2010-01-01T00:00:00Z'
     settings:
-    # TODO: To configure using Meltano, declare settings and their types here:
-    - name: username
+    - name: access_token
+      value: ${TAP_HUBSPOT_ACCESS_TOKEN}
+      kind: password
     - name: start_date
-      value: '2010-01-01T00:00:00Z'
+      value: '2023-01-01T00:00:00Z'
+    - name: end_date
+      value: '2023-05-22T00:00:00Z'
+    - name: api_version_1
+      value: 'v1'
+    - name: api_version_2
+      value: 'v2'
+    - name: api_version_3
+      value: 'v3'  
+    - name: api_version_4
+      value: 'v4'      
   loaders:
   - name: target-jsonl
     variant: andyh1203
     pip_url: target-jsonl
+  - name: target-csv
+    variant: hotgluexyz
+    pip_url: git+https://github.com/hotgluexyz/target-csv.git@0.3.3
+    config:
+      destination_path: /Users/neilgorman/Documents/GitHub/tap-linkedin-sdk/output
+  - name: target-snowflake
+    variant: transferwise
+    pip_url: pipelinewise-target-snowflake
+    config:
+      batch_size: 5
+environments:
+- name: dev
+  config:
+    plugins:
+      loaders:
+      - name: target-csv
+      - name: target-snowflake
+        config:
+          primary_key_required: false
+          add_metadata_columns: true
+- name: staging
+- name: prod

@@ -1,6 +1,8 @@
-"""REST client handling, including tap-hubspot-sdkStream base class."""
+"""REST client handling, including HubspotStream base class."""
 
 from __future__ import annotations
+
+import json
 
 import sys
 from pathlib import Path
@@ -11,25 +13,26 @@ from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator  # noqa: TCH002
 from singer_sdk.streams import RESTStream
 
-from tap_hubspot_sdk.auth import tap-hubspot-sdkAuthenticator
+from tap_hubspot_sdk.auth import tapHubspotAuthenticator
 
 if sys.version_info >= (3, 8):
     from functools import cached_property
 else:
     from cached_property import cached_property
 
+from singer_sdk.authenticators import BearerTokenAuthenticator    
+
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
+#SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
-class tap-hubspot-sdkStream(RESTStream):
+class HubspotStream(RESTStream):
     """tap-hubspot-sdk stream class."""
 
     @property
     def url_base(self) -> str:
-        """Return the API URL root, configurable via tap settings."""
-        # TODO: hardcode a value here, or retrieve it from self.config
-        return "https://api.mysample.com"
+        base_url = "https://api.hubapi.com/"
+        return base_url
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
@@ -43,7 +46,14 @@ class tap-hubspot-sdkStream(RESTStream):
         Returns:
             An authenticator instance.
         """
-        return tap-hubspot-sdkAuthenticator.create_for_stream(self)
+
+        #url = "https://api.hubapi.com/contacts/v1"
+        #login_api = requests.post(url).text
+        #access_token = json.loads(login_api).get("access_token")
+        access_token = self.config.get("access_token")
+
+        return BearerTokenAuthenticator.create_for_stream(self,
+                                                          token=access_token, )
 
     @property
     def http_headers(self) -> dict:
@@ -141,3 +151,4 @@ class tap-hubspot-sdkStream(RESTStream):
         """
         # TODO: Delete this method if not needed.
         return row
+  

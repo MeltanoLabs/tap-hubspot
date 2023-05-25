@@ -7,7 +7,7 @@ from singer_sdk.authenticators import OAuthAuthenticator, SingletonMeta
 
 # The SingletonMeta metaclass makes your streams reuse the same authenticator instance.
 # If this behaviour interferes with your use-case, you can remove the metaclass.
-class tap-hubspot-sdkAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
+class tapHubspotAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
     """Authenticator class for tap-hubspot-sdk."""
 
     @property
@@ -28,7 +28,7 @@ class tap-hubspot-sdkAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
         }
 
     @classmethod
-    def create_for_stream(cls, stream) -> tap-hubspot-sdkAuthenticator:  # noqa: ANN001
+    def create_for_stream(cls, stream) -> tapHubspotAuthenticator:  # noqa: ANN001
         """Instantiate an authenticator for a specific Singer stream.
 
         Args:

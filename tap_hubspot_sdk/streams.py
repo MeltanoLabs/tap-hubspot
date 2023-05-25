@@ -19,6 +19,7 @@ IntegerType = th.IntegerType
 
 
 class ListsStream(HubspotStream):
+    
     columns = """
                 vid, canonical-vid, merged-vids, portal-id, is-contact, properties
               """
@@ -148,6 +149,7 @@ class ListsStream(HubspotStream):
         yield from results
     
 class UsersStream(HubspotStream):
+    
     columns = """
                 id, email, roleIds, primaryteamid
               """
@@ -217,6 +219,7 @@ class UsersStream(HubspotStream):
         yield from results
 
 class OwnersStream(HubspotStream):
+    
     columns = """
                 id, email, firstName, lastName, userId, createdAt, updatedAt, archived
               """
@@ -290,6 +293,7 @@ class OwnersStream(HubspotStream):
         yield from results
 
 class TicketPipelineStream(HubspotStream):
+    
     columns = """
                 label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
               """
@@ -365,6 +369,7 @@ class TicketPipelineStream(HubspotStream):
         yield from results  
 
 class DealPipelineStream(HubspotStream):
+    
     columns = """
                 label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
               """
@@ -440,6 +445,7 @@ class DealPipelineStream(HubspotStream):
         yield from results                          
 
 class EmailSubscriptionStream(HubspotStream):
+    
     columns = """
                 id, portalId, name, description, active, internal, category, channel, internalName, businessUnitId
               """
@@ -513,3 +519,964 @@ class EmailSubscriptionStream(HubspotStream):
             results = resp_json
 
         yield from results
+
+class PropertyTicketStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertyticket"
+    path = "/properties/tickets?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+
+    def get_url_params(
+            self,
+            context: dict | None,
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        
+        row["hubspot_object"] = "ticket"
+        
+        return super().post_process(row, context)  
+
+class PropertyDealStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertydeal"
+    path = "/properties/deals?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+        Property("calculationFormula", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "deal"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyContactStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertycontact"
+    path = "/properties/contacts?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "contact"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyCompanyStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertycompany"
+    path = "/properties/company?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "company"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyProductStream(HubspotStream):
+   
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertyproduct"
+    path = "/properties/product?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "product"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyLineItemStream(HubspotStream):
+   
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertylineitem"
+    path = "/properties/line_item?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "line_item"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyEmailStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertyemail"
+    path = "/properties/email?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "email"
+        except:
+            pass
+        
+        return super().post_process(row, context)  
+
+class PropertyPostalMailStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertypostalmail"
+    path = "/properties/postal_mail?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "postal_mail"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyCallStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertycall"
+    path = "/properties/call?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "call"
+        except:
+            pass
+        
+        return super().post_process(row, context)                                   
+
+class PropertyMeetingStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertymeeting"
+    path = "/properties/meeting?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "meeting"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+    
+class PropertyTaskStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertytask"
+    path = "/properties/task?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "task"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyCommunicationStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "propertycommunication"
+    path = "/properties/task?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "communication"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+class PropertyNotesStream(HubspotStream):
+    
+    columns = """
+                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
+                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
+              """
+
+    name = "property"
+    path = "/properties/notes?fields={}".format(columns)
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property("options", StringType),
+        Property("displayOrder", StringType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property("modificationMetadata", StringType),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        version = self.config.get("api_version_3", "")
+        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        return base_url
+    
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        try:
+            row["hubspot_object"] = "note"
+        except:
+            pass
+        
+        return super().post_process(row, context)
+
+    def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+        property_ticket = PropertyTicketStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_deal = PropertyDealStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_contact = PropertyContactStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_company = PropertyCompanyStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_product = PropertyProductStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_lineitem = PropertyLineItemStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_email = PropertyEmailStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_postalmail = PropertyPostalMailStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_call = PropertyCallStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_meeting = PropertyMeetingStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_task = PropertyTaskStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_communication = PropertyCommunicationStream(
+            self._tap, schema={"properties": {}}
+        )
+        property_records = list(property_ticket.get_records(context)) + list(property_deal.get_records(context)) + list(property_contact.get_records(context)) + list(property_company.get_records(context)) + list(property_product.get_records(context)) + list(property_lineitem.get_records(context)) + list(property_email.get_records(context)) + list(property_postalmail.get_records(context)) + list(property_call.get_records(context)) + list(property_meeting.get_records(context)) + list(property_task.get_records(context)) + list(property_communication.get_records(context)) + list(super().get_records(context))
+            
+        return property_records
+                                                            

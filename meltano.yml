@@ -28,7 +28,9 @@ plugins:
     - name: api_version_3
       value: 'v3'  
     - name: api_version_4
-      value: 'v4'      
+      value: 'v4'
+    - name: auth_type
+      value: 'oauth'      
   loaders:
   - name: target-jsonl
     variant: andyh1203

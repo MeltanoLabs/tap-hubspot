@@ -4,45 +4,56 @@
 
 Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
-<!--
+## Capabilities
 
-Developer TODO: Update the below as needed to correctly describe the install procedure. For instance, if you do not have a PyPi repo, or if you want users to directly install from your git repo, you can modify this step as appropriate.
-
-## Installation
-
-Install from PyPi:
-
-```bash
-pipx install tap-hubspot-sdk
-```
-
-Install from GitHub:
-
-```bash
-pipx install git+https://github.com/ORG_NAME/tap-hubspot-sdk.git@main
-```
-
--->
+* `catalog`
+* `state`
+* `discover`
+* `about`
+* `stream-maps`
+* `schema-flattening`
 
 ## Configuration
 
 ### Accepted Config Options
 
-<!--
-Developer TODO: Provide a list of config options accepted by the tap.
+| Setting             | Required | Default | Description |
+|:--------------------|:--------:|:-------:|:------------|
+| access_token        | True     | None    | The token to authenticate against the API service |
+| api_version_1       | False    | v1.0    | The API version to request data from. |
+| api_version_2       | False    | v2.0    | The API version to request data from. |
+| api_version_3       | False    | v3.0    | The API version to request data from. |
+| api_version_4       | False    | v4.0    | The API version to request data from. |
+| start_date          | False    | None    | The earliest record date to sync |
+| end_date            | False    | None    | The latest record date to sync |
+| stream_maps         | False    | None    | Config object for stream maps capability. For more information check out [Stream Maps](https://sdk.meltano.com/en/latest/stream_maps.html). |
+| stream_map_config   | False    | None    | User-defined config values to be used within map expressions. |
+| flattening_enabled  | False    | None    | 'True' to enable schema flattening and automatically expand nested properties. |
+| flattening_max_depth| False    | None    | The max depth to flatten schemas. |
 
-This section can be created by copy-pasting the CLI output from:
+### Meltano Variables
 
-```
-tap-hubspot-sdk --about --format=markdown
-```
--->
+The following config values need to be set in order to use with Meltano. These can be set in `meltano.yml`, via
+```meltano config tap-hubspot-sdk set --interactive```, or via the env var mappings shown above.
 
-A full list of supported settings and capabilities for this
-tap is available by running:
+- `access_token:` access token from TAP_HUBSPOT_ACCESS_TOKEN variable
+- `start_date:` start date
+- `end_date:` end_date
+- `api_version_1:` api version
+- `api_version_2:` api version
+- `api_version_3:` api version
+- `api_version_4:` api version
+
+A full list of supported settings and capabilities for this tap is available by running:
 
 ```bash
 tap-hubspot-sdk --about
+```
+
+## Installation
+
+```bash
+pipx install git+https://github.com/ryan-miranda-partners/tap-hubspot-sdk.git
 ```
 
 ### Configure using environment variables
@@ -53,13 +64,15 @@ environment variable is set either in the terminal context or in the `.env` file
 
 ### Source Authentication and Authorization
 
-<!--
-Developer TODO: If your tap requires special access on the source system, or any special authentication requirements, provide those here.
--->
+A Hubspot access token is required to make API requests. (See [Hubspot API](https://developers.hubspot.com/docs/api/working-with-oauth) docs for more info)
 
 ## Usage
 
 You can easily run `tap-hubspot-sdk` by itself or in a pipeline using [Meltano](https://meltano.com/).
+
+## Stream Inheritance
+
+This project uses parent-child streams. Learn more about them [here](https://gitlab.com/meltano/sdk/-/blob/main/docs/parent_streams.md).
 
 ### Executing the Tap Directly
 
@@ -100,11 +113,8 @@ poetry run tap-hubspot-sdk --help
 _**Note:** This tap will work in any Singer environment and does not require Meltano.
 Examples here are for convenience and to streamline end-to-end orchestration scenarios._
 
-<!--
-Developer TODO:
 Your project comes with a custom `meltano.yml` project file already created. Open the `meltano.yml` and follow any "TODO" items listed in
 the file.
--->
 
 Next, install Meltano (if you haven't already) and any needed plugins:
 

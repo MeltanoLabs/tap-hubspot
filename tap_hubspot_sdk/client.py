@@ -20,7 +20,8 @@ if sys.version_info >= (3, 8):
 else:
     from cached_property import cached_property
 
-from singer_sdk.authenticators import BearerTokenAuthenticator    
+from singer_sdk.authenticators import BearerTokenAuthenticator, SimpleAuthenticator, BasicAuthenticator, APIAuthenticatorBase
+from requests.auth import HTTPBasicAuth
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 #SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
@@ -47,13 +48,20 @@ class HubspotStream(RESTStream):
             An authenticator instance.
         """
 
-        #url = "https://api.hubapi.com/contacts/v1"
-        #login_api = requests.post(url).text
-        #access_token = json.loads(login_api).get("access_token")
         access_token = self.config.get("access_token")
+        auth_type = self.config.get("auth_type")
 
-        return BearerTokenAuthenticator.create_for_stream(self,
-                                                          token=access_token, )
+        if auth_type == "oauth":
+            return BearerTokenAuthenticator.create_for_stream(self,
+                                                              token=access_token, )
+        
+        elif auth_type == "simple":
+            return SimpleAuthenticator(self,
+                                       auth_headers={"Authorization": "Bearer {}".format(access_token),},)
+        
+        elif auth_type == "api":
+            APIAuthenticatorBase.auth_headers = {"Authorization": "Bearer {}".format(access_token),}
+            return APIAuthenticatorBase(self,)
 
     @property
     def http_headers(self) -> dict:

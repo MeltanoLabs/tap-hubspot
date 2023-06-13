@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import json
-
 import sys
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
 import requests
 from singer_sdk.helpers.jsonpath import extract_jsonpath
-from singer_sdk.pagination import BaseAPIPaginator  # noqa: TCH002
+from singer_sdk.pagination import BaseAPIPaginator
 from singer_sdk.streams import RESTStream
 
 from tap_hubspot_sdk.auth import tapHubspotAuthenticator
@@ -20,10 +18,14 @@ if sys.version_info >= (3, 8):
 else:
     from cached_property import cached_property
 
-from singer_sdk.authenticators import BearerTokenAuthenticator    
+from singer_sdk.authenticators import (
+    BearerTokenAuthenticator,
+    SimpleAuthenticator,
+    APIAuthenticatorBase,
+)
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
-#SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
+# SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class HubspotStream(RESTStream):
@@ -31,13 +33,16 @@ class HubspotStream(RESTStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns base url
+        """
         base_url = "https://api.hubapi.com/"
         return base_url
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
     # Set this value or override `get_new_paginator`.
-    next_page_token_jsonpath = "$.next_page"  # noqa: S105
+    next_page_token_jsonpath = "$.next_page"
 
     @cached_property
     def authenticator(self) -> _Auth:
@@ -47,13 +52,30 @@ class HubspotStream(RESTStream):
             An authenticator instance.
         """
 
-        #url = "https://api.hubapi.com/contacts/v1"
-        #login_api = requests.post(url).text
-        #access_token = json.loads(login_api).get("access_token")
         access_token = self.config.get("access_token")
+        auth_type = self.config.get("auth_type")
 
-        return BearerTokenAuthenticator.create_for_stream(self,
-                                                          token=access_token, )
+        if auth_type == "oauth":
+            return BearerTokenAuthenticator.create_for_stream(
+                self,
+                token=access_token,
+            )
+
+        elif auth_type == "simple":
+            return SimpleAuthenticator(
+                self,
+                auth_headers={
+                    "Authorization": "Bearer {}".format(access_token),
+                },
+            )
+
+        elif auth_type == "api":
+            APIAuthenticatorBase.auth_headers = {
+                "Authorization": "Bearer {}".format(access_token),
+            }
+            return APIAuthenticatorBase(
+                self,
+            )
 
     @property
     def http_headers(self) -> dict:
@@ -84,7 +106,7 @@ class HubspotStream(RESTStream):
 
     def get_url_params(
         self,
-        context: dict | None,  # noqa: ARG002
+        context: dict | None,
         next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
@@ -103,52 +125,3 @@ class HubspotStream(RESTStream):
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
         return params
-
-    def prepare_request_payload(
-        self,
-        context: dict | None,  # noqa: ARG002
-        next_page_token: Any | None,  # noqa: ARG002
-    ) -> dict | None:
-        """Prepare the data payload for the REST API request.
-
-        By default, no payload will be sent (return None).
-
-        Args:
-            context: The stream context.
-            next_page_token: The next page index or value.
-
-        Returns:
-            A dictionary with the JSON body for a POST requests.
-        """
-        # TODO: Delete this method if no payload is required. (Most REST APIs.)
-        return None
-
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-        # TODO: Parse response body and return a set of records.
-        yield from extract_jsonpath(self.records_jsonpath, input=response.json())
-
-    def post_process(
-        self,
-        row: dict,
-        context: dict | None = None,  # noqa: ARG002
-    ) -> dict | None:
-        """As needed, append or transform raw data to match expected structure.
-
-        Args:
-            row: An individual record from the stream.
-            context: The stream context.
-
-        Returns:
-            The updated record dictionary, or ``None`` to skip the record.
-        """
-        # TODO: Delete this method if not needed.
-        return row
-  

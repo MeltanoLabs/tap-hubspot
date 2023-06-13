@@ -110,6 +110,9 @@ class ListsStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated path which has the api version
+        """
         version = self.config.get("api_version_1", "")
         base_url = "https://api.hubapi.com/contacts/{}".format(version)
         return base_url
@@ -196,6 +199,9 @@ class UsersStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/settings/{}".format(version)
         return base_url
@@ -283,6 +289,9 @@ class OwnersStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -372,6 +381,9 @@ class TicketPipelineStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_1", "")
         base_url = "https://api.hubapi.com/crm-pipelines/{}".format(version)
         return base_url
@@ -461,6 +473,9 @@ class DealPipelineStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_1", "")
         base_url = "https://api.hubapi.com/crm-pipelines/{}".format(version)
         return base_url
@@ -550,6 +565,9 @@ class EmailSubscriptionStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_1", "")
         base_url = "https://api.hubapi.com/email/public/{}".format(version)
         return base_url
@@ -648,6 +666,9 @@ class PropertyTicketStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -697,6 +718,9 @@ class PropertyTicketStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
         
         row["hubspot_object"] = "ticket"
         
@@ -753,6 +777,9 @@ class PropertyDealStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -779,6 +806,10 @@ class PropertyDealStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+
         try:
             row["hubspot_object"] = "deal"
         except:
@@ -836,6 +867,9 @@ class PropertyContactStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -862,6 +896,10 @@ class PropertyContactStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+
         try:
             row["hubspot_object"] = "contact"
         except:
@@ -919,6 +957,9 @@ class PropertyCompanyStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -945,6 +986,10 @@ class PropertyCompanyStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "company"
         except:
@@ -1002,6 +1047,9 @@ class PropertyProductStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1028,6 +1076,10 @@ class PropertyProductStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "product"
         except:
@@ -1085,6 +1137,9 @@ class PropertyLineItemStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1111,6 +1166,10 @@ class PropertyLineItemStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "line_item"
         except:
@@ -1168,6 +1227,9 @@ class PropertyEmailStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1194,6 +1256,10 @@ class PropertyEmailStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "email"
         except:
@@ -1251,6 +1317,9 @@ class PropertyPostalMailStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1277,6 +1346,10 @@ class PropertyPostalMailStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "postal_mail"
         except:
@@ -1334,6 +1407,9 @@ class PropertyCallStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1360,6 +1436,10 @@ class PropertyCallStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "call"
         except:
@@ -1417,6 +1497,9 @@ class PropertyMeetingStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1443,6 +1526,10 @@ class PropertyMeetingStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "meeting"
         except:
@@ -1500,6 +1587,9 @@ class PropertyTaskStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1526,6 +1616,10 @@ class PropertyTaskStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "task"
         except:
@@ -1583,6 +1677,9 @@ class PropertyCommunicationStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1609,6 +1706,10 @@ class PropertyCommunicationStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "communication"
         except:
@@ -1666,6 +1767,9 @@ class PropertyNotesStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1692,6 +1796,10 @@ class PropertyNotesStream(HubspotStream):
         yield from results
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["hubspot_object"] = "note"
         except:
@@ -1778,6 +1886,9 @@ class AssociationContactCompanyTypeStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -1830,11 +1941,18 @@ class AssociationContactCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "contact"
             row["to_object_type"] = "company"
@@ -1870,11 +1988,18 @@ class AssociationDealContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "contact"
@@ -1910,11 +2035,18 @@ class AssociationDealContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "contact"
@@ -1950,11 +2082,18 @@ class AssociationDealCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "company"
@@ -1990,11 +2129,18 @@ class AssociationDealCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "company"
@@ -2030,11 +2176,18 @@ class AssociationTicketContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "contact"
@@ -2070,11 +2223,18 @@ class AssociationTicketContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "contact"
@@ -2110,11 +2270,18 @@ class AssociationTicketCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "company"
@@ -2150,11 +2317,18 @@ class AssociationTicketCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "company"
@@ -2190,11 +2364,18 @@ class AssociationTicketDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "deal"
@@ -2230,11 +2411,18 @@ class AssociationTicketDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "deal"
@@ -2270,11 +2458,18 @@ class AssociationTicketCommunicationTypeStream(AssociationContactCompanyTypeStre
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "communication"
@@ -2310,11 +2505,18 @@ class AssociationTicketCommunicationLabelStream(AssociationContactCompanyTypeStr
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "communication"
@@ -2350,11 +2552,18 @@ class AssociationTicketCallTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "call"
@@ -2390,11 +2599,18 @@ class AssociationTicketCallLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "call"
@@ -2430,11 +2646,18 @@ class AssociationTicketMeetingTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "meeting"
@@ -2470,11 +2693,18 @@ class AssociationTicketMeetingLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "meeting"
@@ -2510,11 +2740,18 @@ class AssociationTicketNoteTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "note"
@@ -2550,11 +2787,18 @@ class AssociationTicketNoteLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "note"
@@ -2590,11 +2834,18 @@ class AssociationTicketTaskTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "task"
@@ -2630,11 +2881,18 @@ class AssociationTicketTaskLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "task"
@@ -2670,11 +2928,18 @@ class AssociationTicketEmailTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "email"
@@ -2710,11 +2975,18 @@ class AssociationTicketEmailLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "email"
@@ -2750,11 +3022,18 @@ class AssociationTicketPostalMailTypeStream(AssociationContactCompanyTypeStream)
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "postal_mail"
@@ -2790,11 +3069,18 @@ class AssociationTicketPostalMailLabelStream(AssociationContactCompanyTypeStream
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "postal_mail"
@@ -2830,11 +3116,18 @@ class AssociationLineItemDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "line_item"
             row["to_object_type"] = "deal"
@@ -2870,11 +3163,18 @@ class AssociationLineItemDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "line_item"
             row["to_object_type"] = "deal"
@@ -2910,11 +3210,18 @@ class AssociationCommunicationContactTypeStream(AssociationContactCompanyTypeStr
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "contact"
@@ -2950,11 +3257,18 @@ class AssociationCommunicationContactLabelStream(AssociationContactCompanyTypeSt
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "contact"
@@ -2990,11 +3304,18 @@ class AssociationCommunicationCompanyTypeStream(AssociationContactCompanyTypeStr
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "company"
@@ -3030,11 +3351,18 @@ class AssociationCommunicationCompanyLabelStream(AssociationContactCompanyTypeSt
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "company"
@@ -3070,11 +3398,18 @@ class AssociationCommunicationDealTypeStream(AssociationContactCompanyTypeStream
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "deal"
@@ -3110,11 +3445,18 @@ class AsociationCommunicationDealLabelStream(AssociationContactCompanyTypeStream
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "deal"
@@ -3150,11 +3492,18 @@ class AssociationCallContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "contact"
@@ -3190,11 +3539,18 @@ class AssociationCallContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "contact"
@@ -3230,11 +3586,18 @@ class AssociationCallCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "company"
@@ -3270,11 +3633,18 @@ class AssociationCallCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "company"
@@ -3310,11 +3680,18 @@ class AssociationCallDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "deal"
@@ -3350,11 +3727,18 @@ class AssociationCallDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "deal"
@@ -3390,11 +3774,18 @@ class AssociationEmailContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "contact"
@@ -3430,11 +3821,18 @@ class AssociationEmailContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "contact"
@@ -3470,11 +3868,18 @@ class AssociationEmailCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "company"
@@ -3510,11 +3915,18 @@ class AssociationEmailCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "company"
@@ -3550,11 +3962,18 @@ class AssociationEmailDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "deal"
@@ -3590,11 +4009,18 @@ class AssociationEmailDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "deal"
@@ -3630,11 +4056,18 @@ class AssociationMeetingContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "contact"
@@ -3670,6 +4103,9 @@ class AssociationMeetingContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
@@ -3710,11 +4146,18 @@ class AssociationMeetingCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "company"
@@ -3750,11 +4193,18 @@ class AssociationMeetingCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "company"
@@ -3790,11 +4240,18 @@ class AssociationMeetingDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "deal"
@@ -3830,11 +4287,18 @@ class AssociationMeetingDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "deal"
@@ -3870,11 +4334,18 @@ class AssociationNoteContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "contact"
@@ -3910,11 +4381,18 @@ class AssociationNoteContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "contact"
@@ -3950,11 +4428,18 @@ class AssociationNoteCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "company"
@@ -3990,11 +4475,18 @@ class AssociationNoteCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "company"
@@ -4030,11 +4522,18 @@ class AssoxationNoteDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "deal"
@@ -4070,11 +4569,18 @@ class AssociationNoteDealLabel(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "deal"
@@ -4110,11 +4616,18 @@ class AssociationTaskContactTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "contact"
@@ -4150,11 +4663,18 @@ class AssociationTaskContactLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "contact"
@@ -4190,11 +4710,18 @@ class AssociationTaskCompanyTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "company"
@@ -4230,11 +4757,18 @@ class AssociationTaskCompanyLabelstream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "company"
@@ -4270,11 +4804,18 @@ class AssociationTaskDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "deal"
@@ -4310,11 +4851,18 @@ class AssociationTaskDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "deal"
@@ -4350,11 +4898,18 @@ class AssociationPostalMailContactTypeStream(AssociationContactCompanyTypeStream
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "contact"
@@ -4390,11 +4945,18 @@ class AssociationPostalMailContactLabelStream(AssociationContactCompanyTypeStrea
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "contact"
@@ -4430,11 +4992,18 @@ class AssociationPostalMailCompanyTypeStream(AssociationContactCompanyTypeStream
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "company"
@@ -4470,11 +5039,18 @@ class AssociationPostalMailCompanyLabelStream(AssociationContactCompanyTypeStrea
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "company"
@@ -4510,11 +5086,18 @@ class AssociationPostalMailDealTypeStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "deal"
@@ -4550,11 +5133,18 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
 
     @property
     def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
     
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        """
+        Returns api records with added columns
+        """
+        
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "deal"

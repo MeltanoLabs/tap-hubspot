@@ -20,10 +20,10 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 | Setting             | Required | Default | Description |
 |:--------------------|:--------:|:-------:|:------------|
 | access_token        | True     | None    | The token to authenticate against the API service |
-| api_version_1       | False    | v1.0    | The API version to request data from. |
-| api_version_2       | False    | v2.0    | The API version to request data from. |
-| api_version_3       | False    | v3.0    | The API version to request data from. |
-| api_version_4       | False    | v4.0    | The API version to request data from. |
+| api_version_1       | True    | v1.0    | The API version to request data from. |
+| api_version_2       | True    | v2.0    | The API version to request data from. |
+| api_version_3       | True    | v3.0    | The API version to request data from. |
+| api_version_4       | True    | v4.0    | The API version to request data from. |
 | start_date          | False    | None    | The earliest record date to sync |
 | end_date            | False    | None    | The latest record date to sync |
 | stream_maps         | False    | None    | Config object for stream maps capability. For more information check out [Stream Maps](https://sdk.meltano.com/en/latest/stream_maps.html). |
@@ -49,6 +49,10 @@ A full list of supported settings and capabilities for this tap is available by 
 ```bash
 tap-hubspot-sdk --about
 ```
+
+## Elastic License 2.0
+
+The licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensable, non-transferable license to use, copy, distribute, make available, and prepare derivative works of the software.
 
 ## Installation
 

@@ -42,7 +42,7 @@ class TapHubspot(Tap):
             streams.PropertyNotesStream(self),
             streams.AssociationPostalMailDealLabelStream(self),
         ]
-    
+
 
 if __name__ == "__main__":
     TapHubspot.cli()

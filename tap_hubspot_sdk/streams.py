@@ -32,7 +32,7 @@ class ListsStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 vid, canonical-vid, merged-vids, portal-id, is-contact, properties
               """
@@ -49,63 +49,63 @@ class ListsStream(HubspotStream):
         Property("merged-vids", ArrayType(StringType)),
         Property("portal-id", IntegerType),
         Property("is-contact", BooleanType),
-        Property("properties", 
-                 ObjectType(Property("lastmodifieddate", StringType),
-                            Property("email", StringType),
-                            Property("message", StringType),
-                            Property("city", StringType),
-                            Property("company", StringType),
-                            Property("createddate", StringType),
-                            Property("firstname", StringType),
-                            Property("hs_all_contact_vids", IntegerType),
-                            Property("hs_date_entered_lead", StringType),
-                            Property("hs_marketable_reason_id", StringType),
-                            Property("hs_is_unworked", BooleanType),
-                            Property("hs_marketable_until_renewal", BooleanType),
-                            Property("hs_latest_source_timestamp", StringType),
-                            Property("hs_marketable_reason_type", StringType),
-                            Property("hs_marketable_status", BooleanType),
-                            Property("hs_is_contact", BooleanType),
-                            Property("hs_email_domain", StringType),
-                            Property("hs_pipeline", StringType),
-                            Property("hs_sequences_actively_enrolled_count", StringType),
-                            Property("hs_object_id", StringType),
-                            Property("hs_time_in_lead", StringType),
-                            Property("num_conversion_events", StringType),
-                            Property("num_unique_conversion_events", StringType),
-                            Property("lastname", StringType),
-                            Property("hs_analytics_num_page_views", StringType),
-                            Property("hs_analytics_num_event_completions", StringType),
-                            Property("hs_analytics_first_timestamp", StringType),
-                            Property("hs_social_twitter_clicks", StringType),
-                            Property("hs_analytics_num_visits", StringType),
-                            Property("twitterprofilephoto", StringType),
-                            Property("twitterhandle", StringType),
-                            Property("hs_analytics_source_data_2", StringType),
-                            Property("hs_social_facebook_clicks", StringType),
-                            Property("hs_analytics_source", StringType),
-                            Property("hs_analytics_source_data_1", StringType),
-                            Property("hs_latest_source", StringType),
-                            Property("hs_latest_source_data_1", StringType),
-                            Property("hs_latest_source_data_2", StringType),
-                            Property("hs_social_google_plus_clicks", StringType),
-                            Property("hs_social_num_broadcast_clicks", StringType),
-                            Property("state", StringType),
-                            Property("hs_social_linkedin_clicks", StringType),
-                            Property("hs_lifecyclestage_lead_date", StringType),
-                            Property("hs_analytics_revenue", StringType),
-                            Property("hs_analytics_average_page_views", StringType),
-                            Property("website", StringType),
-                            Property("lifecyclestage", StringType),
-                            Property("jobtitle", StringType),
-                            )
-                            
-                ),
+        Property(
+            "properties",
+            ObjectType(
+                Property("lastmodifieddate", StringType),
+                Property("email", StringType),
+                Property("message", StringType),
+                Property("city", StringType),
+                Property("company", StringType),
+                Property("createddate", StringType),
+                Property("firstname", StringType),
+                Property("hs_all_contact_vids", IntegerType),
+                Property("hs_date_entered_lead", StringType),
+                Property("hs_marketable_reason_id", StringType),
+                Property("hs_is_unworked", BooleanType),
+                Property("hs_marketable_until_renewal", BooleanType),
+                Property("hs_latest_source_timestamp", StringType),
+                Property("hs_marketable_reason_type", StringType),
+                Property("hs_marketable_status", BooleanType),
+                Property("hs_is_contact", BooleanType),
+                Property("hs_email_domain", StringType),
+                Property("hs_pipeline", StringType),
+                Property("hs_sequences_actively_enrolled_count", StringType),
+                Property("hs_object_id", StringType),
+                Property("hs_time_in_lead", StringType),
+                Property("num_conversion_events", StringType),
+                Property("num_unique_conversion_events", StringType),
+                Property("lastname", StringType),
+                Property("hs_analytics_num_page_views", StringType),
+                Property("hs_analytics_num_event_completions", StringType),
+                Property("hs_analytics_first_timestamp", StringType),
+                Property("hs_social_twitter_clicks", StringType),
+                Property("hs_analytics_num_visits", StringType),
+                Property("twitterprofilephoto", StringType),
+                Property("twitterhandle", StringType),
+                Property("hs_analytics_source_data_2", StringType),
+                Property("hs_social_facebook_clicks", StringType),
+                Property("hs_analytics_source", StringType),
+                Property("hs_analytics_source_data_1", StringType),
+                Property("hs_latest_source", StringType),
+                Property("hs_latest_source_data_1", StringType),
+                Property("hs_latest_source_data_2", StringType),
+                Property("hs_social_google_plus_clicks", StringType),
+                Property("hs_social_num_broadcast_clicks", StringType),
+                Property("state", StringType),
+                Property("hs_social_linkedin_clicks", StringType),
+                Property("hs_lifecyclestage_lead_date", StringType),
+                Property("hs_analytics_revenue", StringType),
+                Property("hs_analytics_average_page_views", StringType),
+                Property("website", StringType),
+                Property("lifecyclestage", StringType),
+                Property("jobtitle", StringType),
+            ),
+        ),
         Property("form-submissions", ArrayType(StringType)),
         Property("identity-profiles", ArrayType(StringType)),
         Property("merge-audits", ArrayType(StringType)),
         Property("addedAt", StringType),
-
     ).to_dict()
 
     @property
@@ -118,9 +118,9 @@ class ListsStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -136,13 +136,61 @@ class ListsStream(HubspotStream):
             params["page"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
-            params["order_by"] = self.replication_key    
+            params["order_by"] = self.replication_key
 
-        params["property"] = "message","email","city","company","createddate","firstname","hs_all_contact_vids","hs_date_entered_lead","hs_marketable_reason_id","hs_is_unworked","hs_marketable_until_renewal","hs_latest_source_timestamp","hs_marketable_reason_type","hs_marketable_status","hs_is_contact","hs_email_domain","hs_pipeline","hs_sequences_actively_enrolled_count","hs_object_id","hs_time_in_lead","num_conversion_events","num_unique_conversion_events","lastname","hs_analytics_num_page_views","hs_analytics_num_event_completions","hs_analytics_first_timestamp","hs_social_twitter_clicks","hs_analytics_num_visits","twitterprofilephoto","twitterhandle","hs_analytics_source_data_2","hs_social_facebook_clicks","hs_analytics_source","hs_analytics_source_data_1","hs_latest_source","hs_latest_source_data_1","hs_latest_source_data_2","hs_social_google_plus_clicks","hs_social_num_broadcast_clicks","state","hs_social_linkedin_clicks","hs_lifecyclestage_lead_date","hs_analytics_revenue","hs_analytics_average_page_views","website","lifecyclestage","jobtitle"
+        params["property"] = (
+            "message",
+            "email",
+            "city",
+            "company",
+            "createddate",
+            "firstname",
+            "hs_all_contact_vids",
+            "hs_date_entered_lead",
+            "hs_marketable_reason_id",
+            "hs_is_unworked",
+            "hs_marketable_until_renewal",
+            "hs_latest_source_timestamp",
+            "hs_marketable_reason_type",
+            "hs_marketable_status",
+            "hs_is_contact",
+            "hs_email_domain",
+            "hs_pipeline",
+            "hs_sequences_actively_enrolled_count",
+            "hs_object_id",
+            "hs_time_in_lead",
+            "num_conversion_events",
+            "num_unique_conversion_events",
+            "lastname",
+            "hs_analytics_num_page_views",
+            "hs_analytics_num_event_completions",
+            "hs_analytics_first_timestamp",
+            "hs_social_twitter_clicks",
+            "hs_analytics_num_visits",
+            "twitterprofilephoto",
+            "twitterhandle",
+            "hs_analytics_source_data_2",
+            "hs_social_facebook_clicks",
+            "hs_analytics_source",
+            "hs_analytics_source_data_1",
+            "hs_latest_source",
+            "hs_latest_source_data_1",
+            "hs_latest_source_data_2",
+            "hs_social_google_plus_clicks",
+            "hs_social_num_broadcast_clicks",
+            "state",
+            "hs_social_linkedin_clicks",
+            "hs_lifecyclestage_lead_date",
+            "hs_analytics_revenue",
+            "hs_analytics_average_page_views",
+            "website",
+            "lifecyclestage",
+            "jobtitle",
+        )
         params["propertyMode"] = "value_and_history"
 
         return params
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -163,7 +211,8 @@ class ListsStream(HubspotStream):
             results = resp_json
 
         yield from results
-    
+
+
 class UsersStream(HubspotStream):
 
     """
@@ -178,7 +227,7 @@ class UsersStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, email, roleIds, primaryteamid
               """
@@ -186,15 +235,14 @@ class UsersStream(HubspotStream):
     name = "users"
     path = "/users?fields={}".format(columns)
     primary_keys = ["id"]
-    #replication_key = "LastModifiedDate"
-    #replication_method = "incremental"
+    # replication_key = "LastModifiedDate"
+    # replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
         Property("email", StringType),
         Property("roleIds", ArrayType(StringType)),
         Property("primaryteamid", StringType),
-
     ).to_dict()
 
     @property
@@ -207,9 +255,9 @@ class UsersStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None, 
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -250,6 +298,7 @@ class UsersStream(HubspotStream):
 
         yield from results
 
+
 class OwnersStream(HubspotStream):
 
     """
@@ -264,7 +313,7 @@ class OwnersStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, email, firstName, lastName, userId, createdAt, updatedAt, archived
               """
@@ -284,7 +333,6 @@ class OwnersStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -297,9 +345,9 @@ class OwnersStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None, 
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -340,6 +388,7 @@ class OwnersStream(HubspotStream):
 
         yield from results
 
+
 class TicketPipelineStream(HubspotStream):
 
     """
@@ -354,7 +403,7 @@ class TicketPipelineStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
               """
@@ -376,7 +425,6 @@ class TicketPipelineStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("default", StringType),
-
     ).to_dict()
 
     @property
@@ -389,9 +437,9 @@ class TicketPipelineStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -430,7 +478,8 @@ class TicketPipelineStream(HubspotStream):
         else:
             results = resp_json
 
-        yield from results  
+        yield from results
+
 
 class DealPipelineStream(HubspotStream):
 
@@ -446,7 +495,7 @@ class DealPipelineStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
               """
@@ -468,7 +517,6 @@ class DealPipelineStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("default", StringType),
-
     ).to_dict()
 
     @property
@@ -481,9 +529,9 @@ class DealPipelineStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -522,7 +570,8 @@ class DealPipelineStream(HubspotStream):
         else:
             results = resp_json
 
-        yield from results                          
+        yield from results
+
 
 class EmailSubscriptionStream(HubspotStream):
 
@@ -538,7 +587,7 @@ class EmailSubscriptionStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, portalId, name, description, active, internal, category, channel, internalName, businessUnitId
               """
@@ -560,7 +609,6 @@ class EmailSubscriptionStream(HubspotStream):
         Property("channel", StringType),
         Property("internalName", StringType),
         Property("businessUnitId", StringType),
-
     ).to_dict()
 
     @property
@@ -573,9 +621,9 @@ class EmailSubscriptionStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -616,6 +664,7 @@ class EmailSubscriptionStream(HubspotStream):
 
         yield from results
 
+
 class PropertyTicketStream(HubspotStream):
 
     """
@@ -630,7 +679,7 @@ class PropertyTicketStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -661,7 +710,6 @@ class PropertyTicketStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -674,9 +722,9 @@ class PropertyTicketStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -721,10 +769,11 @@ class PropertyTicketStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         row["hubspot_object"] = "ticket"
-        
-        return super().post_process(row, context)  
+
+        return super().post_process(row, context)
+
 
 class PropertyDealStream(HubspotStream):
 
@@ -740,7 +789,7 @@ class PropertyDealStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -772,7 +821,6 @@ class PropertyDealStream(HubspotStream):
         Property("hubspot_object", StringType),
         Property("calculationFormula", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -783,7 +831,7 @@ class PropertyDealStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -814,8 +862,9 @@ class PropertyDealStream(HubspotStream):
             row["hubspot_object"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyContactStream(HubspotStream):
 
@@ -831,7 +880,7 @@ class PropertyContactStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -862,7 +911,6 @@ class PropertyContactStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -873,7 +921,7 @@ class PropertyContactStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -904,8 +952,9 @@ class PropertyContactStream(HubspotStream):
             row["hubspot_object"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyCompanyStream(HubspotStream):
 
@@ -921,7 +970,7 @@ class PropertyCompanyStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -952,7 +1001,6 @@ class PropertyCompanyStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -963,7 +1011,7 @@ class PropertyCompanyStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -989,13 +1037,14 @@ class PropertyCompanyStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyProductStream(HubspotStream):
 
@@ -1011,7 +1060,7 @@ class PropertyProductStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-   
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1042,7 +1091,6 @@ class PropertyProductStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1053,7 +1101,7 @@ class PropertyProductStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1079,13 +1127,14 @@ class PropertyProductStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "product"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyLineItemStream(HubspotStream):
 
@@ -1101,7 +1150,7 @@ class PropertyLineItemStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-   
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1132,7 +1181,6 @@ class PropertyLineItemStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1143,7 +1191,7 @@ class PropertyLineItemStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1169,13 +1217,14 @@ class PropertyLineItemStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "line_item"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyEmailStream(HubspotStream):
 
@@ -1191,7 +1240,7 @@ class PropertyEmailStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1222,7 +1271,6 @@ class PropertyEmailStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1233,7 +1281,7 @@ class PropertyEmailStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1259,13 +1307,14 @@ class PropertyEmailStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "email"
         except:
             pass
-        
-        return super().post_process(row, context)  
+
+        return super().post_process(row, context)
+
 
 class PropertyPostalMailStream(HubspotStream):
 
@@ -1281,7 +1330,7 @@ class PropertyPostalMailStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1312,7 +1361,6 @@ class PropertyPostalMailStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1323,7 +1371,7 @@ class PropertyPostalMailStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1349,13 +1397,14 @@ class PropertyPostalMailStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "postal_mail"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyCallStream(HubspotStream):
 
@@ -1371,7 +1420,7 @@ class PropertyCallStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1402,7 +1451,6 @@ class PropertyCallStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1413,7 +1461,7 @@ class PropertyCallStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1439,13 +1487,14 @@ class PropertyCallStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "call"
         except:
             pass
-        
-        return super().post_process(row, context)                                   
+
+        return super().post_process(row, context)
+
 
 class PropertyMeetingStream(HubspotStream):
 
@@ -1461,7 +1510,7 @@ class PropertyMeetingStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1492,7 +1541,6 @@ class PropertyMeetingStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1503,7 +1551,7 @@ class PropertyMeetingStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1529,14 +1577,15 @@ class PropertyMeetingStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "meeting"
         except:
             pass
-        
+
         return super().post_process(row, context)
-    
+
+
 class PropertyTaskStream(HubspotStream):
 
     """
@@ -1551,7 +1600,7 @@ class PropertyTaskStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1582,7 +1631,6 @@ class PropertyTaskStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1593,7 +1641,7 @@ class PropertyTaskStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1619,13 +1667,14 @@ class PropertyTaskStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "task"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyCommunicationStream(HubspotStream):
 
@@ -1641,7 +1690,7 @@ class PropertyCommunicationStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1672,7 +1721,6 @@ class PropertyCommunicationStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1683,7 +1731,7 @@ class PropertyCommunicationStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1709,13 +1757,14 @@ class PropertyCommunicationStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "communication"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class PropertyNotesStream(HubspotStream):
 
@@ -1731,7 +1780,7 @@ class PropertyNotesStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
@@ -1762,7 +1811,6 @@ class PropertyNotesStream(HubspotStream):
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("showCurrencySymbol", StringType),
-
     ).to_dict()
 
     @property
@@ -1773,7 +1821,7 @@ class PropertyNotesStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1799,55 +1847,50 @@ class PropertyNotesStream(HubspotStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["hubspot_object"] = "note"
         except:
             pass
-        
+
         return super().post_process(row, context)
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
-        property_ticket = PropertyTicketStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_deal = PropertyDealStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_contact = PropertyContactStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_company = PropertyCompanyStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_product = PropertyProductStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_lineitem = PropertyLineItemStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_email = PropertyEmailStream(
-            self._tap, schema={"properties": {}}
-        )
+        property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
+        property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
+        property_contact = PropertyContactStream(self._tap, schema={"properties": {}})
+        property_company = PropertyCompanyStream(self._tap, schema={"properties": {}})
+        property_product = PropertyProductStream(self._tap, schema={"properties": {}})
+        property_lineitem = PropertyLineItemStream(self._tap, schema={"properties": {}})
+        property_email = PropertyEmailStream(self._tap, schema={"properties": {}})
         property_postalmail = PropertyPostalMailStream(
             self._tap, schema={"properties": {}}
         )
-        property_call = PropertyCallStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_meeting = PropertyMeetingStream(
-            self._tap, schema={"properties": {}}
-        )
-        property_task = PropertyTaskStream(
-            self._tap, schema={"properties": {}}
-        )
+        property_call = PropertyCallStream(self._tap, schema={"properties": {}})
+        property_meeting = PropertyMeetingStream(self._tap, schema={"properties": {}})
+        property_task = PropertyTaskStream(self._tap, schema={"properties": {}})
         property_communication = PropertyCommunicationStream(
             self._tap, schema={"properties": {}}
         )
-        property_records = list(property_ticket.get_records(context)) + list(property_deal.get_records(context)) + list(property_contact.get_records(context)) + list(property_company.get_records(context)) + list(property_product.get_records(context)) + list(property_lineitem.get_records(context)) + list(property_email.get_records(context)) + list(property_postalmail.get_records(context)) + list(property_call.get_records(context)) + list(property_meeting.get_records(context)) + list(property_task.get_records(context)) + list(property_communication.get_records(context)) + list(super().get_records(context))
-            
+        property_records = (
+            list(property_ticket.get_records(context))
+            + list(property_deal.get_records(context))
+            + list(property_contact.get_records(context))
+            + list(property_company.get_records(context))
+            + list(property_product.get_records(context))
+            + list(property_lineitem.get_records(context))
+            + list(property_email.get_records(context))
+            + list(property_postalmail.get_records(context))
+            + list(property_call.get_records(context))
+            + list(property_meeting.get_records(context))
+            + list(property_task.get_records(context))
+            + list(property_communication.get_records(context))
+            + list(super().get_records(context))
+        )
+
         return property_records
-    
+
+
 class AssociationContactCompanyTypeStream(HubspotStream):
 
     """
@@ -1862,7 +1905,7 @@ class AssociationContactCompanyTypeStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -1881,7 +1924,6 @@ class AssociationContactCompanyTypeStream(HubspotStream):
         Property("category", StringType),
         Property("typeId", IntegerType),
         Property("label", StringType),
-
     ).to_dict()
 
     @property
@@ -1892,7 +1934,7 @@ class AssociationContactCompanyTypeStream(HubspotStream):
         version = self.config.get("api_version_3", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -1913,7 +1955,8 @@ class AssociationContactCompanyTypeStream(HubspotStream):
             results = resp_json
 
         yield from results
-    
+
+
 class AssociationContactCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     """
@@ -1928,7 +1971,7 @@ class AssociationContactCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -1947,19 +1990,20 @@ class AssociationContactCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "contact"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationDealContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -1975,7 +2019,7 @@ class AssociationDealContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -1999,14 +2043,15 @@ class AssociationDealContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationDealContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2022,7 +2067,7 @@ class AssociationDealContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2041,19 +2086,20 @@ class AssociationDealContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationDealCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2069,7 +2115,7 @@ class AssociationDealCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2093,14 +2139,15 @@ class AssociationDealCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationDealCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2116,7 +2163,7 @@ class AssociationDealCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2135,19 +2182,20 @@ class AssociationDealCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "deal"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2163,7 +2211,7 @@ class AssociationTicketContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2187,14 +2235,15 @@ class AssociationTicketContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2210,7 +2259,7 @@ class AssociationTicketContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2229,19 +2278,20 @@ class AssociationTicketContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2257,7 +2307,7 @@ class AssociationTicketCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2281,15 +2331,16 @@ class AssociationTicketCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
-    
+
+
 class AssociationTicketCompanyLabelStream(AssociationContactCompanyTypeStream):
 
     """
@@ -2304,7 +2355,7 @@ class AssociationTicketCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2323,20 +2374,21 @@ class AssociationTicketCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "company"
         except:
             pass
-        
-        return super().post_process(row, context)                                    
-    
+
+        return super().post_process(row, context)
+
+
 class AssociationTicketDealTypeStream(AssociationContactCompanyTypeStream):
 
     """
@@ -2351,7 +2403,7 @@ class AssociationTicketDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2375,15 +2427,16 @@ class AssociationTicketDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
-    
+
+
 class AssociationTicketDealLabelStream(AssociationContactCompanyTypeStream):
 
     """
@@ -2398,7 +2451,7 @@ class AssociationTicketDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2417,19 +2470,20 @@ class AssociationTicketDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "deal"
         except:
             pass
-        
-        return super().post_process(row, context)            
+
+        return super().post_process(row, context)
+
 
 class AssociationTicketCommunicationTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2445,7 +2499,7 @@ class AssociationTicketCommunicationTypeStream(AssociationContactCompanyTypeStre
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2469,14 +2523,15 @@ class AssociationTicketCommunicationTypeStream(AssociationContactCompanyTypeStre
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "communication"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketCommunicationLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2492,7 +2547,7 @@ class AssociationTicketCommunicationLabelStream(AssociationContactCompanyTypeStr
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2511,19 +2566,20 @@ class AssociationTicketCommunicationLabelStream(AssociationContactCompanyTypeStr
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "communication"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketCallTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2539,7 +2595,7 @@ class AssociationTicketCallTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2563,15 +2619,16 @@ class AssociationTicketCallTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "call"
         except:
             pass
-        
+
         return super().post_process(row, context)
-    
+
+
 class AssociationTicketCallLabelStream(AssociationContactCompanyTypeStream):
 
     """
@@ -2586,7 +2643,7 @@ class AssociationTicketCallLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2605,19 +2662,20 @@ class AssociationTicketCallLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "call"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketMeetingTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2633,7 +2691,7 @@ class AssociationTicketMeetingTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2657,14 +2715,15 @@ class AssociationTicketMeetingTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "meeting"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketMeetingLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2680,7 +2739,7 @@ class AssociationTicketMeetingLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2699,19 +2758,20 @@ class AssociationTicketMeetingLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "meeting"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketNoteTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2727,7 +2787,7 @@ class AssociationTicketNoteTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2751,14 +2811,15 @@ class AssociationTicketNoteTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "note"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketNoteLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2774,7 +2835,7 @@ class AssociationTicketNoteLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2793,20 +2854,21 @@ class AssociationTicketNoteLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "note"
         except:
             pass
-        
-        return super().post_process(row, context)                                
-    
+
+        return super().post_process(row, context)
+
+
 class AssociationTicketTaskTypeStream(AssociationContactCompanyTypeStream):
 
     """
@@ -2821,7 +2883,7 @@ class AssociationTicketTaskTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2845,14 +2907,15 @@ class AssociationTicketTaskTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "task"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketTaskLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2868,7 +2931,7 @@ class AssociationTicketTaskLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2887,19 +2950,20 @@ class AssociationTicketTaskLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "task"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketEmailTypeStream(AssociationContactCompanyTypeStream):
 
@@ -2915,7 +2979,7 @@ class AssociationTicketEmailTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -2939,14 +3003,15 @@ class AssociationTicketEmailTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "email"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketEmailLabelStream(AssociationContactCompanyTypeStream):
 
@@ -2962,7 +3027,7 @@ class AssociationTicketEmailLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -2981,19 +3046,20 @@ class AssociationTicketEmailLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "email"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketPostalMailTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3009,7 +3075,7 @@ class AssociationTicketPostalMailTypeStream(AssociationContactCompanyTypeStream)
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3033,14 +3099,15 @@ class AssociationTicketPostalMailTypeStream(AssociationContactCompanyTypeStream)
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "postal_mail"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTicketPostalMailLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3056,7 +3123,7 @@ class AssociationTicketPostalMailLabelStream(AssociationContactCompanyTypeStream
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3075,19 +3142,20 @@ class AssociationTicketPostalMailLabelStream(AssociationContactCompanyTypeStream
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "ticket"
             row["to_object_type"] = "postal_mail"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationLineItemDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3103,7 +3171,7 @@ class AssociationLineItemDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3127,14 +3195,15 @@ class AssociationLineItemDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "line_item"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationLineItemDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3150,7 +3219,7 @@ class AssociationLineItemDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3169,19 +3238,20 @@ class AssociationLineItemDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "line_item"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCommunicationContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3197,7 +3267,7 @@ class AssociationCommunicationContactTypeStream(AssociationContactCompanyTypeStr
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3221,14 +3291,15 @@ class AssociationCommunicationContactTypeStream(AssociationContactCompanyTypeStr
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCommunicationContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3244,7 +3315,7 @@ class AssociationCommunicationContactLabelStream(AssociationContactCompanyTypeSt
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3263,19 +3334,20 @@ class AssociationCommunicationContactLabelStream(AssociationContactCompanyTypeSt
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCommunicationCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3291,7 +3363,7 @@ class AssociationCommunicationCompanyTypeStream(AssociationContactCompanyTypeStr
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3315,14 +3387,15 @@ class AssociationCommunicationCompanyTypeStream(AssociationContactCompanyTypeStr
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCommunicationCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3338,7 +3411,7 @@ class AssociationCommunicationCompanyLabelStream(AssociationContactCompanyTypeSt
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3357,19 +3430,20 @@ class AssociationCommunicationCompanyLabelStream(AssociationContactCompanyTypeSt
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCommunicationDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3385,7 +3459,7 @@ class AssociationCommunicationDealTypeStream(AssociationContactCompanyTypeStream
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3409,14 +3483,15 @@ class AssociationCommunicationDealTypeStream(AssociationContactCompanyTypeStream
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AsociationCommunicationDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3432,7 +3507,7 @@ class AsociationCommunicationDealLabelStream(AssociationContactCompanyTypeStream
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3451,19 +3526,20 @@ class AsociationCommunicationDealLabelStream(AssociationContactCompanyTypeStream
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "communication"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCallContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3479,7 +3555,7 @@ class AssociationCallContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3503,14 +3579,15 @@ class AssociationCallContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCallContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3526,7 +3603,7 @@ class AssociationCallContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3545,19 +3622,20 @@ class AssociationCallContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCallCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3573,7 +3651,7 @@ class AssociationCallCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3597,14 +3675,15 @@ class AssociationCallCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCallCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3620,7 +3699,7 @@ class AssociationCallCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3639,19 +3718,20 @@ class AssociationCallCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCallDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3667,7 +3747,7 @@ class AssociationCallDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3691,14 +3771,15 @@ class AssociationCallDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationCallDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3714,7 +3795,7 @@ class AssociationCallDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3733,20 +3814,21 @@ class AssociationCallDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "call"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
-    
+
+
 class AssociationEmailContactTypeStream(AssociationContactCompanyTypeStream):
 
     """
@@ -3761,7 +3843,7 @@ class AssociationEmailContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3785,14 +3867,15 @@ class AssociationEmailContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationEmailContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3808,7 +3891,7 @@ class AssociationEmailContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3827,19 +3910,20 @@ class AssociationEmailContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationEmailCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3855,7 +3939,7 @@ class AssociationEmailCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3879,14 +3963,15 @@ class AssociationEmailCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationEmailCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3902,7 +3987,7 @@ class AssociationEmailCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -3921,19 +4006,20 @@ class AssociationEmailCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationEmailDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -3949,7 +4035,7 @@ class AssociationEmailDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -3973,14 +4059,15 @@ class AssociationEmailDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationEmailDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -3996,7 +4083,7 @@ class AssociationEmailDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4015,19 +4102,20 @@ class AssociationEmailDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "email"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationMeetingContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4043,7 +4131,7 @@ class AssociationMeetingContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4067,15 +4155,16 @@ class AssociationMeetingContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "contact"
         except:
             pass
-        
-        return super().post_process(row, context)                            
-                                                                                    
+
+        return super().post_process(row, context)
+
+
 class AssociationMeetingContactLabelStream(AssociationContactCompanyTypeStream):
 
     """
@@ -4090,7 +4179,7 @@ class AssociationMeetingContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4109,15 +4198,16 @@ class AssociationMeetingContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationMeetingCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4133,7 +4223,7 @@ class AssociationMeetingCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4157,14 +4247,15 @@ class AssociationMeetingCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationMeetingCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4180,7 +4271,7 @@ class AssociationMeetingCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4199,19 +4290,20 @@ class AssociationMeetingCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationMeetingDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4227,7 +4319,7 @@ class AssociationMeetingDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4251,14 +4343,15 @@ class AssociationMeetingDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationMeetingDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4274,7 +4367,7 @@ class AssociationMeetingDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4293,20 +4386,21 @@ class AssociationMeetingDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "meeting"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
-    
+
+
 class AssociationNoteContactTypeStream(AssociationContactCompanyTypeStream):
 
     """
@@ -4321,7 +4415,7 @@ class AssociationNoteContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4345,14 +4439,15 @@ class AssociationNoteContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationNoteContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4368,7 +4463,7 @@ class AssociationNoteContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4387,19 +4482,20 @@ class AssociationNoteContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationNoteCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4415,7 +4511,7 @@ class AssociationNoteCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4439,14 +4535,15 @@ class AssociationNoteCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationNoteCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4462,7 +4559,7 @@ class AssociationNoteCompanyLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4481,19 +4578,20 @@ class AssociationNoteCompanyLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssoxationNoteDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4509,7 +4607,7 @@ class AssoxationNoteDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4533,14 +4631,15 @@ class AssoxationNoteDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationNoteDealLabel(AssociationContactCompanyTypeStream):
 
@@ -4556,7 +4655,7 @@ class AssociationNoteDealLabel(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4575,19 +4674,20 @@ class AssociationNoteDealLabel(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "note"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTaskContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4603,7 +4703,7 @@ class AssociationTaskContactTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4627,14 +4727,15 @@ class AssociationTaskContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTaskContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4650,7 +4751,7 @@ class AssociationTaskContactLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4669,19 +4770,20 @@ class AssociationTaskContactLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTaskCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4697,7 +4799,7 @@ class AssociationTaskCompanyTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4721,14 +4823,15 @@ class AssociationTaskCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTaskCompanyLabelstream(AssociationContactCompanyTypeStream):
 
@@ -4744,7 +4847,7 @@ class AssociationTaskCompanyLabelstream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4763,19 +4866,20 @@ class AssociationTaskCompanyLabelstream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTaskDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4791,7 +4895,7 @@ class AssociationTaskDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4815,14 +4919,15 @@ class AssociationTaskDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationTaskDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4838,7 +4943,7 @@ class AssociationTaskDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4857,19 +4962,20 @@ class AssociationTaskDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "task"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationPostalMailContactTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4885,7 +4991,7 @@ class AssociationPostalMailContactTypeStream(AssociationContactCompanyTypeStream
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -4909,14 +5015,15 @@ class AssociationPostalMailContactTypeStream(AssociationContactCompanyTypeStream
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationPostalMailContactLabelStream(AssociationContactCompanyTypeStream):
 
@@ -4932,7 +5039,7 @@ class AssociationPostalMailContactLabelStream(AssociationContactCompanyTypeStrea
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -4951,19 +5058,20 @@ class AssociationPostalMailContactLabelStream(AssociationContactCompanyTypeStrea
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "contact"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationPostalMailCompanyTypeStream(AssociationContactCompanyTypeStream):
 
@@ -4979,7 +5087,7 @@ class AssociationPostalMailCompanyTypeStream(AssociationContactCompanyTypeStream
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -5003,14 +5111,15 @@ class AssociationPostalMailCompanyTypeStream(AssociationContactCompanyTypeStream
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationPostalMailCompanyLabelStream(AssociationContactCompanyTypeStream):
 
@@ -5026,7 +5135,7 @@ class AssociationPostalMailCompanyLabelStream(AssociationContactCompanyTypeStrea
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -5045,19 +5154,20 @@ class AssociationPostalMailCompanyLabelStream(AssociationContactCompanyTypeStrea
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "company"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationPostalMailDealTypeStream(AssociationContactCompanyTypeStream):
 
@@ -5073,7 +5183,7 @@ class AssociationPostalMailDealTypeStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 id, name
               """
@@ -5097,14 +5207,15 @@ class AssociationPostalMailDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
+
 
 class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
 
@@ -5120,7 +5231,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-    
+
     columns = """
                 category, typeId, label
               """
@@ -5139,24 +5250,23 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
         version = self.config.get("api_version_4", "")
         base_url = "https://api.hubapi.com/crm/{}".format(version)
         return base_url
-    
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
         """
-        
+
         try:
             row["from_object_type"] = "postal_mail"
             row["to_object_type"] = "deal"
         except:
             pass
-        
+
         return super().post_process(row, context)
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
-
         """
-        We have type and label api for id and name column and type and label api for category, typeId, and label columns 
+        We have type and label api for id and name column and type and label api for category, typeId, and label columns
         We can get data from these api and merge these columns from type and label api with merge_dicts function, we can add the records from merge_dicts function to get the output
         """
 
@@ -5331,9 +5441,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
         note_deal_type = AssoxationNoteDealTypeStream(
             self._tap, schema={"properties": {}}
         )
-        note_deal_label = AssociationNoteDealLabel(
-            self._tap, schema={"properties": {}}
-        )
+        note_deal_label = AssociationNoteDealLabel(self._tap, schema={"properties": {}})
         task_contact_type = AssociationTaskContactTypeStream(
             self._tap, schema={"properties": {}}
         )
@@ -5372,7 +5480,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(contact_company_type.get_records(context)),
-                list(contact_company_label.get_records(context))
+                list(contact_company_label.get_records(context)),
             )
         ]
 
@@ -5380,7 +5488,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(deal_contact_type.get_records(context)),
-                list(deal_contact_label.get_records(context))
+                list(deal_contact_label.get_records(context)),
             )
         ]
 
@@ -5388,7 +5496,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(deal_company_type.get_records(context)),
-                list(deal_company_label.get_records(context))
+                list(deal_company_label.get_records(context)),
             )
         ]
 
@@ -5396,7 +5504,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_contact_type.get_records(context)),
-                list(ticket_contact_label.get_records(context))
+                list(ticket_contact_label.get_records(context)),
             )
         ]
 
@@ -5404,7 +5512,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_company_type.get_records(context)),
-                list(ticket_company_label.get_records(context))
+                list(ticket_company_label.get_records(context)),
             )
         ]
 
@@ -5412,7 +5520,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_deal_type.get_records(context)),
-                list(ticket_deal_label.get_records(context))
+                list(ticket_deal_label.get_records(context)),
             )
         ]
 
@@ -5420,7 +5528,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_communication_type.get_records(context)),
-                list(ticket_communication_label.get_records(context))
+                list(ticket_communication_label.get_records(context)),
             )
         ]
 
@@ -5428,7 +5536,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_call_type.get_records(context)),
-                list(ticket_call_label.get_records(context))
+                list(ticket_call_label.get_records(context)),
             )
         ]
 
@@ -5436,7 +5544,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_meeting_type.get_records(context)),
-                list(ticket_meeting_label.get_records(context))
+                list(ticket_meeting_label.get_records(context)),
             )
         ]
 
@@ -5444,7 +5552,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_note_type.get_records(context)),
-                list(ticket_note_label.get_records(context))
+                list(ticket_note_label.get_records(context)),
             )
         ]
 
@@ -5452,7 +5560,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_task_type.get_records(context)),
-                list(ticket_task_label.get_records(context))
+                list(ticket_task_label.get_records(context)),
             )
         ]
 
@@ -5460,7 +5568,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_email_type.get_records(context)),
-                list(ticket_email_label.get_records(context))
+                list(ticket_email_label.get_records(context)),
             )
         ]
 
@@ -5468,7 +5576,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(ticket_postal_type.get_records(context)),
-                list(ticket_postal_label.get_records(context))
+                list(ticket_postal_label.get_records(context)),
             )
         ]
 
@@ -5476,7 +5584,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(line_deal_type.get_records(context)),
-                list(line_deal_label.get_records(context))
+                list(line_deal_label.get_records(context)),
             )
         ]
 
@@ -5484,7 +5592,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(communication_contact_type.get_records(context)),
-                list(communication_contact_label.get_records(context))
+                list(communication_contact_label.get_records(context)),
             )
         ]
 
@@ -5492,7 +5600,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(communication_company_type.get_records(context)),
-                list(communication_company_label.get_records(context))
+                list(communication_company_label.get_records(context)),
             )
         ]
 
@@ -5500,7 +5608,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(communication_deal_type.get_records(context)),
-                list(communication_deal_label.get_records(context))
+                list(communication_deal_label.get_records(context)),
             )
         ]
 
@@ -5508,7 +5616,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(call_contact_type.get_records(context)),
-                list(call_contact_label.get_records(context))
+                list(call_contact_label.get_records(context)),
             )
         ]
 
@@ -5516,7 +5624,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(call_company_type.get_records(context)),
-                list(call_company_label.get_records(context))
+                list(call_company_label.get_records(context)),
             )
         ]
 
@@ -5524,7 +5632,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(call_deal_type.get_records(context)),
-                list(call_deal_label.get_records(context))
+                list(call_deal_label.get_records(context)),
             )
         ]
 
@@ -5532,7 +5640,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(email_contact_type.get_records(context)),
-                list(email_contact_label.get_records(context))
+                list(email_contact_label.get_records(context)),
             )
         ]
 
@@ -5540,7 +5648,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(email_company_type.get_records(context)),
-                list(email_company_label.get_records(context))
+                list(email_company_label.get_records(context)),
             )
         ]
 
@@ -5548,7 +5656,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(email_deal_type.get_records(context)),
-                list(email_deal_label.get_records(context))
+                list(email_deal_label.get_records(context)),
             )
         ]
 
@@ -5556,7 +5664,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(meeting_contact_type.get_records(context)),
-                list(meeting_contact_label.get_records(context))
+                list(meeting_contact_label.get_records(context)),
             )
         ]
 
@@ -5564,7 +5672,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(meeting_company_type.get_records(context)),
-                list(meeting_company_label.get_records(context))
+                list(meeting_company_label.get_records(context)),
             )
         ]
 
@@ -5572,7 +5680,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(meeting_deal_type.get_records(context)),
-                list(meeting_deal_label.get_records(context))
+                list(meeting_deal_label.get_records(context)),
             )
         ]
 
@@ -5580,7 +5688,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(note_contact_type.get_records(context)),
-                list(note_contact_label.get_records(context))
+                list(note_contact_label.get_records(context)),
             )
         ]
 
@@ -5588,7 +5696,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(note_company_type.get_records(context)),
-                list(note_company_label.get_records(context))
+                list(note_company_label.get_records(context)),
             )
         ]
 
@@ -5596,7 +5704,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(note_deal_type.get_records(context)),
-                list(note_deal_label.get_records(context))
+                list(note_deal_label.get_records(context)),
             )
         ]
 
@@ -5604,7 +5712,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(task_contact_type.get_records(context)),
-                list(task_contact_label.get_records(context))
+                list(task_contact_label.get_records(context)),
             )
         ]
 
@@ -5612,7 +5720,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(task_company_type.get_records(context)),
-                list(task_company_label.get_records(context))
+                list(task_company_label.get_records(context)),
             )
         ]
 
@@ -5620,7 +5728,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(task_deal_type.get_records(context)),
-                list(task_deal_label.get_records(context))
+                list(task_deal_label.get_records(context)),
             )
         ]
 
@@ -5628,7 +5736,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(postal_contact_type.get_records(context)),
-                list(postal_contact_label.get_records(context))
+                list(postal_contact_label.get_records(context)),
             )
         ]
 
@@ -5636,7 +5744,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(postal_company_type.get_records(context)),
-                list(postal_company_label.get_records(context))
+                list(postal_company_label.get_records(context)),
             )
         ]
 
@@ -5644,11 +5752,47 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
             self.merge_dicts(x, y)
             for x, y in zip(
                 list(postal_deal_type.get_records(context)),
-                list(super().get_records(context))
+                list(super().get_records(context)),
             )
         ]
 
-        association_records  = contact_company_records + deal_contact_records + deal_company_records + ticket_contact_records + ticket_company_records + ticket_deal_records + ticket_communication_records + ticket_call_records + ticket_meeting_records + ticket_note_records + ticket_task_records + ticket_email_records + ticket_postal_records + line_deal_records + communication_contact_records + communication_company_records + communication_deal_records + call_contact_records + call_company_records + call_deal_records + email_contact_records + email_company_records + email_deal_records + meeting_contact_records + meeting_company_records + meeting_deal_records + note_contact_records + note_company_records + note_deal_records + task_contact_records + task_company_records + task_deal_records + postal_contact_records + postal_company_records + postal_deal_records
+        association_records = (
+            contact_company_records
+            + deal_contact_records
+            + deal_company_records
+            + ticket_contact_records
+            + ticket_company_records
+            + ticket_deal_records
+            + ticket_communication_records
+            + ticket_call_records
+            + ticket_meeting_records
+            + ticket_note_records
+            + ticket_task_records
+            + ticket_email_records
+            + ticket_postal_records
+            + line_deal_records
+            + communication_contact_records
+            + communication_company_records
+            + communication_deal_records
+            + call_contact_records
+            + call_company_records
+            + call_deal_records
+            + email_contact_records
+            + email_company_records
+            + email_deal_records
+            + meeting_contact_records
+            + meeting_company_records
+            + meeting_deal_records
+            + note_contact_records
+            + note_company_records
+            + note_deal_records
+            + task_contact_records
+            + task_company_records
+            + task_deal_records
+            + postal_contact_records
+            + postal_company_records
+            + postal_deal_records
+        )
 
         return association_records
 
@@ -5661,5 +5805,3 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
         for dictionary in dict_args:
             result.update(dictionary)
         return result
-                                                                            
-                                                                                                        

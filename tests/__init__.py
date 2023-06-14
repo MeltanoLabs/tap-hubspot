@@ -1,1 +1,1 @@
-"""Test suite for tap-hubspot-sdk."""
+"""Test suite for tap-linkedin-ads."""

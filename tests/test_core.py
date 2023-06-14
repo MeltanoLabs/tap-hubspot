@@ -2,7 +2,7 @@
 
 from singer_sdk.testing import SuiteConfig, get_tap_test_class
 
-from tap_hubspot_sdk.tap import TapHubspot
+from tap_hubspot.tap import TapHubspot
 
 SAMPLE_CONFIG = {
     "start_date": "2023-01-01T00:00:00Z",

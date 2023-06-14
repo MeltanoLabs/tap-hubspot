@@ -1,6 +1,6 @@
-# tap-hubspot-sdk
+# tap-hubspot
 
-`tap-hubspot-sdk` is a Singer tap for tap-hubspot-sdk.
+`tap-hubspot` is a Singer tap for tap-hubspot.
 
 Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
@@ -34,7 +34,7 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 ### Meltano Variables
 
 The following config values need to be set in order to use with Meltano. These can be set in `meltano.yml`, via
-```meltano config tap-hubspot-sdk set --interactive```, or via the env var mappings shown above.
+```meltano config tap-hubspot set --interactive```, or via the env var mappings shown above.
 
 - `access_token:` access token from TAP_HUBSPOT_ACCESS_TOKEN variable
 - `start_date:` start date
@@ -47,7 +47,7 @@ The following config values need to be set in order to use with Meltano. These c
 A full list of supported settings and capabilities for this tap is available by running:
 
 ```bash
-tap-hubspot-sdk --about
+tap-hubspot --about
 ```
 
 ## Elastic License 2.0
@@ -57,7 +57,7 @@ The licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensa
 ## Installation
 
 ```bash
-pipx install git+https://github.com/ryan-miranda-partners/tap-hubspot-sdk.git
+pipx install git+https://github.com/ryan-miranda-partners/tap-hubspot.git
 ```
 
 ### Configure using environment variables
@@ -72,7 +72,7 @@ A Hubspot access token is required to make API requests. (See [Hubspot API](http
 
 ## Usage
 
-You can easily run `tap-hubspot-sdk` by itself or in a pipeline using [Meltano](https://meltano.com/).
+You can easily run `tap-hubspot` by itself or in a pipeline using [Meltano](https://meltano.com/).
 
 ## Stream Inheritance
 
@@ -81,9 +81,9 @@ This project uses parent-child streams. Learn more about them [here](https://git
 ### Executing the Tap Directly
 
 ```bash
-tap-hubspot-sdk --version
-tap-hubspot-sdk --help
-tap-hubspot-sdk --config CONFIG --discover > ./catalog.json
+tap-hubspot --version
+tap-hubspot --help
+tap-hubspot --config CONFIG --discover > ./catalog.json
 ```
 
 ## Developer Resources
@@ -106,10 +106,10 @@ Create tests within the `tests` subfolder and
 poetry run pytest
 ```
 
-You can also test the `tap-hubspot-sdk` CLI interface directly using `poetry run`:
+You can also test the `tap-hubspot` CLI interface directly using `poetry run`:
 
 ```bash
-poetry run tap-hubspot-sdk --help
+poetry run tap-hubspot --help
 ```
 
 ### Testing with [Meltano](https://www.meltano.com)
@@ -126,7 +126,7 @@ Next, install Meltano (if you haven't already) and any needed plugins:
 # Install meltano
 pipx install meltano
 # Initialize meltano within this directory
-cd tap-hubspot-sdk
+cd tap-hubspot
 meltano install
 ```
 
@@ -134,9 +134,9 @@ Now you can test and orchestrate using Meltano:
 
 ```bash
 # Test invocation:
-meltano invoke tap-hubspot-sdk --version
+meltano invoke tap-hubspot --version
 # OR run a test `elt` pipeline:
-meltano elt tap-hubspot-sdk target-jsonl
+meltano elt tap-hubspot target-jsonl
 ```
 
 ### SDK Dev Guide

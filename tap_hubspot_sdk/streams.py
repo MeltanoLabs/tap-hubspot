@@ -424,7 +424,7 @@ class TicketPipelineStream(HubspotStream):
         Property("pipelineId", StringType),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
-        Property("default", StringType),
+        Property("default", BooleanType),
     ).to_dict()
 
     @property
@@ -516,7 +516,7 @@ class DealPipelineStream(HubspotStream):
         Property("pipelineId", StringType),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
-        Property("default", StringType),
+        Property("default", BooleanType),
     ).to_dict()
 
     @property
@@ -604,7 +604,7 @@ class EmailSubscriptionStream(HubspotStream):
         Property("name", StringType),
         Property("description", StringType),
         Property("active", BooleanType),
-        Property("internal", StringType),
+        Property("internal", BooleanType),
         Property("category", StringType),
         Property("channel", StringType),
         Property("internalName", StringType),

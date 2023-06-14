@@ -58,5 +58,10 @@ jobs:
       continue-on-error: true
       env:
          access_token: ${{ secrets.access_token }}
+         api_version_1: ${{ secrets.api_version_1 }}
+         api_version_2: ${{ secrets.api_version_2 }}
+         api_version_3: ${{ secrets.api_version_3 }}
+         api_version_4: ${{ secrets.api_version_4 }}
+         auth_type: ${{ secrets.auth_type }}
       run: |
         poetry run pytest --capture=no

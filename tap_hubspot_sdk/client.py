@@ -11,8 +11,6 @@ from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator
 from singer_sdk.streams import RESTStream
 
-from tap_hubspot_sdk.auth import tapHubspotAuthenticator
-
 if sys.version_info >= (3, 8):
     from functools import cached_property
 else:

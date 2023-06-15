@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "tap-hubspot-sdk"
+name = "tap-hubspot"
 version = "0.0.1"
-description = "`tap-hubspot-sdk` is a Singer tap for tap-hubspot-sdk, built with the Meltano Singer SDK."
+description = "`tap-hubspot` is a Singer tap for tap-hubspot, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Ethan Stein"]
 keywords = [
     "ELT",
-    "tap-hubspot-sdk",
+    "tap-hubspot",
 ]
 license = "Apache 2.0"
 
@@ -41,14 +41,14 @@ ignore = [
     "ANN102",  # missing-type-cls
 ]
 select = ["ALL"]
-src = ["tap_hubspot_sdk"]
+src = ["tap_hubspot"]
 target-version = "py37"
 
 [tool.ruff.flake8-annotations]
 allow-star-arg-any = true
 
 [tool.ruff.isort]
-known-first-party = ["tap_hubspot_sdk"]
+known-first-party = ["tap_hubspot"]
 
 [tool.ruff.pydocstyle]
 convention = "google"
@@ -59,4 +59,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 # CLI declaration
-tap-hubspot-sdk = 'tap_hubspot_sdk.tap:TapHubspot.cli'
+tap-hubspot = 'tap_hubspot.tap:TapHubspot.cli'

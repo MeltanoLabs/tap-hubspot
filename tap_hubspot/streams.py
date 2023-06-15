@@ -1,4 +1,4 @@
-"""Stream type classes for tap-hubspot-sdk."""
+"""Stream type classes for tap-hubspot."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from pathlib import Path
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_hubspot_sdk.client import HubspotStream
+from tap_hubspot.client import HubspotStream
 
 PropertiesList = th.PropertiesList
 Property = th.Property

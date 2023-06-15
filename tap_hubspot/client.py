@@ -27,7 +27,7 @@ _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
 
 class HubspotStream(RESTStream):
-    """tap-hubspot-sdk stream class."""
+    """tap-hubspot stream class."""
 
     @property
     def url_base(self) -> str:

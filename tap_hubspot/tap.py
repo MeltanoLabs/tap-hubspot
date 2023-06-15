@@ -1,17 +1,17 @@
-"""tap-hubspot-sdk tap class."""
+"""tap-hubspot tap class."""
 
 from __future__ import annotations
 
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-from tap_hubspot_sdk import streams
+from tap_hubspot import streams
 
 
 class TapHubspot(Tap):
-    """tap-hubspot-sdk tap class."""
+    """tap-hubspot tap class."""
 
-    name = "tap-hubspot-sdk"
+    name = "tap-hubspot"
 
     config_jsonschema = th.PropertiesList(
         th.Property(

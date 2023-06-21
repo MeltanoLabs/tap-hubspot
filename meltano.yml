@@ -21,14 +21,6 @@ plugins:
       value: '2023-01-01T00:00:00Z'
     - name: end_date
       value: '2023-05-22T00:00:00Z'
-    - name: api_version_1
-      value: 'v1'
-    - name: api_version_2
-      value: 'v2'
-    - name: api_version_3
-      value: 'v3'  
-    - name: api_version_4
-      value: 'v4'
     - name: auth_type
       value: 'oauth'      
   loaders:

@@ -20,10 +20,6 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 | Setting             | Required | Default | Description |
 |:--------------------|:--------:|:-------:|:------------|
 | access_token        | True     | None    | The token to authenticate against the API service |
-| api_version_1       | True    | v1.0    | The API version to request data from. |
-| api_version_2       | True    | v2.0    | The API version to request data from. |
-| api_version_3       | True    | v3.0    | The API version to request data from. |
-| api_version_4       | True    | v4.0    | The API version to request data from. |
 | start_date          | False    | None    | The earliest record date to sync |
 | end_date            | False    | None    | The latest record date to sync |
 | stream_maps         | False    | None    | Config object for stream maps capability. For more information check out [Stream Maps](https://sdk.meltano.com/en/latest/stream_maps.html). |
@@ -39,10 +35,6 @@ The following config values need to be set in order to use with Meltano. These c
 - `access_token:` access token from TAP_HUBSPOT_ACCESS_TOKEN variable
 - `start_date:` start date
 - `end_date:` end_date
-- `api_version_1:` api version
-- `api_version_2:` api version
-- `api_version_3:` api version
-- `api_version_4:` api version
 
 A full list of supported settings and capabilities for this tap is available by running:
 

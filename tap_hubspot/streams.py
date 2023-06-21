@@ -113,8 +113,7 @@ class ListsStream(HubspotStream):
         """
         Returns an updated path which has the api version
         """
-        version = self.config.get("api_version_1", "")
-        base_url = "https://api.hubapi.com/contacts/{}".format(version)
+        base_url = "https://api.hubapi.com/contacts/v1"
         return base_url
 
     def get_url_params(
@@ -250,8 +249,7 @@ class UsersStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/settings/{}".format(version)
+        base_url = "https://api.hubapi.com/settings/v3"
         return base_url
 
     def get_url_params(
@@ -340,8 +338,7 @@ class OwnersStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def get_url_params(
@@ -432,8 +429,7 @@ class TicketPipelineStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_1", "")
-        base_url = "https://api.hubapi.com/crm-pipelines/{}".format(version)
+        base_url = "https://api.hubapi.com/crm-pipelines/v1"
         return base_url
 
     def get_url_params(
@@ -524,8 +520,7 @@ class DealPipelineStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_1", "")
-        base_url = "https://api.hubapi.com/crm-pipelines/{}".format(version)
+        base_url = "https://api.hubapi.com/crm-pipelines/v1"
         return base_url
 
     def get_url_params(
@@ -616,8 +611,7 @@ class EmailSubscriptionStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_1", "")
-        base_url = "https://api.hubapi.com/email/public/{}".format(version)
+        base_url = "https://api.hubapi.com/email/public/v1"
         return base_url
 
     def get_url_params(
@@ -717,8 +711,7 @@ class PropertyTicketStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def get_url_params(
@@ -828,8 +821,7 @@ class PropertyDealStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -918,8 +910,7 @@ class PropertyContactStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1008,8 +999,7 @@ class PropertyCompanyStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1098,8 +1088,7 @@ class PropertyProductStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1188,8 +1177,7 @@ class PropertyLineItemStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1278,8 +1266,7 @@ class PropertyEmailStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1368,8 +1355,7 @@ class PropertyPostalMailStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1458,8 +1444,7 @@ class PropertyCallStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1548,8 +1533,7 @@ class PropertyMeetingStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1638,8 +1622,7 @@ class PropertyTaskStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1728,8 +1711,7 @@ class PropertyCommunicationStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1818,8 +1800,7 @@ class PropertyNotesStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1931,8 +1912,7 @@ class AssociationContactCompanyTypeStream(HubspotStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -1987,8 +1967,7 @@ class AssociationContactCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2035,8 +2014,7 @@ class AssociationDealContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2083,8 +2061,7 @@ class AssociationDealContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2131,8 +2108,7 @@ class AssociationDealCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2179,8 +2155,7 @@ class AssociationDealCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2227,8 +2202,7 @@ class AssociationTicketContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2275,8 +2249,7 @@ class AssociationTicketContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2323,8 +2296,7 @@ class AssociationTicketCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2371,8 +2343,7 @@ class AssociationTicketCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2419,8 +2390,7 @@ class AssociationTicketDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2467,8 +2437,7 @@ class AssociationTicketDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2515,8 +2484,7 @@ class AssociationTicketCommunicationTypeStream(AssociationContactCompanyTypeStre
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2563,8 +2531,7 @@ class AssociationTicketCommunicationLabelStream(AssociationContactCompanyTypeStr
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2611,8 +2578,7 @@ class AssociationTicketCallTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2659,8 +2625,7 @@ class AssociationTicketCallLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2707,8 +2672,7 @@ class AssociationTicketMeetingTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2755,8 +2719,7 @@ class AssociationTicketMeetingLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2803,8 +2766,7 @@ class AssociationTicketNoteTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2851,8 +2813,7 @@ class AssociationTicketNoteLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2899,8 +2860,7 @@ class AssociationTicketTaskTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2947,8 +2907,7 @@ class AssociationTicketTaskLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -2995,8 +2954,7 @@ class AssociationTicketEmailTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3043,8 +3001,7 @@ class AssociationTicketEmailLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3091,8 +3048,7 @@ class AssociationTicketPostalMailTypeStream(AssociationContactCompanyTypeStream)
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3139,8 +3095,7 @@ class AssociationTicketPostalMailLabelStream(AssociationContactCompanyTypeStream
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3187,8 +3142,7 @@ class AssociationLineItemDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3235,8 +3189,7 @@ class AssociationLineItemDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3283,8 +3236,7 @@ class AssociationCommunicationContactTypeStream(AssociationContactCompanyTypeStr
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3331,8 +3283,7 @@ class AssociationCommunicationContactLabelStream(AssociationContactCompanyTypeSt
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3379,8 +3330,7 @@ class AssociationCommunicationCompanyTypeStream(AssociationContactCompanyTypeStr
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3427,8 +3377,7 @@ class AssociationCommunicationCompanyLabelStream(AssociationContactCompanyTypeSt
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3475,8 +3424,7 @@ class AssociationCommunicationDealTypeStream(AssociationContactCompanyTypeStream
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3523,8 +3471,7 @@ class AsociationCommunicationDealLabelStream(AssociationContactCompanyTypeStream
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3571,8 +3518,7 @@ class AssociationCallContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3619,8 +3565,7 @@ class AssociationCallContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3667,8 +3612,7 @@ class AssociationCallCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3715,8 +3659,7 @@ class AssociationCallCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3763,8 +3706,7 @@ class AssociationCallDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3811,8 +3753,7 @@ class AssociationCallDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3859,8 +3800,7 @@ class AssociationEmailContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3907,8 +3847,7 @@ class AssociationEmailContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -3955,8 +3894,7 @@ class AssociationEmailCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4003,8 +3941,7 @@ class AssociationEmailCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4051,8 +3988,7 @@ class AssociationEmailDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4099,8 +4035,7 @@ class AssociationEmailDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4147,8 +4082,7 @@ class AssociationMeetingContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4195,8 +4129,7 @@ class AssociationMeetingContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4239,8 +4172,7 @@ class AssociationMeetingCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4287,8 +4219,7 @@ class AssociationMeetingCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4335,8 +4266,7 @@ class AssociationMeetingDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4383,8 +4313,7 @@ class AssociationMeetingDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4431,8 +4360,7 @@ class AssociationNoteContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4479,8 +4407,7 @@ class AssociationNoteContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4527,8 +4454,7 @@ class AssociationNoteCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4575,8 +4501,7 @@ class AssociationNoteCompanyLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4623,8 +4548,7 @@ class AssoxationNoteDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4671,8 +4595,7 @@ class AssociationNoteDealLabel(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4719,8 +4642,7 @@ class AssociationTaskContactTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4767,8 +4689,7 @@ class AssociationTaskContactLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4815,8 +4736,7 @@ class AssociationTaskCompanyTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4863,8 +4783,7 @@ class AssociationTaskCompanyLabelstream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4911,8 +4830,7 @@ class AssociationTaskDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -4959,8 +4877,7 @@ class AssociationTaskDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -5007,8 +4924,7 @@ class AssociationPostalMailContactTypeStream(AssociationContactCompanyTypeStream
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -5055,8 +4971,7 @@ class AssociationPostalMailContactLabelStream(AssociationContactCompanyTypeStrea
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -5103,8 +5018,7 @@ class AssociationPostalMailCompanyTypeStream(AssociationContactCompanyTypeStream
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -5151,8 +5065,7 @@ class AssociationPostalMailCompanyLabelStream(AssociationContactCompanyTypeStrea
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -5199,8 +5112,7 @@ class AssociationPostalMailDealTypeStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_3", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -5247,8 +5159,7 @@ class AssociationPostalMailDealLabelStream(AssociationContactCompanyTypeStream):
         """
         Returns an updated which has the api version
         """
-        version = self.config.get("api_version_4", "")
-        base_url = "https://api.hubapi.com/crm/{}".format(version)
+        base_url = "https://api.hubapi.com/crm/v4"
         return base_url
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:

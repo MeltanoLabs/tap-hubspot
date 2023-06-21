@@ -59,22 +59,6 @@ class HubspotStream(RESTStream):
                 token=access_token,
             )
 
-        elif auth_type == "simple":
-            return SimpleAuthenticator(
-                self,
-                auth_headers={
-                    "Authorization": "Bearer {}".format(access_token),
-                },
-            )
-
-        elif auth_type == "api":
-            APIAuthenticatorBase.auth_headers = {
-                "Authorization": "Bearer {}".format(access_token),
-            }
-            return APIAuthenticatorBase(
-                self,
-            )
-
     @property
     def http_headers(self) -> dict:
         """Return the http headers needed.

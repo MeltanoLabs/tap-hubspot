@@ -18,8 +18,6 @@ else:
 
 from singer_sdk.authenticators import (
     BearerTokenAuthenticator,
-    SimpleAuthenticator,
-    APIAuthenticatorBase,
 )
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
@@ -51,13 +49,11 @@ class HubspotStream(RESTStream):
         """
 
         access_token = self.config.get("access_token")
-        auth_type = self.config.get("auth_type")
 
-        if auth_type == "oauth":
-            return BearerTokenAuthenticator.create_for_stream(
-                self,
-                token=access_token,
-            )
+        return BearerTokenAuthenticator.create_for_stream(
+            self,
+            token=access_token,
+        )
 
     @property
     def http_headers(self) -> dict:

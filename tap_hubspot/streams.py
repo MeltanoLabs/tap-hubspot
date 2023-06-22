@@ -1870,4 +1870,3 @@ class PropertyNotesStream(HubspotStream):
         )
 
         return property_records
-

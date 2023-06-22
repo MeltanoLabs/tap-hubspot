@@ -55,6 +55,5 @@ jobs:
       continue-on-error: true
       env:
          access_token: ${{ secrets.access_token }}
-         auth_type: ${{ secrets.auth_type }}
       run: |
         poetry run pytest --capture=no

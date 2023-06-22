@@ -17,6 +17,7 @@ class TapHubspot(Tap):
         th.Property(
             "access_token",
             th.StringType,
+            required=True,
             description="The token to authenticate against the API service",
         ),
         th.Property(

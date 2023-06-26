@@ -234,8 +234,6 @@ class UsersStream(HubspotStream):
     name = "users"
     path = "/users?fields={}".format(columns)
     primary_keys = ["id"]
-    # replication_key = "LastModifiedDate"
-    # replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),

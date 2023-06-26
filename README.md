@@ -27,14 +27,6 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 | flattening_enabled  | False    | None    | 'True' to enable schema flattening and automatically expand nested properties. |
 | flattening_max_depth| False    | None    | The max depth to flatten schemas. |
 
-### Meltano Variables
-
-The following config values need to be set in order to use with Meltano. These can be set in `meltano.yml`, via
-```meltano config tap-hubspot set --interactive```, or via the env var mappings shown above.
-
-- `access_token:` access token from TAP_HUBSPOT_ACCESS_TOKEN variable
-- `start_date:` start date
-- `end_date:` end_date
 
 A full list of supported settings and capabilities for this tap is available by running:
 

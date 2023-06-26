@@ -21,7 +21,6 @@ from singer_sdk.authenticators import (
 )
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
-# SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class HubspotStream(RESTStream):

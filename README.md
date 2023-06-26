@@ -1,6 +1,6 @@
 # tap-hubspot
 
-`tap-hubspot` is a Singer tap for tap-hubspot.
+`tap-hubspot` is a Singer tap for Hubspot.
 
 Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 

@@ -1,1 +1,1 @@
-"""Tap for tap-hubspot."""
+"""Tap for Hubspot."""

@@ -20,9 +20,7 @@ plugins:
     - name: start_date
       value: '2023-01-01T00:00:00Z'
     - name: end_date
-      value: '2023-05-22T00:00:00Z'
-    - name: auth_type
-      value: 'oauth'      
+      value: '2023-05-22T00:00:00Z'      
   loaders:
   - name: target-jsonl
     variant: andyh1203

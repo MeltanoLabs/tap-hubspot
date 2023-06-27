@@ -18,7 +18,7 @@ BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
 
-class ListsStream(HubspotStream):
+class ContactStream(HubspotStream):
 
     """
     https://legacydocs.hubspot.com/docs/methods/lists/get_lists

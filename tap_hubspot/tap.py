@@ -34,13 +34,14 @@ class TapHubspot(Tap):
             A list of discovered streams.
         """
         return [
-            streams.ContactStream(self),
-            streams.UsersStream(self),
-            streams.OwnersStream(self),
-            streams.TicketPipelineStream(self),
-            streams.DealPipelineStream(self),
-            streams.EmailSubscriptionStream(self),
-            streams.PropertyNotesStream(self),
+            #streams.ContactStream(self),
+            #streams.UsersStream(self),
+            #streams.OwnersStream(self),
+            #streams.TicketPipelineStream(self),
+            #streams.DealPipelineStream(self),
+            #streams.EmailSubscriptionStream(self),
+            #streams.PropertyNotesStream(self),
+            streams.CompanyStream(self),
         ]
 
 

@@ -1885,7 +1885,7 @@ class CompanyStream(HubspotStream):
     """
 
     columns = """
-                id, email, roleIds, primaryteamid
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "companies"
@@ -1983,7 +1983,7 @@ class DealStream(HubspotStream):
     """
 
     columns = """
-                id, email, roleIds, primaryteamid
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "deals"
@@ -2078,7 +2078,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     """
 
     columns = """
-                id, email, roleIds, primaryteamid
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "feedbacksubmissions"
@@ -2174,7 +2174,7 @@ class LineItemStream(HubspotStream):
     """
 
     columns = """
-                id, createdate, hs_lastmodifieddate, hs_product_id, hs_recurring_billing_period, name, price, quantity, recurringbillingfrequency, createdAt, updatedAt, archived
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "lineitems"

@@ -48,6 +48,7 @@ class TapHubspot(Tap):
             streams.ProductStream(self),
             streams.TicketStream(self),
             streams.QuoteStream(self),
+            streams.GoalStream(self),
         ]
 
 

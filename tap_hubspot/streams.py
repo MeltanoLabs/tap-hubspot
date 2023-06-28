@@ -224,7 +224,6 @@ class UsersStream(HubspotStream):
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
     """
 
     columns = """
@@ -578,7 +577,7 @@ class EmailSubscriptionStream(HubspotStream):
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
+    replication_key = integer keys for replication
     """
 
     columns = """
@@ -1835,6 +1834,10 @@ class PropertyNotesStream(HubspotStream):
         return super().post_process(row, context)
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+        """
+        Merges all the property stream data into a single property table
+        """
+
         property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
         property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
         property_contact = PropertyContactStream(self._tap, schema={"properties": {}})

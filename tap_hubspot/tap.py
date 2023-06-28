@@ -52,6 +52,7 @@ class TapHubspot(Tap):
             streams.CallStream(self),
             streams.CommunicationStream(self),
             streams.EmailStream(self),
+            streams.MeetingStream(self),
         ]
 
 

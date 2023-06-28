@@ -1970,7 +1970,7 @@ class CompanyStream(HubspotStream):
 
 class DealStream(HubspotStream):
     """
-    https://developers.hubspot.com/docs/api/crm/companies
+    https://developers.hubspot.com/docs/api/crm/deals
     """
 
     """
@@ -1986,7 +1986,7 @@ class DealStream(HubspotStream):
                 id, email, roleIds, primaryteamid
               """
 
-    name = "companies"
+    name = "deals"
     path = "/objects/deals"
     primary_keys = ["id"]
 

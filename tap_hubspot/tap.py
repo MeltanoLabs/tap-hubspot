@@ -43,6 +43,7 @@ class TapHubspot(Tap):
             #streams.PropertyNotesStream(self),
             streams.CompanyStream(self),
             streams.DealStream(self),
+            #streams.FeedbackSubmissionsStream(self),
         ]
 
 

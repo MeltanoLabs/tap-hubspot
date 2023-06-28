@@ -2372,6 +2372,7 @@ class TicketStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2384,6 +2385,9 @@ class TicketStream(HubspotStream):
                 Property("subject", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -2462,6 +2466,7 @@ class QuoteStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2475,6 +2480,9 @@ class QuoteStream(HubspotStream):
                 Property("hubspot_owner_id", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -2553,6 +2561,7 @@ class GoalStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2565,6 +2574,9 @@ class GoalStream(HubspotStream):
                 Property("hs_target_amount", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -2643,6 +2655,7 @@ class CallStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2659,6 +2672,9 @@ class CallStream(HubspotStream):
                 Property("hubspot_owner_id", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -2737,6 +2753,7 @@ class CommunicationStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2747,6 +2764,9 @@ class CommunicationStream(HubspotStream):
                 Property("hs_lastmodifieddate", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -2825,6 +2845,7 @@ class EmailStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2844,6 +2865,9 @@ class EmailStream(HubspotStream):
                 Property("hubspot_owner_id", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -2922,6 +2946,7 @@ class MeetingStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2939,6 +2964,9 @@ class MeetingStream(HubspotStream):
                 Property("hubspot_owner_id", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -3017,6 +3045,7 @@ class NoteStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3027,6 +3056,9 @@ class NoteStream(HubspotStream):
                 Property("hubspot_owner_id", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -3106,6 +3138,7 @@ class PostalMailStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3114,6 +3147,9 @@ class PostalMailStream(HubspotStream):
                 Property("hs_postal_mail_body", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 
@@ -3192,6 +3228,7 @@ class TaskStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3205,6 +3242,9 @@ class TaskStream(HubspotStream):
                 Property("hubspot_owner_id", StringType),
             ),
         ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
 
     ).to_dict()
 

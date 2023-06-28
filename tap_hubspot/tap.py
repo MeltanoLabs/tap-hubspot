@@ -46,6 +46,7 @@ class TapHubspot(Tap):
             #streams.FeedbackSubmissionsStream(self),
             streams.LineItemStream(self),
             streams.ProductStream(self),
+            streams.TicketStream(self),
         ]
 
 

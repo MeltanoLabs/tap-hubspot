@@ -42,6 +42,7 @@ class TapHubspot(Tap):
             #streams.EmailSubscriptionStream(self),
             #streams.PropertyNotesStream(self),
             streams.CompanyStream(self),
+            streams.DealStream(self),
         ]
 
 

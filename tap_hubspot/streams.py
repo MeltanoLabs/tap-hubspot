@@ -2253,3 +2253,98 @@ class LineItemStream(HubspotStream):
             results = resp_json
 
         yield from results
+
+class ProductStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/products
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "product"
+    path = "/objects/product"
+    primary_keys = ["id"]
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("description", StringType),
+                Property("hs_cost_of_goods_sold", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_recurring_billing_period", StringType),
+                Property("hs_sku", StringType),
+                Property("name", StringType),
+                Property("price", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated which has the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+            self,
+            context: dict | None,
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results

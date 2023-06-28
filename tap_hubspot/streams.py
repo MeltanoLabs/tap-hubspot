@@ -111,7 +111,7 @@ class ContactStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated path which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/contacts/v1"
         return base_url
@@ -215,7 +215,7 @@ class ContactStream(HubspotStream):
 class UsersStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods/
+    https://developers.hubspot.com/docs/api/settings/user-provisioning
     """
 
     """
@@ -245,7 +245,7 @@ class UsersStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/settings/v3"
         return base_url
@@ -298,7 +298,7 @@ class UsersStream(HubspotStream):
 class OwnersStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods/owners/get_owners
+    https://developers.hubspot.com/docs/api/crm/owners#endpoint?spec=GET-/crm/v3/owners/
     """
 
     """
@@ -334,7 +334,7 @@ class OwnersStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -425,7 +425,7 @@ class TicketPipelineStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm-pipelines/v1"
         return base_url
@@ -516,7 +516,7 @@ class DealPipelineStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm-pipelines/v1"
         return base_url
@@ -607,7 +607,7 @@ class EmailSubscriptionStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/email/public/v1"
         return base_url
@@ -660,7 +660,7 @@ class EmailSubscriptionStream(HubspotStream):
 class PropertyTicketStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -707,7 +707,7 @@ class PropertyTicketStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -769,7 +769,7 @@ class PropertyTicketStream(HubspotStream):
 class PropertyDealStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -817,7 +817,7 @@ class PropertyDealStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -859,7 +859,7 @@ class PropertyDealStream(HubspotStream):
 class PropertyContactStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -906,7 +906,7 @@ class PropertyContactStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -948,7 +948,7 @@ class PropertyContactStream(HubspotStream):
 class PropertyCompanyStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -995,7 +995,7 @@ class PropertyCompanyStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1037,7 +1037,7 @@ class PropertyCompanyStream(HubspotStream):
 class PropertyProductStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1084,7 +1084,7 @@ class PropertyProductStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1126,7 +1126,7 @@ class PropertyProductStream(HubspotStream):
 class PropertyLineItemStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1173,7 +1173,7 @@ class PropertyLineItemStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1215,7 +1215,7 @@ class PropertyLineItemStream(HubspotStream):
 class PropertyEmailStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1262,7 +1262,7 @@ class PropertyEmailStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1304,7 +1304,7 @@ class PropertyEmailStream(HubspotStream):
 class PropertyPostalMailStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1351,7 +1351,7 @@ class PropertyPostalMailStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1393,7 +1393,7 @@ class PropertyPostalMailStream(HubspotStream):
 class PropertyCallStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1440,7 +1440,7 @@ class PropertyCallStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1482,7 +1482,7 @@ class PropertyCallStream(HubspotStream):
 class PropertyMeetingStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1529,7 +1529,7 @@ class PropertyMeetingStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1571,7 +1571,7 @@ class PropertyMeetingStream(HubspotStream):
 class PropertyTaskStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1618,7 +1618,7 @@ class PropertyTaskStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1660,7 +1660,7 @@ class PropertyTaskStream(HubspotStream):
 class PropertyCommunicationStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1707,7 +1707,7 @@ class PropertyCommunicationStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1749,7 +1749,7 @@ class PropertyCommunicationStream(HubspotStream):
 class PropertyNotesStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1796,7 +1796,7 @@ class PropertyNotesStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url

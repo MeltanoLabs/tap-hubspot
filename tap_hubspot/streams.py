@@ -413,7 +413,26 @@ class TicketPipelineStream(HubspotStream):
         Property("label", StringType),
         Property("displayOrder", StringType),
         Property("active", BooleanType),
-        Property("stages", StringType),
+        Property(
+            "stages",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("displayOrder", StringType),
+                    Property(
+                        "metadata",
+                        ObjectType(
+                            Property("ticketState", StringType),
+                            Property("isClosed", StringType),
+                        ),
+                    ),
+                    Property("stageId", IntegerType),
+                    Property("createdAt", StringType),
+                    Property("updatedAt", StringType),
+                    Property("active", StringType),
+                ),
+            ),
+        ),
         Property("objectType", StringType),
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
@@ -504,7 +523,26 @@ class DealPipelineStream(HubspotStream):
         Property("label", StringType),
         Property("displayOrder", StringType),
         Property("active", BooleanType),
-        Property("stages", StringType),
+        Property(
+            "stages",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("displayOrder", StringType),
+                    Property(
+                        "metadata",
+                        ObjectType(
+                            Property("isClosed", BooleanType),
+                            Property("probability", StringType),
+                        ),
+                    ),
+                    Property("stageId", IntegerType),
+                    Property("createdAt", StringType),
+                    Property("updatedAt", StringType),
+                    Property("active", StringType),
+                ),
+            ),
+        ),
         Property("objectType", StringType),
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),

@@ -1907,6 +1907,7 @@ class PropertyNotesStream(HubspotStream):
 
         return property_records
 
+
 class CompanyStream(HubspotStream):
 
     """
@@ -1948,10 +1949,7 @@ class CompanyStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
-
-
 
     @property
     def url_base(self) -> str:
@@ -2046,7 +2044,6 @@ class DealStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2058,9 +2055,9 @@ class DealStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2100,6 +2097,7 @@ class DealStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class FeedbackSubmissionsStream(HubspotStream):
     """
@@ -2142,7 +2140,6 @@ class FeedbackSubmissionsStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2154,9 +2151,9 @@ class FeedbackSubmissionsStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2196,6 +2193,7 @@ class FeedbackSubmissionsStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class LineItemStream(HubspotStream):
     """
@@ -2237,7 +2235,6 @@ class LineItemStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2249,9 +2246,9 @@ class LineItemStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2291,6 +2288,7 @@ class LineItemStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class ProductStream(HubspotStream):
     """
@@ -2332,7 +2330,6 @@ class ProductStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2344,9 +2341,9 @@ class ProductStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2386,6 +2383,7 @@ class ProductStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class TicketStream(HubspotStream):
     """
@@ -2426,7 +2424,6 @@ class TicketStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2438,9 +2435,9 @@ class TicketStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2480,6 +2477,7 @@ class TicketStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class QuoteStream(HubspotStream):
     """
@@ -2521,7 +2519,6 @@ class QuoteStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2533,9 +2530,9 @@ class QuoteStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2575,6 +2572,7 @@ class QuoteStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class GoalStream(HubspotStream):
     """
@@ -2615,7 +2613,6 @@ class GoalStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2627,9 +2624,9 @@ class GoalStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2669,6 +2666,7 @@ class GoalStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class CallStream(HubspotStream):
     """
@@ -2713,7 +2711,6 @@ class CallStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2725,9 +2722,9 @@ class CallStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2767,6 +2764,7 @@ class CallStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class CommunicationStream(HubspotStream):
     """
@@ -2805,7 +2803,6 @@ class CommunicationStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2817,9 +2814,9 @@ class CommunicationStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2859,6 +2856,7 @@ class CommunicationStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class EmailStream(HubspotStream):
     """
@@ -2906,7 +2904,6 @@ class EmailStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -2918,9 +2915,9 @@ class EmailStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -2960,6 +2957,7 @@ class EmailStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class MeetingStream(HubspotStream):
     """
@@ -3005,7 +3003,6 @@ class MeetingStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -3017,9 +3014,9 @@ class MeetingStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -3059,7 +3056,8 @@ class MeetingStream(HubspotStream):
             results = resp_json
 
         yield from results
-        
+
+
 class NoteStream(HubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/notes
@@ -3097,7 +3095,6 @@ class NoteStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -3109,9 +3106,9 @@ class NoteStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -3188,7 +3185,6 @@ class PostalMailStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -3200,9 +3196,9 @@ class PostalMailStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -3242,6 +3238,7 @@ class PostalMailStream(HubspotStream):
             results = resp_json
 
         yield from results
+
 
 class TaskStream(HubspotStream):
     """
@@ -3283,7 +3280,6 @@ class TaskStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -3295,9 +3291,9 @@ class TaskStream(HubspotStream):
         return base_url
 
     def get_url_params(
-            self,
-            context: dict | None,
-            next_page_token: Any | None,
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 

@@ -1931,7 +1931,7 @@ class CompanyStream(HubspotStream):
     primary_keys = ["id"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2029,7 +2029,7 @@ class DealStream(HubspotStream):
     primary_keys = ["id"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2124,7 +2124,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     primary_keys = ["id"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2220,7 +2220,7 @@ class LineItemStream(HubspotStream):
     primary_keys = ["id"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2315,7 +2315,7 @@ class ProductStream(HubspotStream):
     primary_keys = ["id"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2410,7 +2410,7 @@ class TicketStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2504,7 +2504,7 @@ class QuoteStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2599,7 +2599,7 @@ class GoalStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2693,7 +2693,7 @@ class CallStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2791,7 +2791,7 @@ class CommunicationStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2883,7 +2883,7 @@ class EmailStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -2984,7 +2984,7 @@ class MeetingStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -3083,7 +3083,7 @@ class NoteStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -3176,7 +3176,7 @@ class PostalMailStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(
@@ -3266,7 +3266,7 @@ class TaskStream(HubspotStream):
     primary_keys = ["properties"]
 
     schema = PropertiesList(
-        Property("id", StringType),
+        Property("id", IntegerType),
         Property(
             "properties",
             ObjectType(

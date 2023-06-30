@@ -21,29 +21,6 @@ plugins:
       value: '2023-01-01T00:00:00Z'
     - name: end_date
       value: '2023-05-22T00:00:00Z'      
-  loaders:
-  - name: target-jsonl
-    variant: andyh1203
-    pip_url: target-jsonl
-  - name: target-csv
-    variant: hotgluexyz
-    pip_url: git+https://github.com/hotgluexyz/target-csv.git@0.3.3
-    config:
-      destination_path: /Users/neilgorman/Documents/GitHub/tap-hubspot/output
-  - name: target-snowflake
-    variant: transferwise
-    pip_url: pipelinewise-target-snowflake
-    config:
-      batch_size: 5
 environments:
-- name: dev
-  config:
-    plugins:
-      loaders:
-      - name: target-csv
-      - name: target-snowflake
-        config:
-          primary_key_required: false
-          add_metadata_columns: true
 - name: staging
 - name: prod

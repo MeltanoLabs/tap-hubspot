@@ -234,6 +234,8 @@ class UsersStream(HubspotStream):
     name = "users"
     path = "/users?fields={}".format(columns)
     primary_keys = ["id"]
+    replication_key = "id"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -1934,6 +1936,8 @@ class CompanyStream(HubspotStream):
     name = "companies"
     path = "/objects/companies"
     primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2029,6 +2033,8 @@ class DealStream(HubspotStream):
     name = "deals"
     path = "/objects/deals"
     primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2124,6 +2130,8 @@ class FeedbackSubmissionsStream(HubspotStream):
     name = "feedbacksubmissions"
     path = "/objects/feedback_submissions"
     primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2220,6 +2228,8 @@ class LineItemStream(HubspotStream):
     name = "lineitems"
     path = "/objects/line_items"
     primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2315,6 +2325,8 @@ class ProductStream(HubspotStream):
     name = "product"
     path = "/objects/products"
     primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2409,7 +2421,9 @@ class TicketStream(HubspotStream):
 
     name = "ticket"
     path = "/objects/tickets"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2503,7 +2517,9 @@ class QuoteStream(HubspotStream):
 
     name = "quote"
     path = "/objects/quotes"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2598,7 +2614,9 @@ class GoalStream(HubspotStream):
 
     name = "goal"
     path = "/objects/goal_targets"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2692,7 +2710,9 @@ class CallStream(HubspotStream):
 
     name = "call"
     path = "/objects/calls"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2790,7 +2810,9 @@ class CommunicationStream(HubspotStream):
 
     name = "communication"
     path = "/objects/Communications"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2882,7 +2904,9 @@ class EmailStream(HubspotStream):
 
     name = "email"
     path = "/objects/emails"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -2983,7 +3007,9 @@ class MeetingStream(HubspotStream):
 
     name = "meeting"
     path = "/objects/meetings"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -3082,7 +3108,9 @@ class NoteStream(HubspotStream):
 
     name = "note"
     path = "/objects/notes"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -3174,7 +3202,9 @@ class PostalMailStream(HubspotStream):
 
     name = "postalmail"
     path = "/objects/postal_mail"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -3264,7 +3294,9 @@ class TaskStream(HubspotStream):
 
     name = "task"
     path = "/objects/tasks"
-    primary_keys = ["properties"]
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
 
     schema = PropertiesList(
         Property("id", IntegerType),

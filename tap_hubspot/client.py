@@ -81,6 +81,24 @@ class HubspotStream(RESTStream):
         """
         return super().get_new_paginator()
 
+    def get_next_page_token(
+        self,
+        response: requests.Response,
+        previous_token: t.Any | None,
+    ) -> t.Any | None:
+        """Return a token for identifying next page or None if no more pages."""
+        # If pagination is required, return a token which can be used to get the
+        #       next page. If this is the final page, return "None" to end the
+        #       pagination loop.
+        resp_json = response.json()
+        paging = resp_json.get("paging")
+
+        if paging is not None:
+            next_page_token = resp_json.get("paging", {}).get("next", {}).get("after")
+        else:
+            next_page_token = None
+        return next_page_token
+
     def get_url_params(
         self,
         context: dict | None,

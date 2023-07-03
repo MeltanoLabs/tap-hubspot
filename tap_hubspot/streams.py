@@ -44,7 +44,7 @@ class ContactStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("vid", IntegerType),
+        Property("vid", StringType),
         Property("canonical-vid", IntegerType),
         Property("merged-vids", ArrayType(StringType)),
         Property("portal-id", IntegerType),
@@ -132,7 +132,7 @@ class ContactStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -238,7 +238,7 @@ class UsersStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property("email", StringType),
         Property("roleIds", ArrayType(StringType)),
         Property("primaryteamid", StringType),
@@ -268,7 +268,7 @@ class UsersStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -357,7 +357,7 @@ class OwnersStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -467,7 +467,7 @@ class TicketPipelineStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -577,7 +577,7 @@ class DealPipelineStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -668,7 +668,7 @@ class EmailSubscriptionStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -768,7 +768,7 @@ class PropertyTicketStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -1878,7 +1878,7 @@ class PropertyNotesStream(HubspotStream):
         """
         Merges all the property stream data into a single property table
         """
-        
+
         property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
         property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
         property_contact = PropertyContactStream(self._tap, schema={"properties": {}})
@@ -1983,7 +1983,7 @@ class CompanyStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2080,7 +2080,7 @@ class DealStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2178,7 +2178,7 @@ class FeedbackSubmissionsStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2275,7 +2275,7 @@ class LineItemStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2372,7 +2372,7 @@ class ProductStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2468,7 +2468,7 @@ class TicketStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2565,7 +2565,7 @@ class QuoteStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2661,7 +2661,7 @@ class GoalStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2761,7 +2761,7 @@ class CallStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2855,7 +2855,7 @@ class CommunicationStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -2958,7 +2958,7 @@ class EmailStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -3059,7 +3059,7 @@ class MeetingStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -3153,7 +3153,7 @@ class NoteStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -3245,7 +3245,7 @@ class PostalMailStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -3342,7 +3342,7 @@ class TaskStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key

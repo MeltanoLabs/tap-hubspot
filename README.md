@@ -54,6 +54,29 @@ environment variable is set either in the terminal context or in the `.env` file
 
 A Hubspot access token is required to make API requests. (See [Hubspot API](https://developers.hubspot.com/docs/api/working-with-oauth) docs for more info)
 
+
+### Permissions
+
+The following scopes need to be added to your access token to access the following endpoints:
+
+Contacts: `crm.schemas.contacts.read` or `crm.objects.contacts.read`
+Users: `settings.users.read`
+Ticket Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
+Deal Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
+Properties: All of `Tickets`, `crm.objects.deals.read`, `sales-email-read`, `crm.objects.contacts.read`, `crm.objects.companies.read`, `e-commerce`, `crm.objects.quotes.read`
+Owners: `crm.objects.owners.read`
+Companies: `crm.objects.companies.read`
+Deals: `crm.objects.deals.read`
+Feedback Submissions: `crm.objects.contacts.read`
+Line Items: `e-commerce`
+Products: `e-commerce`
+Tickets: `tickets`
+Quotes: `crm.objects.quotes.read` or `crm.schemas.quotes.read`
+Goals: `crm.objects.goals.read`
+Emails: `sales-email-read`
+
+For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).
+
 ## Usage
 
 You can easily run `tap-hubspot` by itself or in a pipeline using [Meltano](https://meltano.com/).

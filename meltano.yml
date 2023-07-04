@@ -15,7 +15,6 @@ plugins:
     - stream-maps
     settings:
     - name: access_token
-      value: ${TAP_HUBSPOT_ACCESS_TOKEN}
       kind: password
     - name: start_date
       value: '2023-01-01T00:00:00Z'

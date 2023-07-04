@@ -44,7 +44,7 @@ class ContactStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("vid", StringType),
+        Property("vid", IntegerType),
         Property("canonical-vid", IntegerType),
         Property("merged-vids", ArrayType(StringType)),
         Property("portal-id", IntegerType),
@@ -52,7 +52,7 @@ class ContactStream(HubspotStream):
         Property(
             "properties",
             ObjectType(
-                Property("lastmodifieddate", StringType),
+                Property("lastmodifieddate", IntegerType),
                 Property("email", StringType),
                 Property("message", StringType),
                 Property("city", StringType),
@@ -105,7 +105,7 @@ class ContactStream(HubspotStream):
         Property("form-submissions", ArrayType(StringType)),
         Property("identity-profiles", ArrayType(StringType)),
         Property("merge-audits", ArrayType(StringType)),
-        Property("addedAt", StringType),
+        Property("addedAt", IntegerType),
     ).to_dict()
 
     @property
@@ -428,17 +428,17 @@ class TicketPipelineStream(HubspotStream):
                             Property("isClosed", StringType),
                         ),
                     ),
-                    Property("stageId", IntegerType),
-                    Property("createdAt", StringType),
+                    Property("stageId", StringType),
+                    Property("createdAt", IntegerType),
                     Property("updatedAt", StringType),
-                    Property("active", StringType),
+                    Property("active", BooleanType),
                 ),
             ),
         ),
         Property("objectType", StringType),
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
-        Property("createdAt", StringType),
+        Property("createdAt", IntegerType),
         Property("updatedAt", StringType),
         Property("default", BooleanType),
     ).to_dict()
@@ -538,17 +538,17 @@ class DealPipelineStream(HubspotStream):
                             Property("probability", StringType),
                         ),
                     ),
-                    Property("stageId", IntegerType),
-                    Property("createdAt", StringType),
+                    Property("stageId", StringType),
+                    Property("createdAt", IntegerType),
                     Property("updatedAt", StringType),
-                    Property("active", StringType),
+                    Property("active", BooleanType),
                 ),
             ),
         ),
         Property("objectType", StringType),
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
-        Property("createdAt", StringType),
+        Property("createdAt", IntegerType),
         Property("updatedAt", StringType),
         Property("default", BooleanType),
     ).to_dict()
@@ -641,7 +641,7 @@ class EmailSubscriptionStream(HubspotStream):
         Property("category", StringType),
         Property("channel", StringType),
         Property("internalName", StringType),
-        Property("businessUnitId", StringType),
+        Property("businessUnitId", IntegerType),
     ).to_dict()
 
     @property

@@ -2637,7 +2637,7 @@ class TicketStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "ticket"
@@ -2733,7 +2733,7 @@ class QuoteStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "quote"
@@ -2830,7 +2830,7 @@ class GoalStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "goal"
@@ -2926,7 +2926,7 @@ class CallStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "call"
@@ -3026,7 +3026,7 @@ class CommunicationStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "communication"
@@ -3120,7 +3120,7 @@ class EmailStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "email"
@@ -3223,7 +3223,7 @@ class MeetingStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "meeting"
@@ -3324,7 +3324,7 @@ class NoteStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "note"
@@ -3418,7 +3418,7 @@ class PostalMailStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "postalmail"
@@ -3510,7 +3510,7 @@ class TaskStream(HubspotStream):
     """
 
     columns = """
-                properties
+                id, properties, createdAt, updatedAt, archived
               """
 
     name = "task"

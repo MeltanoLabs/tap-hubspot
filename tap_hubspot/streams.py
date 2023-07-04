@@ -21,7 +21,7 @@ IntegerType = th.IntegerType
 class ContactStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods/lists/get_lists
+    https://developers.hubspot.com/docs/api/crm/contacts
     """
 
     """
@@ -38,82 +38,37 @@ class ContactStream(HubspotStream):
               """
 
     name = "contact"
-    path = "/lists/all/contacts/all?fields={}".format(columns)
-    primary_keys = ["addedAt"]
-    replication_key = "addedAt"
+    path = "/objects/contacts"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("vid", IntegerType),
-        Property("canonical-vid", IntegerType),
-        Property("merged-vids", ArrayType(StringType)),
-        Property("portal-id", IntegerType),
-        Property("is-contact", BooleanType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
-                Property("lastmodifieddate", StringType),
-                Property("email", StringType),
-                Property("message", StringType),
-                Property("city", StringType),
                 Property("company", StringType),
-                Property("createddate", StringType),
+                Property("createdate", StringType),
+                Property("email", StringType),
                 Property("firstname", StringType),
-                Property("hs_all_contact_vids", IntegerType),
-                Property("hs_date_entered_lead", StringType),
-                Property("hs_marketable_reason_id", StringType),
-                Property("hs_is_unworked", BooleanType),
-                Property("hs_marketable_until_renewal", BooleanType),
-                Property("hs_latest_source_timestamp", StringType),
-                Property("hs_marketable_reason_type", StringType),
-                Property("hs_marketable_status", BooleanType),
-                Property("hs_is_contact", BooleanType),
-                Property("hs_email_domain", StringType),
-                Property("hs_pipeline", StringType),
-                Property("hs_sequences_actively_enrolled_count", StringType),
-                Property("hs_object_id", StringType),
-                Property("hs_time_in_lead", StringType),
-                Property("num_conversion_events", StringType),
-                Property("num_unique_conversion_events", StringType),
+                Property("lastmodifieddate", StringType),
                 Property("lastname", StringType),
-                Property("hs_analytics_num_page_views", StringType),
-                Property("hs_analytics_num_event_completions", StringType),
-                Property("hs_analytics_first_timestamp", StringType),
-                Property("hs_social_twitter_clicks", StringType),
-                Property("hs_analytics_num_visits", StringType),
-                Property("twitterprofilephoto", StringType),
-                Property("twitterhandle", StringType),
-                Property("hs_analytics_source_data_2", StringType),
-                Property("hs_social_facebook_clicks", StringType),
-                Property("hs_analytics_source", StringType),
-                Property("hs_analytics_source_data_1", StringType),
-                Property("hs_latest_source", StringType),
-                Property("hs_latest_source_data_1", StringType),
-                Property("hs_latest_source_data_2", StringType),
-                Property("hs_social_google_plus_clicks", StringType),
-                Property("hs_social_num_broadcast_clicks", StringType),
-                Property("state", StringType),
-                Property("hs_social_linkedin_clicks", StringType),
-                Property("hs_lifecyclestage_lead_date", StringType),
-                Property("hs_analytics_revenue", StringType),
-                Property("hs_analytics_average_page_views", StringType),
+                Property("phone", StringType),
                 Property("website", StringType),
-                Property("lifecyclestage", StringType),
-                Property("jobtitle", StringType),
             ),
         ),
-        Property("form-submissions", ArrayType(StringType)),
-        Property("identity-profiles", ArrayType(StringType)),
-        Property("merge-audits", ArrayType(StringType)),
-        Property("addedAt", StringType),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated path which has the api version
+        Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/contacts/v1"
+        base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
     def get_url_params(
@@ -132,61 +87,10 @@ class ContactStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
-
-        params["property"] = (
-            "message",
-            "email",
-            "city",
-            "company",
-            "createddate",
-            "firstname",
-            "hs_all_contact_vids",
-            "hs_date_entered_lead",
-            "hs_marketable_reason_id",
-            "hs_is_unworked",
-            "hs_marketable_until_renewal",
-            "hs_latest_source_timestamp",
-            "hs_marketable_reason_type",
-            "hs_marketable_status",
-            "hs_is_contact",
-            "hs_email_domain",
-            "hs_pipeline",
-            "hs_sequences_actively_enrolled_count",
-            "hs_object_id",
-            "hs_time_in_lead",
-            "num_conversion_events",
-            "num_unique_conversion_events",
-            "lastname",
-            "hs_analytics_num_page_views",
-            "hs_analytics_num_event_completions",
-            "hs_analytics_first_timestamp",
-            "hs_social_twitter_clicks",
-            "hs_analytics_num_visits",
-            "twitterprofilephoto",
-            "twitterhandle",
-            "hs_analytics_source_data_2",
-            "hs_social_facebook_clicks",
-            "hs_analytics_source",
-            "hs_analytics_source_data_1",
-            "hs_latest_source",
-            "hs_latest_source_data_1",
-            "hs_latest_source_data_2",
-            "hs_social_google_plus_clicks",
-            "hs_social_num_broadcast_clicks",
-            "state",
-            "hs_social_linkedin_clicks",
-            "hs_lifecyclestage_lead_date",
-            "hs_analytics_revenue",
-            "hs_analytics_average_page_views",
-            "website",
-            "lifecyclestage",
-            "jobtitle",
-        )
-        params["propertyMode"] = "value_and_history"
 
         return params
 
@@ -204,8 +108,8 @@ class ContactStream(HubspotStream):
 
         if isinstance(resp_json, list):
             results = resp_json
-        elif resp_json.get("contacts") is not None:
-            results = resp_json["contacts"]
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
         else:
             results = resp_json
 
@@ -215,7 +119,7 @@ class ContactStream(HubspotStream):
 class UsersStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods/
+    https://developers.hubspot.com/docs/api/settings/user-provisioning
     """
 
     """
@@ -234,9 +138,11 @@ class UsersStream(HubspotStream):
     name = "users"
     path = "/users?fields={}".format(columns)
     primary_keys = ["id"]
+    replication_key = "id"
+    replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property("email", StringType),
         Property("roleIds", ArrayType(StringType)),
         Property("primaryteamid", StringType),
@@ -245,7 +151,7 @@ class UsersStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/settings/v3"
         return base_url
@@ -266,7 +172,7 @@ class UsersStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -298,7 +204,7 @@ class UsersStream(HubspotStream):
 class OwnersStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods/owners/get_owners
+    https://developers.hubspot.com/docs/api/crm/owners#endpoint?spec=GET-/crm/v3/owners/
     """
 
     """
@@ -321,7 +227,7 @@ class OwnersStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property("email", StringType),
         Property("firstName", StringType),
         Property("lastName", StringType),
@@ -334,7 +240,7 @@ class OwnersStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -355,7 +261,7 @@ class OwnersStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -411,13 +317,32 @@ class TicketPipelineStream(HubspotStream):
 
     schema = PropertiesList(
         Property("label", StringType),
-        Property("displayOrder", StringType),
+        Property("displayOrder", IntegerType),
         Property("active", BooleanType),
-        Property("stages", StringType),
+        Property(
+            "stages",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property(
+                        "metadata",
+                        ObjectType(
+                            Property("ticketState", StringType),
+                            Property("isClosed", StringType),
+                        ),
+                    ),
+                    Property("stageId", StringType),
+                    Property("createdAt", IntegerType),
+                    Property("updatedAt", StringType),
+                    Property("active", BooleanType),
+                ),
+            ),
+        ),
         Property("objectType", StringType),
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
-        Property("createdAt", StringType),
+        Property("createdAt", IntegerType),
         Property("updatedAt", StringType),
         Property("default", BooleanType),
     ).to_dict()
@@ -425,7 +350,7 @@ class TicketPipelineStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm-pipelines/v1"
         return base_url
@@ -446,7 +371,7 @@ class TicketPipelineStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -502,13 +427,32 @@ class DealPipelineStream(HubspotStream):
 
     schema = PropertiesList(
         Property("label", StringType),
-        Property("displayOrder", StringType),
+        Property("displayOrder", IntegerType),
         Property("active", BooleanType),
-        Property("stages", StringType),
+        Property(
+            "stages",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property(
+                        "metadata",
+                        ObjectType(
+                            Property("isClosed", BooleanType),
+                            Property("probability", StringType),
+                        ),
+                    ),
+                    Property("stageId", StringType),
+                    Property("createdAt", IntegerType),
+                    Property("updatedAt", StringType),
+                    Property("active", BooleanType),
+                ),
+            ),
+        ),
         Property("objectType", StringType),
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
-        Property("createdAt", StringType),
+        Property("createdAt", IntegerType),
         Property("updatedAt", StringType),
         Property("default", BooleanType),
     ).to_dict()
@@ -516,7 +460,7 @@ class DealPipelineStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm-pipelines/v1"
         return base_url
@@ -537,7 +481,7 @@ class DealPipelineStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -601,13 +545,13 @@ class EmailSubscriptionStream(HubspotStream):
         Property("category", StringType),
         Property("channel", StringType),
         Property("internalName", StringType),
-        Property("businessUnitId", StringType),
+        Property("businessUnitId", IntegerType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/email/public/v1"
         return base_url
@@ -628,7 +572,7 @@ class EmailSubscriptionStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -660,7 +604,7 @@ class EmailSubscriptionStream(HubspotStream):
 class PropertyTicketStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -679,6 +623,7 @@ class PropertyTicketStream(HubspotStream):
 
     name = "propertyticket"
     path = "/properties/tickets?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -691,23 +636,41 @@ class PropertyTicketStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -728,7 +691,7 @@ class PropertyTicketStream(HubspotStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["after"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
@@ -769,7 +732,7 @@ class PropertyTicketStream(HubspotStream):
 class PropertyDealStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -788,6 +751,7 @@ class PropertyDealStream(HubspotStream):
 
     name = "propertydeal"
     path = "/properties/deals?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -800,24 +764,42 @@ class PropertyDealStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("calculationFormula", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -859,7 +841,7 @@ class PropertyDealStream(HubspotStream):
 class PropertyContactStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -878,6 +860,7 @@ class PropertyContactStream(HubspotStream):
 
     name = "propertycontact"
     path = "/properties/contacts?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -890,23 +873,41 @@ class PropertyContactStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -948,7 +949,7 @@ class PropertyContactStream(HubspotStream):
 class PropertyCompanyStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -967,6 +968,7 @@ class PropertyCompanyStream(HubspotStream):
 
     name = "propertycompany"
     path = "/properties/company?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -979,23 +981,41 @@ class PropertyCompanyStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1037,7 +1057,7 @@ class PropertyCompanyStream(HubspotStream):
 class PropertyProductStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1056,6 +1076,7 @@ class PropertyProductStream(HubspotStream):
 
     name = "propertyproduct"
     path = "/properties/product?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1068,23 +1089,41 @@ class PropertyProductStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1126,7 +1165,7 @@ class PropertyProductStream(HubspotStream):
 class PropertyLineItemStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1145,6 +1184,7 @@ class PropertyLineItemStream(HubspotStream):
 
     name = "propertylineitem"
     path = "/properties/line_item?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1157,23 +1197,41 @@ class PropertyLineItemStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1215,7 +1273,7 @@ class PropertyLineItemStream(HubspotStream):
 class PropertyEmailStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1234,6 +1292,7 @@ class PropertyEmailStream(HubspotStream):
 
     name = "propertyemail"
     path = "/properties/email?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1246,23 +1305,41 @@ class PropertyEmailStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1304,7 +1381,7 @@ class PropertyEmailStream(HubspotStream):
 class PropertyPostalMailStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1323,6 +1400,7 @@ class PropertyPostalMailStream(HubspotStream):
 
     name = "propertypostalmail"
     path = "/properties/postal_mail?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1335,23 +1413,41 @@ class PropertyPostalMailStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1393,7 +1489,7 @@ class PropertyPostalMailStream(HubspotStream):
 class PropertyCallStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1412,6 +1508,7 @@ class PropertyCallStream(HubspotStream):
 
     name = "propertycall"
     path = "/properties/call?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1424,23 +1521,41 @@ class PropertyCallStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1482,7 +1597,7 @@ class PropertyCallStream(HubspotStream):
 class PropertyMeetingStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1501,6 +1616,7 @@ class PropertyMeetingStream(HubspotStream):
 
     name = "propertymeeting"
     path = "/properties/meeting?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1513,23 +1629,41 @@ class PropertyMeetingStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1571,7 +1705,7 @@ class PropertyMeetingStream(HubspotStream):
 class PropertyTaskStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1590,6 +1724,7 @@ class PropertyTaskStream(HubspotStream):
 
     name = "propertytask"
     path = "/properties/task?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1602,23 +1737,41 @@ class PropertyTaskStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1660,7 +1813,7 @@ class PropertyTaskStream(HubspotStream):
 class PropertyCommunicationStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1679,6 +1832,7 @@ class PropertyCommunicationStream(HubspotStream):
 
     name = "propertycommunication"
     path = "/properties/task?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1691,23 +1845,41 @@ class PropertyCommunicationStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1749,7 +1921,7 @@ class PropertyCommunicationStream(HubspotStream):
 class PropertyNotesStream(HubspotStream):
 
     """
-    https://legacydocs.hubspot.com/docs/methods
+    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
 
     """
@@ -1768,6 +1940,7 @@ class PropertyNotesStream(HubspotStream):
 
     name = "property"
     path = "/properties/notes?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1780,23 +1953,41 @@ class PropertyNotesStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """
-        Returns an updated which has the api version
+        Returns an updated path which includes the api version
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
@@ -1835,6 +2026,10 @@ class PropertyNotesStream(HubspotStream):
         return super().post_process(row, context)
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+        """
+        Merges all the property stream data into a single property table
+        """
+
         property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
         property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
         property_contact = PropertyContactStream(self._tap, schema={"properties": {}})
@@ -1868,3 +2063,1460 @@ class PropertyNotesStream(HubspotStream):
         )
 
         return property_records
+
+
+class CompanyStream(HubspotStream):
+
+    """
+    https://developers.hubspot.com/docs/api/crm/companies
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "companies"
+    path = "/objects/companies"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("city", StringType),
+                Property("createdDate", StringType),
+                Property("domain", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("industry", StringType),
+                Property("name", StringType),
+                Property("phone", StringType),
+                Property("state", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class DealStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/deals
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "deals"
+    path = "/objects/deals"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("amount", StringType),
+                Property("createdDate", StringType),
+                Property("closedDate", StringType),
+                Property("dealname", StringType),
+                Property("dealstage", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hubspot_owner_id", StringType),
+                Property("pipeline", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class FeedbackSubmissionsStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/feedback-submissions
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "feedbacksubmissions"
+    path = "/objects/feedback_submissions"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("hs_content", StringType),
+                Property("hs_ingestion_id", StringType),
+                Property("hs_response_group", StringType),
+                Property("hs_submission_name", StringType),
+                Property("hs_survey_channel", StringType),
+                Property("hs_survey_id", StringType),
+                Property("hs_survey_name", StringType),
+                Property("hs_survey_type", StringType),
+                Property("hs_value", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class LineItemStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/line-items
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "lineitems"
+    path = "/objects/line_items"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_product_id", StringType),
+                Property("hs_recurring_billing_period", StringType),
+                Property("name", StringType),
+                Property("price", StringType),
+                Property("quantity", StringType),
+                Property("recurringbillingfrequency", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class ProductStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/products
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "product"
+    path = "/objects/products"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("description", StringType),
+                Property("hs_cost_of_goods_sold", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_recurring_billing_period", StringType),
+                Property("hs_sku", StringType),
+                Property("name", StringType),
+                Property("price", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class TicketStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/tickets
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "ticket"
+    path = "/objects/tickets"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_pipeline", StringType),
+                Property("hs_pipeline_stage", StringType),
+                Property("hs_ticket_priority", StringType),
+                Property("hubspot_owner_id", StringType),
+                Property("subject", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class QuoteStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/quotes
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "quote"
+    path = "/objects/quotes"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("hs_createdate", StringType),
+                Property("hs_expiration_date", StringType),
+                Property("hs_quote_amount", StringType),
+                Property("hs_quote_number", StringType),
+                Property("hs_status", StringType),
+                Property("hs_terms", StringType),
+                Property("hs_title", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class GoalStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/goals
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "goal"
+    path = "/objects/goal_targets"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_created_by_user_id", StringType),
+                Property("hs_end_datetime", StringType),
+                Property("hs_goal_name", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_start_datetime", StringType),
+                Property("hs_target_amount", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class CallStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/calls
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "call"
+    path = "/objects/calls"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_call_body", StringType),
+                Property("hs_call_duration", StringType),
+                Property("hs_call_from_number", StringType),
+                Property("hs_call_recording_url", StringType),
+                Property("hs_call_status", StringType),
+                Property("hs_call_title", StringType),
+                Property("hs_call_to_number", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_timestamp", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class CommunicationStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/communications
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "communication"
+    path = "/objects/Communications"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_communication_body", StringType),
+                Property("hs_communication_channel_type", StringType),
+                Property("hs_communication_logged_from", StringType),
+                Property("hs_lastmodifieddate", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class EmailStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/email
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "email"
+    path = "/objects/emails"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_email_direction", StringType),
+                Property("hs_email_sender_email", StringType),
+                Property("hs_email_sender_firstname", StringType),
+                Property("hs_email_sender_lastname", StringType),
+                Property("hs_email_status", StringType),
+                Property("hs_email_subject", StringType),
+                Property("hs_email_text", StringType),
+                Property("hs_email_to_email", StringType),
+                Property("hs_email_to_firstname", StringType),
+                Property("hs_email_to_lastname", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_timestamp", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class MeetingStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/meetings
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "meeting"
+    path = "/objects/meetings"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_internal_meeting_notes", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_meeting_body", StringType),
+                Property("hs_meeting_end_time", StringType),
+                Property("hs_meeting_external_url", StringType),
+                Property("hs_meeting_location", StringType),
+                Property("hs_meeting_outcome", StringType),
+                Property("hs_meeting_start_time", StringType),
+                Property("hs_meeting_title", StringType),
+                Property("hs_timestamp", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class NoteStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/notes
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "note"
+    path = "/objects/notes"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_note_body", StringType),
+                Property("hs_timestamp", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class PostalMailStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/postal-mail
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "postalmail"
+    path = "/objects/postal_mail"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_postal_mail_body", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results
+
+
+class TaskStream(HubspotStream):
+    """
+    https://developers.hubspot.com/docs/api/crm/tasks
+    """
+
+    """
+    columns: columns which will be added to fields parameter in api
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    """
+
+    columns = """
+                id, properties, createdAt, updatedAt, archived
+              """
+
+    name = "task"
+    path = "/objects/tasks"
+    primary_keys = ["id"]
+    replication_key = "updatedAt"
+    replication_method = "incremental"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property(
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_task_body", StringType),
+                Property("hs_task_priority", StringType),
+                Property("hs_task_status", StringType),
+                Property("hs_task_subject", StringType),
+                Property("hs_timestamp", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
+        ),
+        Property("createdAt", StringType),
+        Property("updatedAt", StringType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """
+        Returns an updated path which includes the api version
+        """
+        base_url = "https://api.hubapi.com/crm/v3"
+        return base_url
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params: dict = {}
+        if next_page_token:
+            params["after"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+
+        return params
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result records.
+
+        Args:
+            response: The HTTP ``requests.Response`` object.
+
+        Yields:
+            Each record from the source.
+        """
+
+        resp_json = response.json()
+
+        if isinstance(resp_json, list):
+            results = resp_json
+        elif resp_json.get("results") is not None:
+            results = resp_json["results"]
+        else:
+            results = resp_json
+
+        yield from results

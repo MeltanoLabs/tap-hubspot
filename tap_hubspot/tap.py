@@ -41,6 +41,21 @@ class TapHubspot(Tap):
             streams.DealPipelineStream(self),
             streams.EmailSubscriptionStream(self),
             streams.PropertyNotesStream(self),
+            streams.CompanyStream(self),
+            streams.DealStream(self),
+            streams.FeedbackSubmissionsStream(self),
+            streams.LineItemStream(self),
+            streams.ProductStream(self),
+            streams.TicketStream(self),
+            streams.QuoteStream(self),
+            streams.GoalStream(self),
+            streams.CallStream(self),
+            streams.CommunicationStream(self),
+            streams.EmailStream(self),
+            streams.MeetingStream(self),
+            streams.NoteStream(self),
+            streams.PostalMailStream(self),
+            streams.TaskStream(self),
         ]
 
 

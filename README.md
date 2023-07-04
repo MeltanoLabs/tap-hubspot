@@ -54,9 +54,43 @@ environment variable is set either in the terminal context or in the `.env` file
 
 A Hubspot access token is required to make API requests. (See [Hubspot API](https://developers.hubspot.com/docs/api/working-with-oauth) docs for more info)
 
+
+### Permissions
+
+The following scopes need to be added to your access token to access the following endpoints:
+
+- Contacts: `crm.schemas.contacts.read` or `crm.objects.contacts.read`
+- Users: `settings.users.read`
+- Ticket Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
+- Deal Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
+- Properties: All of `Tickets`, `crm.objects.deals.read`, `sales-email-read`, `crm.objects.contacts.read`, `crm.objects.companies.read`, `e-commerce`, `crm.objects.quotes.read`
+- Owners: `crm.objects.owners.read`
+- Companies: `crm.objects.companies.read`
+- Deals: `crm.objects.deals.read`
+- Feedback Submissions: `crm.objects.contacts.read`
+- Line Items: `e-commerce`
+- Products: `e-commerce`
+- Tickets: `tickets`
+- Quotes: `crm.objects.quotes.read` or `crm.schemas.quotes.read`
+- Goals: `crm.objects.goals.read`
+- Emails: `sales-email-read`
+
+For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).
+
 ## Usage
 
 You can easily run `tap-hubspot` by itself or in a pipeline using [Meltano](https://meltano.com/).
+
+
+### Streams Using v1 Endpoints
+
+The following Streams use the v1 (legacy) endpoint in the Hubspot API:
+
+1. [TicketPipeline & DealPipeline](https://legacydocs.hubspot.com/docs/methods/pipelines/pipelines_overview): The v3 endpoint requires a pipeline ID parameter to make calls to the API. Because of this, 
+you are limited to only pulling data for a single pipeline ID from v3, whereas the v1 API allows you to pull from all pipelines.
+2. [EmailSubscriptions](https://legacydocs.hubspot.com/docs/methods/email/email_subscriptions_overview): The v3 endpoint requires you to set a single email address to pull subscription data, whereas 
+the v1 endpoint allows you to pull data from all emails.
+
 
 ## Stream Inheritance
 

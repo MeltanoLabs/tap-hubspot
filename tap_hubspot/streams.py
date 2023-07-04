@@ -2066,7 +2066,7 @@ class CompanyStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2163,7 +2163,7 @@ class DealStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2260,7 +2260,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2358,7 +2358,7 @@ class LineItemStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2455,7 +2455,7 @@ class ProductStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2552,7 +2552,7 @@ class TicketStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2648,7 +2648,7 @@ class QuoteStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2745,7 +2745,7 @@ class GoalStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2841,7 +2841,7 @@ class CallStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2941,7 +2941,7 @@ class CommunicationStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3035,7 +3035,7 @@ class EmailStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3138,7 +3138,7 @@ class MeetingStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3239,7 +3239,7 @@ class NoteStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3333,7 +3333,7 @@ class PostalMailStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(
@@ -3425,7 +3425,7 @@ class TaskStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property(
             "properties",
             ObjectType(

@@ -323,7 +323,7 @@ class OwnersStream(HubspotStream):
     replication_method = "incremental"
 
     schema = PropertiesList(
-        Property("id", IntegerType),
+        Property("id", StringType),
         Property("email", StringType),
         Property("firstName", StringType),
         Property("lastName", StringType),
@@ -413,14 +413,14 @@ class TicketPipelineStream(HubspotStream):
 
     schema = PropertiesList(
         Property("label", StringType),
-        Property("displayOrder", StringType),
+        Property("displayOrder", IntegerType),
         Property("active", BooleanType),
         Property(
             "stages",
             ArrayType(
                 ObjectType(
                     Property("label", StringType),
-                    Property("displayOrder", StringType),
+                    Property("displayOrder", IntegerType),
                     Property(
                         "metadata",
                         ObjectType(
@@ -523,14 +523,14 @@ class DealPipelineStream(HubspotStream):
 
     schema = PropertiesList(
         Property("label", StringType),
-        Property("displayOrder", StringType),
+        Property("displayOrder", IntegerType),
         Property("active", BooleanType),
         Property(
             "stages",
             ArrayType(
                 ObjectType(
                     Property("label", StringType),
-                    Property("displayOrder", StringType),
+                    Property("displayOrder", IntegerType),
                     Property(
                         "metadata",
                         ObjectType(
@@ -731,17 +731,34 @@ class PropertyTicketStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -840,18 +857,35 @@ class PropertyDealStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
         Property("calculationFormula", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -930,17 +964,34 @@ class PropertyContactStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1019,17 +1070,34 @@ class PropertyCompanyStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1108,17 +1176,34 @@ class PropertyProductStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1197,17 +1282,34 @@ class PropertyLineItemStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1286,17 +1388,34 @@ class PropertyEmailStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1375,17 +1494,34 @@ class PropertyPostalMailStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1464,17 +1600,34 @@ class PropertyCallStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1553,17 +1706,34 @@ class PropertyMeetingStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1642,17 +1812,34 @@ class PropertyTaskStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1731,17 +1918,34 @@ class PropertyCommunicationStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property
@@ -1820,17 +2024,34 @@ class PropertyNotesStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options", StringType),
-        Property("displayOrder", StringType),
+        Property("options",
+                 ArrayType(
+                     ObjectType(
+                         Property("label", StringType),
+                         Property("description", StringType),
+                         Property("value", StringType),
+                         Property("displayOrder", IntegerType),
+                         Property("hidden", BooleanType),
+                     ),
+                 ),
+                 ),
+        Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
         Property("hasUniqueValue", BooleanType),
         Property("hidden", BooleanType),
         Property("hubspotDefined", BooleanType),
-        Property("modificationMetadata", StringType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
         Property("formField", BooleanType),
         Property("hubspot_object", StringType),
-        Property("showCurrencySymbol", StringType),
     ).to_dict()
 
     @property

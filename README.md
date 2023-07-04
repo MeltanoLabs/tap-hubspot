@@ -88,7 +88,7 @@ The following Streams use the v1 (legacy) endpoint in the Hubspot API:
 
 1. [TicketPipeline & DealPipeline](https://legacydocs.hubspot.com/docs/methods/pipelines/pipelines_overview): The v3 endpoint requires a pipeline ID parameter to make calls to the API. Because of this, 
 you are limited to only pulling data for a single pipeline ID from v3, whereas the v1 API allows you to pull from all pipelines.
-2. [EmailSubscriptions](https://legacydocs.hubspot.com/docs/methods/email/email_subscriptions_overview): This endpoint requires you to set a single email address to pull subscription data, whereas in 
+2. [EmailSubscriptions](https://legacydocs.hubspot.com/docs/methods/email/email_subscriptions_overview): The v3 endpoint requires you to set a single email address to pull subscription data, whereas 
 the v1 endpoint allows you to pull data from all emails.
 
 

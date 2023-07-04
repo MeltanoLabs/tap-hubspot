@@ -623,6 +623,7 @@ class PropertyTicketStream(HubspotStream):
 
     name = "propertyticket"
     path = "/properties/tickets?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -750,6 +751,7 @@ class PropertyDealStream(HubspotStream):
 
     name = "propertydeal"
     path = "/properties/deals?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -858,6 +860,7 @@ class PropertyContactStream(HubspotStream):
 
     name = "propertycontact"
     path = "/properties/contacts?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -965,6 +968,7 @@ class PropertyCompanyStream(HubspotStream):
 
     name = "propertycompany"
     path = "/properties/company?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1072,6 +1076,7 @@ class PropertyProductStream(HubspotStream):
 
     name = "propertyproduct"
     path = "/properties/product?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1179,6 +1184,7 @@ class PropertyLineItemStream(HubspotStream):
 
     name = "propertylineitem"
     path = "/properties/line_item?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1286,6 +1292,7 @@ class PropertyEmailStream(HubspotStream):
 
     name = "propertyemail"
     path = "/properties/email?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1393,6 +1400,7 @@ class PropertyPostalMailStream(HubspotStream):
 
     name = "propertypostalmail"
     path = "/properties/postal_mail?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1500,6 +1508,7 @@ class PropertyCallStream(HubspotStream):
 
     name = "propertycall"
     path = "/properties/call?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1607,6 +1616,7 @@ class PropertyMeetingStream(HubspotStream):
 
     name = "propertymeeting"
     path = "/properties/meeting?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1714,6 +1724,7 @@ class PropertyTaskStream(HubspotStream):
 
     name = "propertytask"
     path = "/properties/task?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1821,6 +1832,7 @@ class PropertyCommunicationStream(HubspotStream):
 
     name = "propertycommunication"
     path = "/properties/task?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -1928,6 +1940,7 @@ class PropertyNotesStream(HubspotStream):
 
     name = "property"
     path = "/properties/notes?fields={}".format(columns)
+    primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
 
@@ -3507,3 +3520,4 @@ class TaskStream(HubspotStream):
             results = resp_json
 
         yield from results
+        

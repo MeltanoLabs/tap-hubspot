@@ -61,7 +61,6 @@ class ContactStream(HubspotStream):
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
-
     ).to_dict()
 
     @property
@@ -636,17 +635,18 @@ class PropertyTicketStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -762,17 +762,18 @@ class PropertyDealStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -869,17 +870,18 @@ class PropertyContactStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -975,17 +977,18 @@ class PropertyCompanyStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1081,17 +1084,18 @@ class PropertyProductStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1187,17 +1191,18 @@ class PropertyLineItemStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1293,17 +1298,18 @@ class PropertyEmailStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1399,17 +1405,18 @@ class PropertyPostalMailStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1505,17 +1512,18 @@ class PropertyCallStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1611,17 +1619,18 @@ class PropertyMeetingStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1717,17 +1726,18 @@ class PropertyTaskStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1823,17 +1833,18 @@ class PropertyCommunicationStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),
@@ -1929,17 +1940,18 @@ class PropertyNotesStream(HubspotStream):
         Property("fieldType", StringType),
         Property("description", StringType),
         Property("groupName", StringType),
-        Property("options",
-                 ArrayType(
-                     ObjectType(
-                         Property("label", StringType),
-                         Property("description", StringType),
-                         Property("value", StringType),
-                         Property("displayOrder", IntegerType),
-                         Property("hidden", BooleanType),
-                     ),
-                 ),
-                 ),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
         Property("displayOrder", IntegerType),
         Property("calculated", BooleanType),
         Property("externalOptions", BooleanType),

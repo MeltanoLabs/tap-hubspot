@@ -3520,4 +3520,3 @@ class TaskStream(HubspotStream):
             results = resp_json
 
         yield from results
-        

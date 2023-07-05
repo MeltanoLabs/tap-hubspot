@@ -37,7 +37,7 @@ class ContactStream(HubspotStream):
                 vid, canonical-vid, merged-vids, portal-id, is-contact, properties
               """
 
-    name = "contact"
+    name = "contacts"
     path = "/objects/contacts"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -309,7 +309,7 @@ class TicketPipelineStream(HubspotStream):
                 label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
               """
 
-    name = "ticketpipeline"
+    name = "ticketpipelines"
     path = "/pipelines/tickets?fields={}".format(columns)
     primary_keys = ["createdAt"]
     replication_key = "createdAt"
@@ -419,7 +419,7 @@ class DealPipelineStream(HubspotStream):
                 label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
               """
 
-    name = "dealpipeline"
+    name = "dealpipelines"
     path = "/pipelines/deals?fields={}".format(columns)
     primary_keys = ["createdAt"]
     replication_key = "createdAt"
@@ -529,7 +529,7 @@ class EmailSubscriptionStream(HubspotStream):
                 id, portalId, name, description, active, internal, category, channel, internalName, businessUnitId
               """
 
-    name = "emailsubscription"
+    name = "emailsubscriptions"
     path = "/subscriptions/?fields={}".format(columns)
     primary_keys = ["id"]
     replication_key = "id"
@@ -621,7 +621,7 @@ class PropertyTicketStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertyticket"
+    name = "propertytickets"
     path = "/properties/tickets?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -749,7 +749,7 @@ class PropertyDealStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertydeal"
+    name = "propertydeals"
     path = "/properties/deals?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -858,7 +858,7 @@ class PropertyContactStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertycontact"
+    name = "propertycontacts"
     path = "/properties/contacts?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -966,7 +966,7 @@ class PropertyCompanyStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertycompany"
+    name = "propertycompanies"
     path = "/properties/company?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1074,7 +1074,7 @@ class PropertyProductStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertyproduct"
+    name = "propertyproducts"
     path = "/properties/product?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1182,7 +1182,7 @@ class PropertyLineItemStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertylineitem"
+    name = "propertylineitems"
     path = "/properties/line_item?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1290,7 +1290,7 @@ class PropertyEmailStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertyemail"
+    name = "propertyemails"
     path = "/properties/email?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1398,7 +1398,7 @@ class PropertyPostalMailStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertypostalmail"
+    name = "propertypostalmails"
     path = "/properties/postal_mail?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1506,7 +1506,7 @@ class PropertyCallStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertycall"
+    name = "propertycalls"
     path = "/properties/call?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1614,7 +1614,7 @@ class PropertyMeetingStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertymeeting"
+    name = "propertymeetings"
     path = "/properties/meeting?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1722,7 +1722,7 @@ class PropertyTaskStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertytask"
+    name = "propertytasks"
     path = "/properties/task?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1830,7 +1830,7 @@ class PropertyCommunicationStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "propertycommunication"
+    name = "propertycommunications"
     path = "/properties/task?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -1938,7 +1938,7 @@ class PropertyNotesStream(HubspotStream):
                 calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
               """
 
-    name = "property"
+    name = "properties"
     path = "/properties/notes?fields={}".format(columns)
     primary_keys = ["label"]
     replication_key = "updatedAt"
@@ -2473,7 +2473,7 @@ class ProductStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "product"
+    name = "products"
     path = "/objects/products"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -2570,7 +2570,7 @@ class TicketStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "ticket"
+    name = "tickets"
     path = "/objects/tickets"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -2666,7 +2666,7 @@ class QuoteStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "quote"
+    name = "quotes"
     path = "/objects/quotes"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -2763,7 +2763,7 @@ class GoalStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "goal"
+    name = "goals"
     path = "/objects/goal_targets"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -2859,7 +2859,7 @@ class CallStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "call"
+    name = "calls"
     path = "/objects/calls"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -2959,7 +2959,7 @@ class CommunicationStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "communication"
+    name = "communications"
     path = "/objects/Communications"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -3053,7 +3053,7 @@ class EmailStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "email"
+    name = "emails"
     path = "/objects/emails"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -3156,7 +3156,7 @@ class MeetingStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "meeting"
+    name = "meetings"
     path = "/objects/meetings"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -3257,7 +3257,7 @@ class NoteStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "note"
+    name = "notes"
     path = "/objects/notes"
     primary_keys = ["id"]
     replication_key = "updatedAt"
@@ -3443,7 +3443,7 @@ class TaskStream(HubspotStream):
                 id, properties, createdAt, updatedAt, archived
               """
 
-    name = "task"
+    name = "tasks"
     path = "/objects/tasks"
     primary_keys = ["id"]
     replication_key = "updatedAt"

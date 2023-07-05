@@ -25,17 +25,12 @@ class ContactStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                vid, canonical-vid, merged-vids, portal-id, is-contact, properties
-              """
 
     name = "contacts"
     path = "/objects/contacts"
@@ -123,7 +118,6 @@ class UsersStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -131,12 +125,8 @@ class UsersStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, email, roleIds, primaryteamid
-              """
-
     name = "users"
-    path = "/users?fields={}".format(columns)
+    path = "/users"
     primary_keys = ["id"]
     replication_key = "id"
     replication_method = "incremental"
@@ -208,7 +198,6 @@ class OwnersStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -216,12 +205,10 @@ class OwnersStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, email, firstName, lastName, userId, createdAt, updatedAt, archived
-              """
+
 
     name = "owners"
-    path = "/owners?fields={}".format(columns)
+    path = "/owners"
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -297,7 +284,6 @@ class TicketPipelineStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -305,12 +291,9 @@ class TicketPipelineStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
-              """
 
     name = "ticketpipelines"
-    path = "/pipelines/tickets?fields={}".format(columns)
+    path = "/pipelines/tickets"
     primary_keys = ["createdAt"]
     replication_key = "createdAt"
     replication_method = "incremental"
@@ -407,7 +390,6 @@ class DealPipelineStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -415,12 +397,9 @@ class DealPipelineStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                label, displayOrder, active, stages, objectType, objectTypeId, pipelineId, createdAt, updatedAt, default
-              """
 
     name = "dealpipelines"
-    path = "/pipelines/deals?fields={}".format(columns)
+    path = "/pipelines/deals"
     primary_keys = ["createdAt"]
     replication_key = "createdAt"
     replication_method = "incremental"
@@ -517,7 +496,6 @@ class EmailSubscriptionStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -525,12 +503,9 @@ class EmailSubscriptionStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, portalId, name, description, active, internal, category, channel, internalName, businessUnitId
-              """
 
     name = "emailsubscriptions"
-    path = "/subscriptions/?fields={}".format(columns)
+    path = "/subscriptions"
     primary_keys = ["id"]
     replication_key = "id"
     replication_method = "incremental"
@@ -608,7 +583,6 @@ class PropertyTicketStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -616,13 +590,9 @@ class PropertyTicketStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertytickets"
-    path = "/properties/tickets?fields={}".format(columns)
+    path = "/properties/tickets"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -736,7 +706,6 @@ class PropertyDealStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -744,13 +713,9 @@ class PropertyDealStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertydeals"
-    path = "/properties/deals?fields={}".format(columns)
+    path = "/properties/deals"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -845,7 +810,6 @@ class PropertyContactStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -853,13 +817,9 @@ class PropertyContactStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertycontacts"
-    path = "/properties/contacts?fields={}".format(columns)
+    path = "/properties/contacts"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -953,7 +913,6 @@ class PropertyCompanyStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -961,13 +920,9 @@ class PropertyCompanyStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertycompanies"
-    path = "/properties/company?fields={}".format(columns)
+    path = "/properties/company"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1061,7 +1016,6 @@ class PropertyProductStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1069,13 +1023,9 @@ class PropertyProductStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertyproducts"
-    path = "/properties/product?fields={}".format(columns)
+    path = "/properties/product"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1169,7 +1119,6 @@ class PropertyLineItemStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1177,13 +1126,9 @@ class PropertyLineItemStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertylineitems"
-    path = "/properties/line_item?fields={}".format(columns)
+    path = "/properties/line_item"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1277,7 +1222,6 @@ class PropertyEmailStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1285,13 +1229,9 @@ class PropertyEmailStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertyemails"
-    path = "/properties/email?fields={}".format(columns)
+    path = "/properties/email"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1385,7 +1325,6 @@ class PropertyPostalMailStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1393,13 +1332,9 @@ class PropertyPostalMailStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertypostalmails"
-    path = "/properties/postal_mail?fields={}".format(columns)
+    path = "/properties/postal_mail"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1493,7 +1428,6 @@ class PropertyCallStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1501,13 +1435,9 @@ class PropertyCallStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertycalls"
-    path = "/properties/call?fields={}".format(columns)
+    path = "/properties/call"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1601,7 +1531,6 @@ class PropertyMeetingStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1609,13 +1538,9 @@ class PropertyMeetingStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertymeetings"
-    path = "/properties/meeting?fields={}".format(columns)
+    path = "/properties/meeting"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1709,7 +1634,6 @@ class PropertyTaskStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1717,13 +1641,9 @@ class PropertyTaskStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "propertytasks"
-    path = "/properties/task?fields={}".format(columns)
+    path = "/properties/task"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1817,7 +1737,6 @@ class PropertyCommunicationStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1825,13 +1744,10 @@ class PropertyCommunicationStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
+
 
     name = "propertycommunications"
-    path = "/properties/task?fields={}".format(columns)
+    path = "/properties/task"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -1925,7 +1841,6 @@ class PropertyNotesStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -1933,13 +1848,9 @@ class PropertyNotesStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                updatedAt, createdAt, name, label, type, fieldType, description, groupName, options, displayOrder,
-                calculated, externalOptions, hasUniqueValue, hidden, hubspotDefined, modificationMetadata, formField
-              """
 
     name = "properties"
-    path = "/properties/notes?fields={}".format(columns)
+    path = "/properties/notes"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
@@ -2072,7 +1983,6 @@ class CompanyStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -2080,9 +1990,6 @@ class CompanyStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "companies"
     path = "/objects/companies"
@@ -2169,17 +2076,12 @@ class DealStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "deals"
     path = "/objects/deals"
@@ -2266,17 +2168,12 @@ class FeedbackSubmissionsStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "feedbacksubmissions"
     path = "/objects/feedback_submissions"
@@ -2364,17 +2261,12 @@ class LineItemStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "lineitems"
     path = "/objects/line_items"
@@ -2461,17 +2353,12 @@ class ProductStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "products"
     path = "/objects/products"
@@ -2558,17 +2445,12 @@ class TicketStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "tickets"
     path = "/objects/tickets"
@@ -2654,17 +2536,12 @@ class QuoteStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "quotes"
     path = "/objects/quotes"
@@ -2751,17 +2628,12 @@ class GoalStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "goals"
     path = "/objects/goal_targets"
@@ -2847,17 +2719,12 @@ class CallStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "calls"
     path = "/objects/calls"
@@ -2947,7 +2814,6 @@ class CommunicationStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -2955,9 +2821,6 @@ class CommunicationStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "communications"
     path = "/objects/Communications"
@@ -3041,7 +2904,6 @@ class EmailStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -3049,9 +2911,6 @@ class EmailStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "emails"
     path = "/objects/emails"
@@ -3144,7 +3003,6 @@ class MeetingStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -3152,9 +3010,6 @@ class MeetingStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "meetings"
     path = "/objects/meetings"
@@ -3245,7 +3100,6 @@ class NoteStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -3253,9 +3107,6 @@ class NoteStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "notes"
     path = "/objects/notes"
@@ -3339,17 +3190,12 @@ class PostalMailStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "postalmail"
     path = "/objects/postal_mail"
@@ -3431,7 +3277,6 @@ class TaskStream(HubspotStream):
     """
 
     """
-    columns: columns which will be added to fields parameter in api
     name: stream name
     path: path which will be added to api url in client.py
     schema: instream schema
@@ -3439,9 +3284,6 @@ class TaskStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-    columns = """
-                id, properties, createdAt, updatedAt, archived
-              """
 
     name = "tasks"
     path = "/objects/tasks"

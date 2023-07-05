@@ -205,8 +205,6 @@ class OwnersStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
-
     name = "owners"
     path = "/owners"
     primary_keys = ["id"]
@@ -290,7 +288,6 @@ class TicketPipelineStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "ticketpipelines"
     path = "/pipelines/tickets"
@@ -397,7 +394,6 @@ class DealPipelineStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "dealpipelines"
     path = "/pipelines/deals"
     primary_keys = ["createdAt"]
@@ -503,7 +499,6 @@ class EmailSubscriptionStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "emailsubscriptions"
     path = "/subscriptions"
     primary_keys = ["id"]
@@ -589,7 +584,6 @@ class PropertyTicketStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "propertytickets"
     path = "/properties/tickets"
@@ -713,7 +707,6 @@ class PropertyDealStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "propertydeals"
     path = "/properties/deals"
     primary_keys = ["label"]
@@ -817,7 +810,6 @@ class PropertyContactStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "propertycontacts"
     path = "/properties/contacts"
     primary_keys = ["label"]
@@ -919,7 +911,6 @@ class PropertyCompanyStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "propertycompanies"
     path = "/properties/company"
@@ -1023,7 +1014,6 @@ class PropertyProductStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "propertyproducts"
     path = "/properties/product"
     primary_keys = ["label"]
@@ -1125,7 +1115,6 @@ class PropertyLineItemStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "propertylineitems"
     path = "/properties/line_item"
@@ -1229,7 +1218,6 @@ class PropertyEmailStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "propertyemails"
     path = "/properties/email"
     primary_keys = ["label"]
@@ -1331,7 +1319,6 @@ class PropertyPostalMailStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "propertypostalmails"
     path = "/properties/postal_mail"
@@ -1435,7 +1422,6 @@ class PropertyCallStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "propertycalls"
     path = "/properties/call"
     primary_keys = ["label"]
@@ -1537,7 +1523,6 @@ class PropertyMeetingStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "propertymeetings"
     path = "/properties/meeting"
@@ -1641,7 +1626,6 @@ class PropertyTaskStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "propertytasks"
     path = "/properties/task"
     primary_keys = ["label"]
@@ -1744,8 +1728,6 @@ class PropertyCommunicationStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
-
     name = "propertycommunications"
     path = "/properties/communication"
     primary_keys = ["label"]
@@ -1847,7 +1829,6 @@ class PropertyNotesStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "properties"
     path = "/properties/notes"
@@ -1989,7 +1970,6 @@ class CompanyStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "companies"
     path = "/objects/companies"
@@ -2821,7 +2801,6 @@ class CommunicationStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "communications"
     path = "/objects/Communications"
     primary_keys = ["id"]
@@ -2910,7 +2889,6 @@ class EmailStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "emails"
     path = "/objects/emails"
@@ -3010,7 +2988,6 @@ class MeetingStream(HubspotStream):
     replication_key = datetime keys for replication
     """
 
-
     name = "meetings"
     path = "/objects/meetings"
     primary_keys = ["id"]
@@ -3106,7 +3083,6 @@ class NoteStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "notes"
     path = "/objects/notes"
@@ -3283,7 +3259,6 @@ class TaskStream(HubspotStream):
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
     """
-
 
     name = "tasks"
     path = "/objects/tasks"

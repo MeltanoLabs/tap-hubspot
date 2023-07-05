@@ -1747,7 +1747,7 @@ class PropertyCommunicationStream(HubspotStream):
 
 
     name = "propertycommunications"
-    path = "/properties/task"
+    path = "/properties/communication"
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"

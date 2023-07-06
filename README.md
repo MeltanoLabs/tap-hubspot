@@ -1,48 +1,47 @@
-# tap-hubspot-sdk
+# tap-hubspot
 
-`tap-hubspot-sdk` is a Singer tap for tap-hubspot-sdk.
+`tap-hubspot` is a Singer tap for Hubspot.
 
 Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
-<!--
+## Capabilities
 
-Developer TODO: Update the below as needed to correctly describe the install procedure. For instance, if you do not have a PyPi repo, or if you want users to directly install from your git repo, you can modify this step as appropriate.
-
-## Installation
-
-Install from PyPi:
-
-```bash
-pipx install tap-hubspot-sdk
-```
-
-Install from GitHub:
-
-```bash
-pipx install git+https://github.com/ORG_NAME/tap-hubspot-sdk.git@main
-```
-
--->
+* `catalog`
+* `state`
+* `discover`
+* `about`
+* `stream-maps`
+* `schema-flattening`
 
 ## Configuration
 
 ### Accepted Config Options
 
-<!--
-Developer TODO: Provide a list of config options accepted by the tap.
+| Setting             | Required | Default | Description |
+|:--------------------|:--------:|:-------:|:------------|
+| access_token        | True     | None    | The token to authenticate against the API service |
+| start_date          | False    | None    | The earliest record date to sync |
+| end_date            | False    | None    | The latest record date to sync |
+| stream_maps         | False    | None    | Config object for stream maps capability. For more information check out [Stream Maps](https://sdk.meltano.com/en/latest/stream_maps.html). |
+| stream_map_config   | False    | None    | User-defined config values to be used within map expressions. |
+| flattening_enabled  | False    | None    | 'True' to enable schema flattening and automatically expand nested properties. |
+| flattening_max_depth| False    | None    | The max depth to flatten schemas. |
 
-This section can be created by copy-pasting the CLI output from:
 
-```
-tap-hubspot-sdk --about --format=markdown
-```
--->
-
-A full list of supported settings and capabilities for this
-tap is available by running:
+A full list of supported settings and capabilities for this tap is available by running:
 
 ```bash
-tap-hubspot-sdk --about
+tap-hubspot --about
+```
+
+## Elastic License 2.0
+
+The licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensable, non-transferable license to use, copy, distribute, make available, and prepare derivative works of the software.
+
+## Installation
+
+```bash
+pipx install git+https://github.com/ryan-miranda-partners/tap-hubspot.git
 ```
 
 ### Configure using environment variables
@@ -53,20 +52,56 @@ environment variable is set either in the terminal context or in the `.env` file
 
 ### Source Authentication and Authorization
 
-<!--
-Developer TODO: If your tap requires special access on the source system, or any special authentication requirements, provide those here.
--->
+A Hubspot access token is required to make API requests. (See [Hubspot API](https://developers.hubspot.com/docs/api/working-with-oauth) docs for more info)
+
+
+### Permissions
+
+The following scopes need to be added to your access token to access the following endpoints:
+
+- Contacts: `crm.schemas.contacts.read` or `crm.objects.contacts.read`
+- Users: `settings.users.read`
+- Ticket Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
+- Deal Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
+- Properties: All of `Tickets`, `crm.objects.deals.read`, `sales-email-read`, `crm.objects.contacts.read`, `crm.objects.companies.read`, `e-commerce`, `crm.objects.quotes.read`
+- Owners: `crm.objects.owners.read`
+- Companies: `crm.objects.companies.read`
+- Deals: `crm.objects.deals.read`
+- Feedback Submissions: `crm.objects.contacts.read`
+- Line Items: `e-commerce`
+- Products: `e-commerce`
+- Tickets: `tickets`
+- Quotes: `crm.objects.quotes.read` or `crm.schemas.quotes.read`
+- Goals: `crm.objects.goals.read`
+- Emails: `sales-email-read`
+
+For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).
 
 ## Usage
 
-You can easily run `tap-hubspot-sdk` by itself or in a pipeline using [Meltano](https://meltano.com/).
+You can easily run `tap-hubspot` by itself or in a pipeline using [Meltano](https://meltano.com/).
+
+
+### Streams Using v1 Endpoints
+
+The following Streams use the v1 (legacy) endpoint in the Hubspot API:
+
+1. [TicketPipeline & DealPipeline](https://legacydocs.hubspot.com/docs/methods/pipelines/pipelines_overview): The v3 endpoint requires a pipeline ID parameter to make calls to the API. Because of this, 
+you are limited to only pulling data for a single pipeline ID from v3, whereas the v1 API allows you to pull from all pipelines.
+2. [EmailSubscriptions](https://legacydocs.hubspot.com/docs/methods/email/email_subscriptions_overview): The v3 endpoint requires you to set a single email address to pull subscription data, whereas 
+the v1 endpoint allows you to pull data from all emails.
+
+
+## Stream Inheritance
+
+This project uses parent-child streams. Learn more about them [here](https://gitlab.com/meltano/sdk/-/blob/main/docs/parent_streams.md).
 
 ### Executing the Tap Directly
 
 ```bash
-tap-hubspot-sdk --version
-tap-hubspot-sdk --help
-tap-hubspot-sdk --config CONFIG --discover > ./catalog.json
+tap-hubspot --version
+tap-hubspot --help
+tap-hubspot --config CONFIG --discover > ./catalog.json
 ```
 
 ## Developer Resources
@@ -89,10 +124,10 @@ Create tests within the `tests` subfolder and
 poetry run pytest
 ```
 
-You can also test the `tap-hubspot-sdk` CLI interface directly using `poetry run`:
+You can also test the `tap-hubspot` CLI interface directly using `poetry run`:
 
 ```bash
-poetry run tap-hubspot-sdk --help
+poetry run tap-hubspot --help
 ```
 
 ### Testing with [Meltano](https://www.meltano.com)
@@ -100,11 +135,8 @@ poetry run tap-hubspot-sdk --help
 _**Note:** This tap will work in any Singer environment and does not require Meltano.
 Examples here are for convenience and to streamline end-to-end orchestration scenarios._
 
-<!--
-Developer TODO:
 Your project comes with a custom `meltano.yml` project file already created. Open the `meltano.yml` and follow any "TODO" items listed in
 the file.
--->
 
 Next, install Meltano (if you haven't already) and any needed plugins:
 
@@ -112,7 +144,7 @@ Next, install Meltano (if you haven't already) and any needed plugins:
 # Install meltano
 pipx install meltano
 # Initialize meltano within this directory
-cd tap-hubspot-sdk
+cd tap-hubspot
 meltano install
 ```
 
@@ -120,9 +152,9 @@ Now you can test and orchestrate using Meltano:
 
 ```bash
 # Test invocation:
-meltano invoke tap-hubspot-sdk --version
+meltano invoke tap-hubspot --version
 # OR run a test `elt` pipeline:
-meltano elt tap-hubspot-sdk target-jsonl
+meltano elt tap-hubspot target-jsonl
 ```
 
 ### SDK Dev Guide

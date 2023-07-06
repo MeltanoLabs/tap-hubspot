@@ -1,17 +1,18 @@
 ### A CI workflow template that runs linting and python testing
-### TODO: Modify as needed or as desired.
 
-name: Test tap-hubspot-sdk
+name: Test tap-hubspot
 
 on: [push]
 
 jobs:
   linting:
+
     runs-on: ubuntu-latest
     strategy:
       matrix:
         # Only lint using the primary version used for dev
-        python-version: ["3.9"]
+        python-version: [3.9]
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -26,12 +27,14 @@ jobs:
         pipx run tox -e lint
 
   pytest:
+
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: [3.9]
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -45,5 +48,9 @@ jobs:
       run: |
         poetry install
     - name: Test with pytest
+      id: test_pytest
+      continue-on-error: false
+      env:
+         TAP_HUBSPOT_ACCESS_TOKEN: ${{ secrets.access_token }}
       run: |
-        poetry run pytest
+        poetry run pytest --capture=no

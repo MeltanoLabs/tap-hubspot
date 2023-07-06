@@ -454,7 +454,7 @@ class EmailSubscriptionStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.    
+    records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
 
 
 class PropertyTicketStream(HubspotStream):
@@ -556,7 +556,7 @@ class PropertyTicketStream(HubspotStream):
         row["hubspot_object"] = "ticket"
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -640,7 +640,7 @@ class PropertyDealStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -723,7 +723,7 @@ class PropertyContactStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -806,7 +806,7 @@ class PropertyCompanyStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -889,7 +889,7 @@ class PropertyProductStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -972,7 +972,7 @@ class PropertyLineItemStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1055,7 +1055,7 @@ class PropertyEmailStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1138,7 +1138,7 @@ class PropertyPostalMailStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1221,7 +1221,7 @@ class PropertyCallStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1304,7 +1304,7 @@ class PropertyMeetingStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1387,7 +1387,7 @@ class PropertyTaskStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1470,7 +1470,7 @@ class PropertyCommunicationStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
@@ -1553,7 +1553,7 @@ class PropertyNotesStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
-    
+
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
@@ -2691,4 +2691,3 @@ class TaskStream(HubspotStream):
         return params
 
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    

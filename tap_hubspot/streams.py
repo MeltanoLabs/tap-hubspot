@@ -65,8 +65,7 @@ class ContactStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class UsersStream(HubspotStream):
@@ -103,8 +102,8 @@ class UsersStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/settings/v3"
-        return base_url
+
+        return "https://api.hubapi.com/settings/v3"
 
 
 class OwnersStream(HubspotStream):
@@ -145,8 +144,7 @@ class OwnersStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class TicketPipelineStream(HubspotStream):
@@ -208,8 +206,7 @@ class TicketPipelineStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm-pipelines/v1"
-        return base_url
+        return "https://api.hubapi.com/crm-pipelines/v1"
 
 
 class DealPipelineStream(HubspotStream):
@@ -271,8 +268,7 @@ class DealPipelineStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm-pipelines/v1"
-        return base_url
+        return "https://api.hubapi.com/crm-pipelines/v1"
 
 
 class EmailSubscriptionStream(HubspotStream):
@@ -315,8 +311,7 @@ class EmailSubscriptionStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/email/public/v1"
-        return base_url
+        return "https://api.hubapi.com/email/public/v1"
 
 
 class PropertyTicketStream(HubspotStream):
@@ -386,8 +381,7 @@ class PropertyTicketStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyDealStream(HubspotStream):
@@ -458,8 +452,7 @@ class PropertyDealStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyContactStream(HubspotStream):
@@ -529,8 +522,7 @@ class PropertyContactStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyCompanyStream(HubspotStream):
@@ -600,8 +592,7 @@ class PropertyCompanyStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyProductStream(HubspotStream):
@@ -671,8 +662,7 @@ class PropertyProductStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyLineItemStream(HubspotStream):
@@ -742,8 +732,7 @@ class PropertyLineItemStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyEmailStream(HubspotStream):
@@ -813,8 +802,7 @@ class PropertyEmailStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyPostalMailStream(HubspotStream):
@@ -884,8 +872,7 @@ class PropertyPostalMailStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyCallStream(HubspotStream):
@@ -955,8 +942,7 @@ class PropertyCallStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyMeetingStream(HubspotStream):
@@ -1026,8 +1012,7 @@ class PropertyMeetingStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyTaskStream(HubspotStream):
@@ -1097,8 +1082,7 @@ class PropertyTaskStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyCommunicationStream(HubspotStream):
@@ -1168,8 +1152,7 @@ class PropertyCommunicationStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyNotesStream(HubspotStream):
@@ -1239,8 +1222,7 @@ class PropertyNotesStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """
@@ -1329,8 +1311,7 @@ class CompanyStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class DealStream(HubspotStream):
@@ -1379,8 +1360,7 @@ class DealStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class FeedbackSubmissionsStream(HubspotStream):
@@ -1430,8 +1410,7 @@ class FeedbackSubmissionsStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class LineItemStream(HubspotStream):
@@ -1480,8 +1459,7 @@ class LineItemStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class ProductStream(HubspotStream):
@@ -1530,8 +1508,7 @@ class ProductStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class TicketStream(HubspotStream):
@@ -1579,8 +1556,7 @@ class TicketStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class QuoteStream(HubspotStream):
@@ -1629,8 +1605,7 @@ class QuoteStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class GoalStream(HubspotStream):
@@ -1678,8 +1653,7 @@ class GoalStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class CallStream(HubspotStream):
@@ -1731,8 +1705,7 @@ class CallStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class CommunicationStream(HubspotStream):
@@ -1778,8 +1751,7 @@ class CommunicationStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class EmailStream(HubspotStream):
@@ -1834,8 +1806,7 @@ class EmailStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class MeetingStream(HubspotStream):
@@ -1888,8 +1859,7 @@ class MeetingStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class NoteStream(HubspotStream):
@@ -1935,8 +1905,7 @@ class NoteStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class PostalMailStream(HubspotStream):
@@ -1980,8 +1949,7 @@ class PostalMailStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"
 
 
 class TaskStream(HubspotStream):
@@ -2030,5 +1998,4 @@ class TaskStream(HubspotStream):
         """
         Returns an updated path which includes the api version
         """
-        base_url = "https://api.hubapi.com/crm/v3"
-        return base_url
+        return "https://api.hubapi.com/crm/v3"

@@ -30,6 +30,7 @@ class ContactStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "contacts"
@@ -37,6 +38,7 @@ class ContactStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -89,8 +91,6 @@ class ContactStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class UsersStream(HubspotStream):
 
@@ -103,7 +103,8 @@ class UsersStream(HubspotStream):
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
+    replication_key = id keys for replication
+    records_jsonpath = json response body
     """
 
     name = "users"
@@ -111,6 +112,7 @@ class UsersStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "id"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -150,8 +152,6 @@ class UsersStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class OwnersStream(HubspotStream):
 
@@ -165,6 +165,7 @@ class OwnersStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "owners"
@@ -172,6 +173,7 @@ class OwnersStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -215,8 +217,6 @@ class OwnersStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class TicketPipelineStream(HubspotStream):
 
@@ -230,6 +230,7 @@ class TicketPipelineStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "ticket_pipelines"
@@ -237,6 +238,7 @@ class TicketPipelineStream(HubspotStream):
     primary_keys = ["createdAt"]
     replication_key = "createdAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("label", StringType),
@@ -301,8 +303,6 @@ class TicketPipelineStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class DealPipelineStream(HubspotStream):
 
@@ -316,6 +316,7 @@ class DealPipelineStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "deal_pipelines"
@@ -323,6 +324,7 @@ class DealPipelineStream(HubspotStream):
     primary_keys = ["createdAt"]
     replication_key = "createdAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("label", StringType),
@@ -387,8 +389,6 @@ class DealPipelineStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class EmailSubscriptionStream(HubspotStream):
 
@@ -401,7 +401,8 @@ class EmailSubscriptionStream(HubspotStream):
     path: path which will be added to api url in client.py
     schema: instream schema
     primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
+    replication_key = id keys for replication
+    records_jsonpath = json response body
     """
 
     name = "email_subscriptions"
@@ -409,6 +410,7 @@ class EmailSubscriptionStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "id"
     replication_method = "incremental"
+    records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -454,8 +456,6 @@ class EmailSubscriptionStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
-
 
 class PropertyTicketStream(HubspotStream):
 
@@ -469,6 +469,7 @@ class PropertyTicketStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_tickets"
@@ -476,6 +477,7 @@ class PropertyTicketStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -557,8 +559,6 @@ class PropertyTicketStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyDealStream(HubspotStream):
 
@@ -572,6 +572,7 @@ class PropertyDealStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_deals"
@@ -579,6 +580,7 @@ class PropertyDealStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -641,8 +643,6 @@ class PropertyDealStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyContactStream(HubspotStream):
 
@@ -656,6 +656,7 @@ class PropertyContactStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_contacts"
@@ -663,6 +664,7 @@ class PropertyContactStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -724,8 +726,6 @@ class PropertyContactStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyCompanyStream(HubspotStream):
 
@@ -739,6 +739,7 @@ class PropertyCompanyStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_companies"
@@ -746,6 +747,7 @@ class PropertyCompanyStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -807,8 +809,6 @@ class PropertyCompanyStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyProductStream(HubspotStream):
 
@@ -822,6 +822,7 @@ class PropertyProductStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_products"
@@ -829,6 +830,7 @@ class PropertyProductStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -890,8 +892,6 @@ class PropertyProductStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyLineItemStream(HubspotStream):
 
@@ -905,6 +905,7 @@ class PropertyLineItemStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_line_items"
@@ -912,6 +913,7 @@ class PropertyLineItemStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -973,8 +975,6 @@ class PropertyLineItemStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyEmailStream(HubspotStream):
 
@@ -988,6 +988,7 @@ class PropertyEmailStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_emails"
@@ -995,6 +996,7 @@ class PropertyEmailStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1056,8 +1058,6 @@ class PropertyEmailStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyPostalMailStream(HubspotStream):
 
@@ -1071,6 +1071,7 @@ class PropertyPostalMailStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_postal_mails"
@@ -1078,6 +1079,7 @@ class PropertyPostalMailStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1139,8 +1141,6 @@ class PropertyPostalMailStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyCallStream(HubspotStream):
 
@@ -1154,6 +1154,7 @@ class PropertyCallStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_calls"
@@ -1161,6 +1162,7 @@ class PropertyCallStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1222,8 +1224,6 @@ class PropertyCallStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyMeetingStream(HubspotStream):
 
@@ -1237,6 +1237,7 @@ class PropertyMeetingStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_meetings"
@@ -1244,6 +1245,7 @@ class PropertyMeetingStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1305,8 +1307,6 @@ class PropertyMeetingStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyTaskStream(HubspotStream):
 
@@ -1320,6 +1320,7 @@ class PropertyTaskStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_tasks"
@@ -1327,6 +1328,7 @@ class PropertyTaskStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1388,8 +1390,6 @@ class PropertyTaskStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyCommunicationStream(HubspotStream):
 
@@ -1403,6 +1403,7 @@ class PropertyCommunicationStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "property_communications"
@@ -1410,6 +1411,7 @@ class PropertyCommunicationStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1471,8 +1473,6 @@ class PropertyCommunicationStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PropertyNotesStream(HubspotStream):
 
@@ -1486,6 +1486,7 @@ class PropertyNotesStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "properties"
@@ -1493,6 +1494,7 @@ class PropertyNotesStream(HubspotStream):
     primary_keys = ["label"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1554,8 +1556,6 @@ class PropertyNotesStream(HubspotStream):
 
         return super().post_process(row, context)
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """
         Merges all the property stream data into a single property table
@@ -1608,6 +1608,7 @@ class CompanyStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "companies"
@@ -1615,6 +1616,7 @@ class CompanyStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1667,8 +1669,6 @@ class CompanyStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class DealStream(HubspotStream):
     """
@@ -1681,6 +1681,7 @@ class DealStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "deals"
@@ -1688,6 +1689,7 @@ class DealStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1740,8 +1742,6 @@ class DealStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class FeedbackSubmissionsStream(HubspotStream):
     """
@@ -1754,6 +1754,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "feedback_submissions"
@@ -1761,6 +1762,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1814,8 +1816,6 @@ class FeedbackSubmissionsStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class LineItemStream(HubspotStream):
     """
@@ -1828,6 +1828,7 @@ class LineItemStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "line_items"
@@ -1835,6 +1836,7 @@ class LineItemStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1887,8 +1889,6 @@ class LineItemStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class ProductStream(HubspotStream):
     """
@@ -1901,6 +1901,7 @@ class ProductStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "products"
@@ -1908,6 +1909,7 @@ class ProductStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1960,8 +1962,6 @@ class ProductStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class TicketStream(HubspotStream):
     """
@@ -1974,6 +1974,7 @@ class TicketStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "tickets"
@@ -1981,6 +1982,7 @@ class TicketStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2032,8 +2034,6 @@ class TicketStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class QuoteStream(HubspotStream):
     """
@@ -2046,6 +2046,7 @@ class QuoteStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "quotes"
@@ -2053,6 +2054,7 @@ class QuoteStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2105,8 +2107,6 @@ class QuoteStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class GoalStream(HubspotStream):
     """
@@ -2119,6 +2119,7 @@ class GoalStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "goals"
@@ -2126,6 +2127,7 @@ class GoalStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2177,8 +2179,6 @@ class GoalStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class CallStream(HubspotStream):
     """
@@ -2191,6 +2191,7 @@ class CallStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "calls"
@@ -2198,6 +2199,7 @@ class CallStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2253,8 +2255,6 @@ class CallStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class CommunicationStream(HubspotStream):
     """
@@ -2267,6 +2267,7 @@ class CommunicationStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "communications"
@@ -2274,6 +2275,7 @@ class CommunicationStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2323,8 +2325,6 @@ class CommunicationStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class EmailStream(HubspotStream):
     """
@@ -2337,6 +2337,7 @@ class EmailStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "emails"
@@ -2344,6 +2345,7 @@ class EmailStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2402,8 +2404,6 @@ class EmailStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class MeetingStream(HubspotStream):
     """
@@ -2416,6 +2416,7 @@ class MeetingStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "meetings"
@@ -2423,6 +2424,7 @@ class MeetingStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2479,8 +2481,6 @@ class MeetingStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class NoteStream(HubspotStream):
     """
@@ -2493,6 +2493,7 @@ class NoteStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "notes"
@@ -2500,6 +2501,7 @@ class NoteStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2549,8 +2551,6 @@ class NoteStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class PostalMailStream(HubspotStream):
     """
@@ -2563,6 +2563,7 @@ class PostalMailStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "postal_mail"
@@ -2570,6 +2571,7 @@ class PostalMailStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2617,8 +2619,6 @@ class PostalMailStream(HubspotStream):
 
         return params
 
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
 
 class TaskStream(HubspotStream):
     """
@@ -2631,6 +2631,7 @@ class TaskStream(HubspotStream):
     schema: instream schema
     primary_keys = primary keys for the table
     replication_key = datetime keys for replication
+    records_jsonpath = json response body
     """
 
     name = "tasks"
@@ -2638,6 +2639,7 @@ class TaskStream(HubspotStream):
     primary_keys = ["id"]
     replication_key = "updatedAt"
     replication_method = "incremental"
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -2689,5 +2691,3 @@ class TaskStream(HubspotStream):
             params["order_by"] = self.replication_key
 
         return params
-
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.

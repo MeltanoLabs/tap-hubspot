@@ -89,26 +89,7 @@ class ContactStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class UsersStream(HubspotStream):
@@ -169,26 +150,7 @@ class UsersStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class OwnersStream(HubspotStream):
@@ -253,26 +215,7 @@ class OwnersStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class TicketPipelineStream(HubspotStream):
@@ -358,26 +301,7 @@ class TicketPipelineStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class DealPipelineStream(HubspotStream):
@@ -463,26 +387,7 @@ class DealPipelineStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class EmailSubscriptionStream(HubspotStream):
@@ -549,26 +454,7 @@ class EmailSubscriptionStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("subscriptionDefinitions") is not None:
-            results = resp_json["subscriptionDefinitions"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
 
 
 class PropertyTicketStream(HubspotStream):
@@ -662,27 +548,6 @@ class PropertyTicketStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -691,6 +556,8 @@ class PropertyTicketStream(HubspotStream):
         row["hubspot_object"] = "ticket"
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyDealStream(HubspotStream):
@@ -762,27 +629,6 @@ class PropertyDealStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -794,6 +640,8 @@ class PropertyDealStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyContactStream(HubspotStream):
@@ -864,27 +712,6 @@ class PropertyContactStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -896,6 +723,8 @@ class PropertyContactStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyCompanyStream(HubspotStream):
@@ -966,27 +795,6 @@ class PropertyCompanyStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -998,6 +806,8 @@ class PropertyCompanyStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyProductStream(HubspotStream):
@@ -1068,27 +878,6 @@ class PropertyProductStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1100,6 +889,8 @@ class PropertyProductStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyLineItemStream(HubspotStream):
@@ -1170,27 +961,6 @@ class PropertyLineItemStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1202,6 +972,8 @@ class PropertyLineItemStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyEmailStream(HubspotStream):
@@ -1272,27 +1044,6 @@ class PropertyEmailStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1304,6 +1055,8 @@ class PropertyEmailStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyPostalMailStream(HubspotStream):
@@ -1374,27 +1127,6 @@ class PropertyPostalMailStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1406,6 +1138,8 @@ class PropertyPostalMailStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyCallStream(HubspotStream):
@@ -1476,27 +1210,6 @@ class PropertyCallStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1508,6 +1221,8 @@ class PropertyCallStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyMeetingStream(HubspotStream):
@@ -1578,27 +1293,6 @@ class PropertyMeetingStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1610,6 +1304,8 @@ class PropertyMeetingStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyTaskStream(HubspotStream):
@@ -1680,27 +1376,6 @@ class PropertyTaskStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1712,6 +1387,8 @@ class PropertyTaskStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyCommunicationStream(HubspotStream):
@@ -1782,27 +1459,6 @@ class PropertyCommunicationStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1814,6 +1470,8 @@ class PropertyCommunicationStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PropertyNotesStream(HubspotStream):
@@ -1884,27 +1542,6 @@ class PropertyNotesStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
-
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         """
         Returns api records with added columns
@@ -1916,6 +1553,8 @@ class PropertyNotesStream(HubspotStream):
             pass
 
         return super().post_process(row, context)
+
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """
@@ -2028,26 +1667,7 @@ class CompanyStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class DealStream(HubspotStream):
@@ -2120,26 +1740,7 @@ class DealStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class FeedbackSubmissionsStream(HubspotStream):
@@ -2213,26 +1814,7 @@ class FeedbackSubmissionsStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class LineItemStream(HubspotStream):
@@ -2305,26 +1887,7 @@ class LineItemStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class ProductStream(HubspotStream):
@@ -2397,26 +1960,7 @@ class ProductStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class TicketStream(HubspotStream):
@@ -2488,26 +2032,7 @@ class TicketStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class QuoteStream(HubspotStream):
@@ -2580,26 +2105,7 @@ class QuoteStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class GoalStream(HubspotStream):
@@ -2671,26 +2177,7 @@ class GoalStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class CallStream(HubspotStream):
@@ -2766,26 +2253,7 @@ class CallStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class CommunicationStream(HubspotStream):
@@ -2855,26 +2323,7 @@ class CommunicationStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class EmailStream(HubspotStream):
@@ -2953,26 +2402,7 @@ class EmailStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class MeetingStream(HubspotStream):
@@ -3049,26 +2479,7 @@ class MeetingStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class NoteStream(HubspotStream):
@@ -3138,26 +2549,7 @@ class NoteStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class PostalMailStream(HubspotStream):
@@ -3225,26 +2617,7 @@ class PostalMailStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
 
 class TaskStream(HubspotStream):
@@ -3317,23 +2690,4 @@ class TaskStream(HubspotStream):
 
         return params
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-
-        resp_json = response.json()
-
-        if isinstance(resp_json, list):
-            results = resp_json
-        elif resp_json.get("results") is not None:
-            results = resp_json["results"]
-        else:
-            results = resp_json
-
-        yield from results
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.

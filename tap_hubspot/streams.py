@@ -550,15 +550,6 @@ class PropertyTicketStream(HubspotStream):
 
         return params
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        row["hubspot_object"] = "ticket"
-
-        return super().post_process(row, context)
-
 
 class PropertyDealStream(HubspotStream):
 
@@ -631,18 +622,6 @@ class PropertyDealStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "deal"
-        except:
-            pass
-
-        return super().post_process(row, context)
-
 
 class PropertyContactStream(HubspotStream):
 
@@ -713,18 +692,6 @@ class PropertyContactStream(HubspotStream):
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "contact"
-        except:
-            pass
-
-        return super().post_process(row, context)
 
 
 class PropertyCompanyStream(HubspotStream):
@@ -797,18 +764,6 @@ class PropertyCompanyStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "company"
-        except:
-            pass
-
-        return super().post_process(row, context)
-
 
 class PropertyProductStream(HubspotStream):
 
@@ -879,18 +834,6 @@ class PropertyProductStream(HubspotStream):
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "product"
-        except:
-            pass
-
-        return super().post_process(row, context)
 
 
 class PropertyLineItemStream(HubspotStream):
@@ -963,18 +906,6 @@ class PropertyLineItemStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "line_item"
-        except:
-            pass
-
-        return super().post_process(row, context)
-
 
 class PropertyEmailStream(HubspotStream):
 
@@ -1045,18 +976,6 @@ class PropertyEmailStream(HubspotStream):
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "email"
-        except:
-            pass
-
-        return super().post_process(row, context)
 
 
 class PropertyPostalMailStream(HubspotStream):
@@ -1129,18 +1048,6 @@ class PropertyPostalMailStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "postal_mail"
-        except:
-            pass
-
-        return super().post_process(row, context)
-
 
 class PropertyCallStream(HubspotStream):
 
@@ -1211,18 +1118,6 @@ class PropertyCallStream(HubspotStream):
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "call"
-        except:
-            pass
-
-        return super().post_process(row, context)
 
 
 class PropertyMeetingStream(HubspotStream):
@@ -1295,18 +1190,6 @@ class PropertyMeetingStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "meeting"
-        except:
-            pass
-
-        return super().post_process(row, context)
-
 
 class PropertyTaskStream(HubspotStream):
 
@@ -1377,18 +1260,6 @@ class PropertyTaskStream(HubspotStream):
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "task"
-        except:
-            pass
-
-        return super().post_process(row, context)
 
 
 class PropertyCommunicationStream(HubspotStream):
@@ -1461,18 +1332,6 @@ class PropertyCommunicationStream(HubspotStream):
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "communication"
-        except:
-            pass
-
-        return super().post_process(row, context)
-
 
 class PropertyNotesStream(HubspotStream):
 
@@ -1543,18 +1402,6 @@ class PropertyNotesStream(HubspotStream):
         """
         base_url = "https://api.hubapi.com/crm/v3"
         return base_url
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        """
-        Returns api records with added columns
-        """
-
-        try:
-            row["hubspot_object"] = "note"
-        except:
-            pass
-
-        return super().post_process(row, context)
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """

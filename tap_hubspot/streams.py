@@ -250,7 +250,7 @@ class DealPipelineStream(HubspotStream):
                     ),
                     Property("stageId", StringType),
                     Property("createdAt", IntegerType),
-                    Property("updatedAt", StringType),
+                    Property("updatedAt", IntegerType),
                     Property("active", BooleanType),
                 ),
             ),
@@ -259,7 +259,7 @@ class DealPipelineStream(HubspotStream):
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
         Property("createdAt", IntegerType),
-        Property("updatedAt", StringType),
+        Property("updatedAt", IntegerType),
         Property("default", BooleanType),
     ).to_dict()
 

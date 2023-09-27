@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any, Iterable
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
@@ -40,20 +41,21 @@ class ContactStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("company", StringType),
+        Property("createdate", StringType),
+        Property("email", StringType),
+        Property("firstname", StringType),
+        Property("lastmodifieddate", StringType),
+        Property("lastname", StringType),
+        Property("phone", StringType),
+        Property("website", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("company", StringType),
-                Property("createdate", StringType),
-                Property("email", StringType),
-                Property("firstname", StringType),
-                Property("lastmodifieddate", StringType),
-                Property("lastname", StringType),
-                Property("phone", StringType),
-                Property("website", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1286,20 +1288,21 @@ class CompanyStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("city", StringType),
+        Property("createdDate", StringType),
+        Property("domain", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("industry", StringType),
+        Property("name", StringType),
+        Property("phone", StringType),
+        Property("state", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("city", StringType),
-                Property("createdDate", StringType),
-                Property("domain", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("industry", StringType),
-                Property("name", StringType),
-                Property("phone", StringType),
-                Property("state", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1335,20 +1338,21 @@ class DealStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("amount", StringType),
+        Property("createdDate", StringType),
+        Property("closedDate", StringType),
+        Property("dealname", StringType),
+        Property("dealstage", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hubspot_owner_id", StringType),
+        Property("pipeline", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("amount", StringType),
-                Property("createdDate", StringType),
-                Property("closedDate", StringType),
-                Property("dealname", StringType),
-                Property("dealstage", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hubspot_owner_id", StringType),
-                Property("pipeline", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1384,21 +1388,22 @@ class FeedbackSubmissionsStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("hs_content", StringType),
+        Property("hs_ingestion_id", StringType),
+        Property("hs_response_group", StringType),
+        Property("hs_submission_name", StringType),
+        Property("hs_survey_channel", StringType),
+        Property("hs_survey_id", StringType),
+        Property("hs_survey_name", StringType),
+        Property("hs_survey_type", StringType),
+        Property("hs_value", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("hs_content", StringType),
-                Property("hs_ingestion_id", StringType),
-                Property("hs_response_group", StringType),
-                Property("hs_submission_name", StringType),
-                Property("hs_survey_channel", StringType),
-                Property("hs_survey_id", StringType),
-                Property("hs_survey_name", StringType),
-                Property("hs_survey_type", StringType),
-                Property("hs_value", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1434,20 +1439,21 @@ class LineItemStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_product_id", StringType),
+        Property("hs_recurring_billing_period", StringType),
+        Property("name", StringType),
+        Property("price", StringType),
+        Property("quantity", StringType),
+        Property("recurringbillingfrequency", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_product_id", StringType),
-                Property("hs_recurring_billing_period", StringType),
-                Property("name", StringType),
-                Property("price", StringType),
-                Property("quantity", StringType),
-                Property("recurringbillingfrequency", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1483,20 +1489,21 @@ class ProductStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("description", StringType),
+        Property("hs_cost_of_goods_sold", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_recurring_billing_period", StringType),
+        Property("hs_sku", StringType),
+        Property("name", StringType),
+        Property("price", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("description", StringType),
-                Property("hs_cost_of_goods_sold", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_recurring_billing_period", StringType),
-                Property("hs_sku", StringType),
-                Property("name", StringType),
-                Property("price", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1532,19 +1539,20 @@ class TicketStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_pipeline", StringType),
+        Property("hs_pipeline_stage", StringType),
+        Property("hs_ticket_priority", StringType),
+        Property("hubspot_owner_id", StringType),
+        Property("subject", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_pipeline", StringType),
-                Property("hs_pipeline_stage", StringType),
-                Property("hs_ticket_priority", StringType),
-                Property("hubspot_owner_id", StringType),
-                Property("subject", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1580,20 +1588,21 @@ class QuoteStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("hs_createdate", StringType),
+        Property("hs_expiration_date", StringType),
+        Property("hs_quote_amount", StringType),
+        Property("hs_quote_number", StringType),
+        Property("hs_status", StringType),
+        Property("hs_terms", StringType),
+        Property("hs_title", StringType),
+        Property("hubspot_owner_id", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("hs_createdate", StringType),
-                Property("hs_expiration_date", StringType),
-                Property("hs_quote_amount", StringType),
-                Property("hs_quote_number", StringType),
-                Property("hs_status", StringType),
-                Property("hs_terms", StringType),
-                Property("hs_title", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1629,20 +1638,18 @@ class GoalStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_created_by_user_id", StringType),
+        Property("hs_end_datetime", StringType),
+        Property("hs_goal_name", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_start_datetime", StringType),
+        Property("hs_target_amount", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
-        Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_created_by_user_id", StringType),
-                Property("hs_end_datetime", StringType),
-                Property("hs_goal_name", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_start_datetime", StringType),
-                Property("hs_target_amount", StringType),
-            ),
-        ),
+        Property("properties", property_list),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
         Property("archived", BooleanType),
@@ -1677,23 +1684,24 @@ class CallStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    properties_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_call_body", StringType),
+        Property("hs_call_duration", StringType),
+        Property("hs_call_from_number", StringType),
+        Property("hs_call_recording_url", StringType),
+        Property("hs_call_status", StringType),
+        Property("hs_call_title", StringType),
+        Property("hs_call_to_number", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_timestamp", StringType),
+        Property("hubspot_owner_id", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_call_body", StringType),
-                Property("hs_call_duration", StringType),
-                Property("hs_call_from_number", StringType),
-                Property("hs_call_recording_url", StringType),
-                Property("hs_call_status", StringType),
-                Property("hs_call_title", StringType),
-                Property("hs_call_to_number", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            properties_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1729,17 +1737,18 @@ class CommunicationStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_communication_body", StringType),
+        Property("hs_communication_channel_type", StringType),
+        Property("hs_communication_logged_from", StringType),
+        Property("hs_lastmodifieddate", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_communication_body", StringType),
-                Property("hs_communication_channel_type", StringType),
-                Property("hs_communication_logged_from", StringType),
-                Property("hs_lastmodifieddate", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1775,26 +1784,27 @@ class EmailStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_email_direction", StringType),
+        Property("hs_email_sender_email", StringType),
+        Property("hs_email_sender_firstname", StringType),
+        Property("hs_email_sender_lastname", StringType),
+        Property("hs_email_status", StringType),
+        Property("hs_email_subject", StringType),
+        Property("hs_email_text", StringType),
+        Property("hs_email_to_email", StringType),
+        Property("hs_email_to_firstname", StringType),
+        Property("hs_email_to_lastname", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_timestamp", StringType),
+        Property("hubspot_owner_id", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_email_direction", StringType),
-                Property("hs_email_sender_email", StringType),
-                Property("hs_email_sender_firstname", StringType),
-                Property("hs_email_sender_lastname", StringType),
-                Property("hs_email_status", StringType),
-                Property("hs_email_subject", StringType),
-                Property("hs_email_text", StringType),
-                Property("hs_email_to_email", StringType),
-                Property("hs_email_to_firstname", StringType),
-                Property("hs_email_to_lastname", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1830,24 +1840,25 @@ class MeetingStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_internal_meeting_notes", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_meeting_body", StringType),
+        Property("hs_meeting_end_time", StringType),
+        Property("hs_meeting_external_url", StringType),
+        Property("hs_meeting_location", StringType),
+        Property("hs_meeting_outcome", StringType),
+        Property("hs_meeting_start_time", StringType),
+        Property("hs_meeting_title", StringType),
+        Property("hs_timestamp", StringType),
+        Property("hubspot_owner_id", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_internal_meeting_notes", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_meeting_body", StringType),
-                Property("hs_meeting_end_time", StringType),
-                Property("hs_meeting_external_url", StringType),
-                Property("hs_meeting_location", StringType),
-                Property("hs_meeting_outcome", StringType),
-                Property("hs_meeting_start_time", StringType),
-                Property("hs_meeting_title", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1883,17 +1894,18 @@ class NoteStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_note_body", StringType),
+        Property("hs_timestamp", StringType),
+        Property("hubspot_owner_id", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_note_body", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1929,15 +1941,16 @@ class PostalMailStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_postal_mail_body", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_postal_mail_body", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1973,20 +1986,21 @@ class TaskStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    property_list = ObjectType(
+        Property("createdate", StringType),
+        Property("hs_lastmodifieddate", StringType),
+        Property("hs_task_body", StringType),
+        Property("hs_task_priority", StringType),
+        Property("hs_task_status", StringType),
+        Property("hs_task_subject", StringType),
+        Property("hs_timestamp", StringType),
+        Property("hubspot_owner_id", StringType),
+    )
     schema = PropertiesList(
         Property("id", StringType),
         Property(
             "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_task_body", StringType),
-                Property("hs_task_priority", StringType),
-                Property("hs_task_status", StringType),
-                Property("hs_task_subject", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),

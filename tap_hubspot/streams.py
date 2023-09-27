@@ -1175,8 +1175,6 @@ class PropertyNotesStream(HubspotStream):
     name = "properties"
     path = "/properties/notes"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1684,7 +1682,7 @@ class CallStream(HubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
-    properties_list = ObjectType(
+    property_list = ObjectType(
         Property("createdate", StringType),
         Property("hs_call_body", StringType),
         Property("hs_call_duration", StringType),
@@ -1701,7 +1699,7 @@ class CallStream(HubspotStream):
         Property("id", StringType),
         Property(
             "properties",
-            properties_list,
+            property_list,
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),

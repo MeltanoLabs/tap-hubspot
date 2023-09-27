@@ -119,7 +119,7 @@ class HubspotStream(RESTStream):
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
-        if self.properties_list:
-            params["properties"] = self.properties_list.to_dict()["properties"].keys()
+        if hasattr(self, "property_list"):
+            params["properties"] = self.property_list.to_dict()["properties"].keys()
 
         return params

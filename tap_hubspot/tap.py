@@ -9,7 +9,7 @@ from tap_hubspot import streams
 
 
 class TapHubspot(Tap):
-    """tap-hubspot tap class."""
+    """tap-hubspot is a Singer tap for Hubspot."""
 
     name = "tap-hubspot"
 

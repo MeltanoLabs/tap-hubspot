@@ -16,9 +16,8 @@ if sys.version_info >= (3, 8):
 else:
     from cached_property import cached_property
 
-from singer_sdk.authenticators import (
-    BearerTokenAuthenticator,
-)
+from singer_sdk.authenticators import BearerTokenAuthenticator
+from tap_hubspot.auth import HubSpotOAuthAuthenticator
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
@@ -31,8 +30,7 @@ class HubspotStream(RESTStream):
         """
         Returns base url
         """
-        base_url = "https://api.hubapi.com/"
-        return base_url
+        return "https://api.hubapi.com/"
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
@@ -47,12 +45,16 @@ class HubspotStream(RESTStream):
             An authenticator instance.
         """
 
-        access_token = self.config.get("access_token")
-
-        return BearerTokenAuthenticator.create_for_stream(
-            self,
-            token=access_token,
-        )
+        if "refresh_token" in self.config:
+            return HubSpotOAuthAuthenticator(
+                self,
+                auth_endpoint="https://api.hubapi.com/oauth/v1/token",
+            )
+        else:
+            return BearerTokenAuthenticator(
+                self,
+                token=self.config.get("access_token"),
+            )
 
     @property
     def http_headers(self) -> dict:

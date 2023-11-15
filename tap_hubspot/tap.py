@@ -9,7 +9,7 @@ from tap_hubspot import streams
 
 
 class TapHubspot(Tap):
-    """tap-hubspot tap class."""
+    """tap-hubspot is a Singer tap for Hubspot."""
 
     name = "tap-hubspot"
 
@@ -17,8 +17,26 @@ class TapHubspot(Tap):
         th.Property(
             "access_token",
             th.StringType,
-            required=True,
+            required=False,
             description="Token to authenticate against the API service",
+        ),
+        th.Property(
+            "client_id",
+            th.StringType,
+            required=False,
+            description="The OAuth app client ID.",
+        ),
+        th.Property(
+            "client_secret",
+            th.StringType,
+            required=False,
+            description="The OAuth app client secret.",
+        ),
+        th.Property(
+            "refresh_token",
+            th.StringType,
+            required=False,
+            description="The OAuth app refresh token.",
         ),
         th.Property(
             "start_date",

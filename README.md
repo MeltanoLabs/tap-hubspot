@@ -1,8 +1,8 @@
-# tap-hubspot
+# `tap-hubspot`
 
-`tap-hubspot` is a Singer tap for Hubspot.
+tap-hubspot is a Singer tap for Hubspot.
 
-Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
+Built with the [Meltano Singer SDK](https://sdk.meltano.com).
 
 ## Capabilities
 
@@ -12,27 +12,25 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 * `about`
 * `stream-maps`
 * `schema-flattening`
+* `batch`
 
-## Configuration
-
-### Accepted Config Options
+## Settings
 
 | Setting             | Required | Default | Description |
 |:--------------------|:--------:|:-------:|:------------|
-| access_token        | True     | None    | The token to authenticate against the API service |
-| start_date          | False    | None    | The earliest record date to sync |
-| end_date            | False    | None    | The latest record date to sync |
+| access_token        | False    | None    | Token to authenticate against the API service |
+| client_id           | False    | None    | The OAuth app client ID. |
+| client_secret       | False    | None    | The OAuth app client secret. |
+| refresh_token       | False    | None    | The OAuth app refresh token. |
+| start_date          | False    | None    | Earliest record date to sync |
+| end_date            | False    | None    | Latest record date to sync |
 | stream_maps         | False    | None    | Config object for stream maps capability. For more information check out [Stream Maps](https://sdk.meltano.com/en/latest/stream_maps.html). |
 | stream_map_config   | False    | None    | User-defined config values to be used within map expressions. |
 | flattening_enabled  | False    | None    | 'True' to enable schema flattening and automatically expand nested properties. |
 | flattening_max_depth| False    | None    | The max depth to flatten schemas. |
+| batch_config        | False    | None    |             |
 
-
-A full list of supported settings and capabilities for this tap is available by running:
-
-```bash
-tap-hubspot --about
-```
+A full list of supported settings and capabilities is available by running: `tap-hubspot --about`
 
 ## Elastic License 2.0
 

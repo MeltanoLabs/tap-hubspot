@@ -18,7 +18,7 @@ requests = "^2.28.2"
 cached-property = "^1" # Remove after Python 3.7 support is dropped
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.2.1"
+pytest = "^7.4.3"
 singer-sdk = { version="^0.33.1", extras = ["testing"] }
 
 [tool.isort]

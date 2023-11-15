@@ -14,10 +14,3 @@ class HubSpotOAuthAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
             "client_secret": self.config["client_secret"],
             "refresh_token": self.config["refresh_token"],
         }
-
-    @classmethod
-    def create_for_stream(cls, stream):
-        return cls(
-            stream=stream,
-            auth_endpoint="https://api.hubapi.com/oauth/v1/token",
-        )

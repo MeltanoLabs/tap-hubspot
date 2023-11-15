@@ -47,10 +47,12 @@ class HubspotStream(RESTStream):
 
         if "refresh_token" in self.config:
             return HubSpotOAuthAuthenticator(
+                self,
                 auth_endpoint="https://api.hubapi.com/oauth/v1/token",
             )
         else:
             return BearerTokenAuthenticator(
+                self,
                 token=self.config.get("access_token"),
             )
 

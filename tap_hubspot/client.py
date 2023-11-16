@@ -123,3 +123,23 @@ class HubspotStream(RESTStream):
             params["order_by"] = self.replication_key
 
         return params
+
+    def post_process(
+        self,
+        row: dict,
+        context: dict | None = None,  # noqa: ARG002
+    ) -> dict | None:
+        """Post process row.
+
+        Args:
+            row: Row from response.
+            context: Stream sync context.
+
+        Returns:
+            Transformed row.
+        """
+        if "properties" in row:
+            properties = row.pop("properties")
+            for key, value in properties.items():
+                row[key] = value
+        return row

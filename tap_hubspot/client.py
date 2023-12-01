@@ -25,6 +25,12 @@ _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.properties = []
+        if "properties" in self.schema:
+            self.properties = self._get_available_properties()
+
     @property
     def url_base(self) -> str:
         """
@@ -116,6 +122,8 @@ class HubspotStream(RESTStream):
             A dictionary of URL query parameters.
         """
         params: dict = {}
+        if self.properties:
+            params["properties"] = ",".join(self.properties)
         if next_page_token:
             params["after"] = next_page_token
         if self.replication_key:
@@ -123,3 +131,14 @@ class HubspotStream(RESTStream):
             params["order_by"] = self.replication_key
 
         return params
+
+    def _get_available_properties(self) -> list[str]:
+        session = requests.Session()
+        session.auth = self.authenticator
+
+        resp = session.get(
+            f"https://api.hubapi.com/crm/v3/properties/{self.name}", headers=self.http_headers
+        )
+        resp.raise_for_status()
+        results = resp.json().get("results", [])
+        return [prop["name"] for prop in results]

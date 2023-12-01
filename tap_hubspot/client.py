@@ -130,14 +130,8 @@ class DynamicHubspotStream(HubspotStream):
         super().__init__(*args, **kwargs)
 
     def _get_datatype(self, data_type: str) -> th.JSONTypeHelper:
-        mapping = {
-            "datetime": th.DateTimeType(),
-            "date": th.DateType(),
-            "number": th.NumberType(),
-            "enumeration": th.StringType(),
-            "bool": th.BooleanType(),
-        }
-        return mapping.get(data_type, th.StringType())
+        # TODO: consider typing more precisely
+        return th.StringType()
 
     @cached_property
     def schema(self) -> dict:

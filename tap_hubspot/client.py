@@ -25,6 +25,9 @@ _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
 
+    # TODO: remove this once dynamic typed schemas are created
+    TYPE_CONFORMANCE_LEVEL = 0
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.hs_properties = []

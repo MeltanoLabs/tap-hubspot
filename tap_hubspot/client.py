@@ -158,7 +158,7 @@ class DynamicHubspotStream(HubspotStream):
             th.Property("archived", th.BooleanType),
         ).to_dict()
 
-    def _get_available_properties(self) -> dict[str, str]]:
+    def _get_available_properties(self) -> dict[str, str]:
         session = requests.Session()
         session.auth = self.authenticator
 

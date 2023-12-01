@@ -1405,12 +1405,21 @@ class LineItemStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_product_id", StringType),
+                Property("hs_recurring_billing_period", StringType),
+                Property("name", StringType),
+                Property("price", StringType),
+                Property("quantity", StringType),
+                Property("recurringbillingfrequency", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1445,12 +1454,20 @@ class ProductStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            ObjectType(
+                Property("createdate", StringType),
+                Property("description", StringType),
+                Property("hs_cost_of_goods_sold", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_recurring_billing_period", StringType),
+                Property("hs_sku", StringType),
+                Property("name", StringType),
+                Property("price", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1485,12 +1502,20 @@ class TicketStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_pipeline", StringType),
+                Property("hs_pipeline_stage", StringType),
+                Property("hs_ticket_priority", StringType),
+                Property("hubspot_owner_id", StringType),
+                Property("subject", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1525,12 +1550,21 @@ class QuoteStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            "properties",
+            ObjectType(
+                Property("hs_createdate", StringType),
+                Property("hs_expiration_date", StringType),
+                Property("hs_quote_amount", StringType),
+                Property("hs_quote_number", StringType),
+                Property("hs_status", StringType),
+                Property("hs_terms", StringType),
+                Property("hs_title", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1565,12 +1599,20 @@ class GoalStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_created_by_user_id", StringType),
+                Property("hs_end_datetime", StringType),
+                Property("hs_goal_name", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_start_datetime", StringType),
+                Property("hs_target_amount", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1685,12 +1727,27 @@ class EmailStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            "properties",
+            ObjectType(
+                Property("createdate", StringType),
+                Property("hs_email_direction", StringType),
+                Property("hs_email_sender_email", StringType),
+                Property("hs_email_sender_firstname", StringType),
+                Property("hs_email_sender_lastname", StringType),
+                Property("hs_email_status", StringType),
+                Property("hs_email_subject", StringType),
+                Property("hs_email_text", StringType),
+                Property("hs_email_to_email", StringType),
+                Property("hs_email_to_firstname", StringType),
+                Property("hs_email_to_lastname", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("hs_timestamp", StringType),
+                Property("hubspot_owner_id", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),

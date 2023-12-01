@@ -27,9 +27,9 @@ class HubspotStream(RESTStream):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.properties = []
-        if "properties" in self.schema:
-            self.properties = self._get_available_properties()
+        self.hs_properties = []
+        if "properties" in self.schema["properties"].keys():
+            self.hs_properties = self._get_available_properties()
 
     @property
     def url_base(self) -> str:
@@ -122,8 +122,8 @@ class HubspotStream(RESTStream):
             A dictionary of URL query parameters.
         """
         params: dict = {}
-        if self.properties:
-            params["properties"] = ",".join(self.properties)
+        if self.hs_properties:
+            params["properties"] = ",".join(self.hs_properties)
         if next_page_token:
             params["after"] = next_page_token
         if self.replication_key:

@@ -1458,6 +1458,7 @@ class ProductStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
+            "properties",
             ObjectType(
                 Property("createdate", StringType),
                 Property("description", StringType),

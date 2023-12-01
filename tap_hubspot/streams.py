@@ -43,17 +43,7 @@ class ContactStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("company", StringType),
-                Property("createdate", StringType),
-                Property("email", StringType),
-                Property("firstname", StringType),
-                Property("lastmodifieddate", StringType),
-                Property("lastname", StringType),
-                Property("phone", StringType),
-                Property("website", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1289,17 +1279,7 @@ class CompanyStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("city", StringType),
-                Property("createdDate", StringType),
-                Property("domain", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("industry", StringType),
-                Property("name", StringType),
-                Property("phone", StringType),
-                Property("state", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1338,17 +1318,7 @@ class DealStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("amount", StringType),
-                Property("createdDate", StringType),
-                Property("closedDate", StringType),
-                Property("dealname", StringType),
-                Property("dealstage", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hubspot_owner_id", StringType),
-                Property("pipeline", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1387,18 +1357,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("hs_content", StringType),
-                Property("hs_ingestion_id", StringType),
-                Property("hs_response_group", StringType),
-                Property("hs_submission_name", StringType),
-                Property("hs_survey_channel", StringType),
-                Property("hs_survey_id", StringType),
-                Property("hs_survey_name", StringType),
-                Property("hs_survey_type", StringType),
-                Property("hs_value", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1437,17 +1396,7 @@ class LineItemStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_product_id", StringType),
-                Property("hs_recurring_billing_period", StringType),
-                Property("name", StringType),
-                Property("price", StringType),
-                Property("quantity", StringType),
-                Property("recurringbillingfrequency", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1486,17 +1435,7 @@ class ProductStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("description", StringType),
-                Property("hs_cost_of_goods_sold", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_recurring_billing_period", StringType),
-                Property("hs_sku", StringType),
-                Property("name", StringType),
-                Property("price", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1535,16 +1474,7 @@ class TicketStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_pipeline", StringType),
-                Property("hs_pipeline_stage", StringType),
-                Property("hs_ticket_priority", StringType),
-                Property("hubspot_owner_id", StringType),
-                Property("subject", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1583,17 +1513,7 @@ class QuoteStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("hs_createdate", StringType),
-                Property("hs_expiration_date", StringType),
-                Property("hs_quote_amount", StringType),
-                Property("hs_quote_number", StringType),
-                Property("hs_status", StringType),
-                Property("hs_terms", StringType),
-                Property("hs_title", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1632,16 +1552,7 @@ class GoalStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_created_by_user_id", StringType),
-                Property("hs_end_datetime", StringType),
-                Property("hs_goal_name", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_start_datetime", StringType),
-                Property("hs_target_amount", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1680,20 +1591,7 @@ class CallStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_call_body", StringType),
-                Property("hs_call_duration", StringType),
-                Property("hs_call_from_number", StringType),
-                Property("hs_call_recording_url", StringType),
-                Property("hs_call_status", StringType),
-                Property("hs_call_title", StringType),
-                Property("hs_call_to_number", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1732,14 +1630,7 @@ class CommunicationStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_communication_body", StringType),
-                Property("hs_communication_channel_type", StringType),
-                Property("hs_communication_logged_from", StringType),
-                Property("hs_lastmodifieddate", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1778,23 +1669,7 @@ class EmailStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_email_direction", StringType),
-                Property("hs_email_sender_email", StringType),
-                Property("hs_email_sender_firstname", StringType),
-                Property("hs_email_sender_lastname", StringType),
-                Property("hs_email_status", StringType),
-                Property("hs_email_subject", StringType),
-                Property("hs_email_text", StringType),
-                Property("hs_email_to_email", StringType),
-                Property("hs_email_to_firstname", StringType),
-                Property("hs_email_to_lastname", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1833,21 +1708,7 @@ class MeetingStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_internal_meeting_notes", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_meeting_body", StringType),
-                Property("hs_meeting_end_time", StringType),
-                Property("hs_meeting_external_url", StringType),
-                Property("hs_meeting_location", StringType),
-                Property("hs_meeting_outcome", StringType),
-                Property("hs_meeting_start_time", StringType),
-                Property("hs_meeting_title", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1886,14 +1747,7 @@ class NoteStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_note_body", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1932,12 +1786,7 @@ class PostalMailStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_postal_mail_body", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1976,17 +1825,7 @@ class TaskStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_task_body", StringType),
-                Property("hs_task_priority", StringType),
-                Property("hs_task_status", StringType),
-                Property("hs_task_subject", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
+            "properties", ObjectType(),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),

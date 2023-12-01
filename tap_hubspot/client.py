@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import sys
-from pathlib import Path
-from typing import Any, Callable, Iterable
+from typing import Any, Callable
 
 import requests
-from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator
 from singer_sdk.streams import RESTStream
+from singer_sdk import typing as th
 
 if sys.version_info >= (3, 8):
     from functools import cached_property
@@ -24,22 +23,6 @@ _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
 class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
-
-    # TODO: remove this once dynamic typed schemas are created
-    TYPE_CONFORMANCE_LEVEL = 0
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.hs_properties = []
-        if self.dynamic_properties:
-            self.hs_properties = self._get_available_properties()
-
-    @property
-    def dynamic_properties(self) -> bool:
-        """
-        Returns dynamic properties boolean
-        """
-        return False
 
     @property
     def url_base(self) -> str:
@@ -132,8 +115,6 @@ class HubspotStream(RESTStream):
             A dictionary of URL query parameters.
         """
         params: dict = {}
-        if self.hs_properties:
-            params["properties"] = ",".join(self.hs_properties)
         if next_page_token:
             params["after"] = next_page_token
         if self.replication_key:
@@ -142,13 +123,67 @@ class HubspotStream(RESTStream):
 
         return params
 
-    def _get_available_properties(self) -> list[str]:
+class DynamicHubspotStream(HubspotStream):
+    """DynamicHubspotStream"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def _get_datatype(self, data_type: str) -> th.JSONTypeHelper:
+        mapping = {
+            "datetime": th.DateTimeType(),
+            "date": th.DateType(),
+            "number": th.NumberType(),
+            "enumeration": th.StringType(),
+            "bool": th.BooleanType(),
+        }
+        return mapping.get(data_type, th.StringType())
+
+    @cached_property
+    def schema(self) -> dict:
+        """Return a draft JSON schema for this stream."""
+        hs_props = []
+        self.hs_properties = self._get_available_properties()
+        for name, type in self.hs_properties.items():
+            hs_props.append(
+                th.Property(name, self._get_datatype(type))
+            )
+        return th.PropertiesList(
+            th.Property("id", th.StringType),
+            th.Property(
+                "properties", th.ObjectType(*hs_props),
+            ),
+            th.Property("createdAt", th.StringType),
+            th.Property("updatedAt", th.StringType),
+            th.Property("archived", th.BooleanType),
+        ).to_dict()
+
+    def _get_available_properties(self) -> dict[str, str]]:
         session = requests.Session()
         session.auth = self.authenticator
 
         resp = session.get(
-            f"https://api.hubapi.com/crm/v3/properties/{self.name}", headers=self.http_headers
+            f"https://api.hubapi.com/crm/v3/properties/{self.name}",
         )
         resp.raise_for_status()
         results = resp.json().get("results", [])
-        return [prop["name"] for prop in results]
+        return {prop["name"]: prop["type"] for prop in results}
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: The stream context.
+            next_page_token: The next page index or value.
+
+        Returns:
+            A dictionary of URL query parameters.
+        """
+        params = super().get_url_params(context, next_page_token)
+        if self.hs_properties:
+            params["properties"] = ",".join(self.hs_properties)
+        return params

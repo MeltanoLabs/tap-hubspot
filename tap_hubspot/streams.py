@@ -6,7 +6,7 @@ from pathlib import Path
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_hubspot.client import HubspotStream
+from tap_hubspot.client import DynamicHubspotStream, HubspotStream
 
 PropertiesList = th.PropertiesList
 Property = th.Property
@@ -18,7 +18,7 @@ BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
 
-class ContactStream(HubspotStream):
+class ContactStream(DynamicHubspotStream):
 
     """
     https://developers.hubspot.com/docs/api/crm/contacts
@@ -39,17 +39,6 @@ class ContactStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1255,7 +1244,7 @@ class PropertyNotesStream(HubspotStream):
         return property_records
 
 
-class CompanyStream(HubspotStream):
+class CompanyStream(DynamicHubspotStream):
 
     """
     https://developers.hubspot.com/docs/api/crm/companies
@@ -1276,17 +1265,6 @@ class CompanyStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1296,7 +1274,7 @@ class CompanyStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class DealStream(HubspotStream):
+class DealStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/deals
     """
@@ -1316,17 +1294,6 @@ class DealStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1628,7 +1595,7 @@ class GoalStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class CallStream(HubspotStream):
+class CallStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/calls
     """
@@ -1648,17 +1615,6 @@ class CallStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1668,7 +1624,7 @@ class CallStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class CommunicationStream(HubspotStream):
+class CommunicationStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/communications
     """
@@ -1688,17 +1644,6 @@ class CommunicationStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1763,7 +1708,7 @@ class EmailStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class MeetingStream(HubspotStream):
+class MeetingStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/meetings
     """
@@ -1783,17 +1728,6 @@ class MeetingStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1803,7 +1737,7 @@ class MeetingStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class NoteStream(HubspotStream):
+class NoteStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/notes
     """
@@ -1823,17 +1757,6 @@ class NoteStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1843,7 +1766,7 @@ class NoteStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class PostalMailStream(HubspotStream):
+class PostalMailStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/postal-mail
     """
@@ -1863,17 +1786,6 @@ class PostalMailStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1883,7 +1795,7 @@ class PostalMailStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class TaskStream(HubspotStream):
+class TaskStream(DynamicHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/tasks
     """
@@ -1903,17 +1815,6 @@ class TaskStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-    dynamic_properties = True
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties", ObjectType(),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:

@@ -28,8 +28,15 @@ class HubspotStream(RESTStream):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.hs_properties = []
-        if "properties" in self.schema["properties"].keys():
+        if self.dynamic_properties:
             self.hs_properties = self._get_available_properties()
+
+    @property
+    def dynamic_properties(self) -> bool:
+        """
+        Returns dynamic properties boolean
+        """
+        return False
 
     @property
     def url_base(self) -> str:

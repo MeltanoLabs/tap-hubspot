@@ -39,6 +39,7 @@ class ContactStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1275,6 +1276,7 @@ class CompanyStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1314,6 +1316,7 @@ class DealStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1357,7 +1360,17 @@ class FeedbackSubmissionsStream(HubspotStream):
     schema = PropertiesList(
         Property("id", StringType),
         Property(
-            "properties", ObjectType(),
+            "properties",
+            ObjectType(
+                Property("city", StringType),
+                Property("createdDate", StringType),
+                Property("domain", StringType),
+                Property("hs_lastmodifieddate", StringType),
+                Property("industry", StringType),
+                Property("name", StringType),
+                Property("phone", StringType),
+                Property("state", StringType),
+            ),
         ),
         Property("createdAt", StringType),
         Property("updatedAt", StringType),
@@ -1392,6 +1405,7 @@ class LineItemStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1431,6 +1445,7 @@ class ProductStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1470,6 +1485,7 @@ class TicketStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1509,6 +1525,7 @@ class QuoteStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1548,6 +1565,7 @@ class GoalStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1587,6 +1605,7 @@ class CallStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1626,6 +1645,7 @@ class CommunicationStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1665,6 +1685,7 @@ class EmailStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1704,6 +1725,7 @@ class MeetingStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1743,6 +1765,7 @@ class NoteStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1782,6 +1805,7 @@ class PostalMailStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1821,6 +1845,7 @@ class TaskStream(HubspotStream):
     replication_key = "updatedAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    dynamic_properties = True
 
     schema = PropertiesList(
         Property("id", StringType),

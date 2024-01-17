@@ -160,35 +160,6 @@ class DynamicHubspotStream(HubspotStream):
         )
         return schema.to_dict()
 
-    def post_process(
-        self,
-        row: dict,
-        context: dict | None = None,  # noqa: ARG002
-    ) -> dict | None:
-        """As needed, append or transform raw data to match expected structure.
-
-        Optional. This method gives developers an opportunity to "clean up" the results
-        prior to returning records to the downstream tap - for instance: cleaning,
-        renaming, or appending properties to the raw record result returned from the
-        API.
-
-        Developers may also return `None` from this method to filter out
-        invalid or not-applicable records from the stream.
-
-        Args:
-            row: Individual record in the stream.
-            context: Stream partition or context dictionary.
-
-        Returns:
-            The resulting record dict, or `None` if the record should be excluded.
-        """
-        if self.replication_key:
-            val = None
-            if props := row.get("properties"):
-                val = props[self.replication_key]
-            row[self.replication_key] = val
-        return row
-
     def _get_available_properties(self) -> dict[str, str]:
         session = requests.Session()
         session.auth = self.authenticator
@@ -217,7 +188,6 @@ class DynamicHubspotStream(HubspotStream):
         params = super().get_url_params(context, next_page_token)
         if self.hs_properties:
             params["properties"] = ",".join(self.hs_properties)
-
         return params
 
 

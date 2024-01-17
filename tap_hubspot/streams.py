@@ -1228,7 +1228,7 @@ class CompanyStream(DynamicHubspotStream):
     path = "/objects/companies"
     incremental_path = "/objects/companies/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1568,7 +1568,7 @@ class CallStream(DynamicHubspotStream):
     path = "/objects/calls"
     incremental_path = "/objects/calls/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1598,7 +1598,7 @@ class CommunicationStream(DynamicHubspotStream):
     path = "/objects/communications"
     incremental_path = "/objects/communications/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1681,7 +1681,7 @@ class MeetingStream(DynamicHubspotStream):
     path = "/objects/meetings"
     incremental_path = "/objects/meetings/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1711,7 +1711,7 @@ class NoteStream(DynamicHubspotStream):
     path = "/objects/notes"
     incremental_path = "/objects/notes/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1741,7 +1741,7 @@ class PostalMailStream(DynamicHubspotStream):
     path = "/objects/postal_mail"
     incremental_path = "/objects/postal_mail/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1771,7 +1771,7 @@ class TaskStream(DynamicHubspotStream):
     path = "/objects/tasks"
     incremental_path = "/objects/tasks/search"
     primary_keys = ["id"]
-    replication_key = "lastmodifieddate"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 

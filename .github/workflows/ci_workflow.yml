@@ -51,6 +51,8 @@ jobs:
       id: test_pytest
       continue-on-error: false
       env:
-         TAP_HUBSPOT_ACCESS_TOKEN: ${{ secrets.access_token }}
+        TAP_HUBSPOT_CLIENT_ID: ${{secrets.TAP_HUBSPOT_CLIENT_ID}}
+        TAP_HUBSPOT_CLIENT_SECRET: ${{secrets.TAP_HUBSPOT_CLIENT_SECRET}}
+        TAP_HUBSPOT_REFRESH_TOKEN: ${{secrets.TAP_HUBSPOT_REFRESH_TOKEN}}
       run: |
         poetry run pytest --capture=no

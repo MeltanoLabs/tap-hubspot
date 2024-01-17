@@ -6,7 +6,7 @@ from pathlib import Path
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_hubspot.client import DynamicHubspotStream, HubspotStream
+from tap_hubspot.client import DynamicHubspotStream, DynamicIncrementalHubspotStream, HubspotStream
 
 PropertiesList = th.PropertiesList
 Property = th.Property
@@ -18,7 +18,7 @@ BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
 
-class ContactStream(DynamicHubspotStream):
+class ContactStream(DynamicIncrementalHubspotStream):
 
     """
     https://developers.hubspot.com/docs/api/crm/contacts
@@ -1209,7 +1209,7 @@ class PropertyNotesStream(HubspotStream):
         return property_records
 
 
-class CompanyStream(DynamicHubspotStream):
+class CompanyStream(DynamicIncrementalHubspotStream):
 
     """
     https://developers.hubspot.com/docs/api/crm/companies
@@ -1240,7 +1240,7 @@ class CompanyStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class DealStream(DynamicHubspotStream):
+class DealStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/deals
     """
@@ -1550,7 +1550,7 @@ class GoalStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class CallStream(DynamicHubspotStream):
+class CallStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/calls
     """
@@ -1580,7 +1580,7 @@ class CallStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class CommunicationStream(DynamicHubspotStream):
+class CommunicationStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/communications
     """
@@ -1663,7 +1663,7 @@ class EmailStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class MeetingStream(DynamicHubspotStream):
+class MeetingStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/meetings
     """
@@ -1693,7 +1693,7 @@ class MeetingStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class NoteStream(DynamicHubspotStream):
+class NoteStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/notes
     """
@@ -1723,7 +1723,7 @@ class NoteStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class PostalMailStream(DynamicHubspotStream):
+class PostalMailStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/postal-mail
     """
@@ -1753,7 +1753,7 @@ class PostalMailStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class TaskStream(DynamicHubspotStream):
+class TaskStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/tasks
     """

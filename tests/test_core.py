@@ -9,7 +9,7 @@ SAMPLE_CONFIG = {
     "start_date": "2023-10-01T00:00:00.0Z",
     "client_id": os.environ["TAP_HUBSPOT_CLIENT_ID"],
     "client_secret":  os.environ["TAP_HUBSPOT_CLIENT_SECRET"],
-    "refresh_token":  os.environ["TAP_HUBSPOT_CLIENT_REFRESH_TOKEN"],
+    "refresh_token":  os.environ["TAP_HUBSPOT_REFRESH_TOKEN"],
 }
 
 

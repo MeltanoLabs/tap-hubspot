@@ -175,8 +175,6 @@ class HubspotStream(RESTStream):
                     )
                 else:
                     body["after"] = next_page_token
-            # The SDK rounds up when handling datetimes sometimes so we need to subtract a second to be safe
-            ts = ts - datetime.timedelta(seconds=1)
             epoch_ts = str(int(ts.timestamp() * 1000))
 
             body.update(

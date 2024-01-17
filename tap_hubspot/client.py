@@ -265,7 +265,7 @@ class DynamicHubspotStream(HubspotStream):
         Returns:
             The resulting record dict, or `None` if the record should be excluded.
         """
-        if self._is_incremental_search(context):
+        if self.replication_key:
             val = None
             if props := row.get("properties"):
                 val = props[self.replication_key]

@@ -12,6 +12,7 @@ from typing import Any, Callable
 from singer_sdk import typing as th
 from singer_sdk.pagination import BaseAPIPaginator
 from singer_sdk.streams import RESTStream
+from singer_sdk._singerlib.utils import strptime_to_utc
 
 if sys.version_info >= (3, 8):
     from functools import cached_property
@@ -169,7 +170,9 @@ class HubspotStream(RESTStream):
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token
                 if int(next_page_token) + 100 >= 10000:
-                    ts = self.get_replication_key_signpost(context)
+                    ts = strptime_to_utc(
+                        self.get_context_state(context).get("progress_markers").get("replication_key_value")
+                    )
                 else:
                     body["after"] = next_page_token
             # The SDK rounds up when handling datetimes sometimes so we need to subtract a second to be safe

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_hubspot.client import DynamicHubspotStream, HubspotStream
+from tap_hubspot.client import DynamicHubspotStream, DynamicIncrementalHubspotStream, HubspotStream
 
 PropertiesList = th.PropertiesList
 Property = th.Property
@@ -18,7 +18,7 @@ BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
 
-class ContactStream(DynamicHubspotStream):
+class ContactStream(DynamicIncrementalHubspotStream):
 
     """
     https://developers.hubspot.com/docs/api/crm/contacts
@@ -35,8 +35,9 @@ class ContactStream(DynamicHubspotStream):
 
     name = "contacts"
     path = "/objects/contacts"
+    incremental_path = "/objects/contacts/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -66,8 +67,6 @@ class UsersStream(HubspotStream):
     name = "users"
     path = "/users"
     primary_keys = ["id"]
-    replication_key = "id"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -104,8 +103,6 @@ class OwnersStream(HubspotStream):
     name = "owners"
     path = "/owners"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -145,8 +142,6 @@ class TicketPipelineStream(HubspotStream):
     name = "ticket_pipelines"
     path = "/pipelines/tickets"
     primary_keys = ["createdAt"]
-    replication_key = "createdAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -207,8 +202,6 @@ class DealPipelineStream(HubspotStream):
     name = "deal_pipelines"
     path = "/pipelines/deals"
     primary_keys = ["createdAt"]
-    replication_key = "createdAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -269,8 +262,6 @@ class EmailSubscriptionStream(HubspotStream):
     name = "email_subscriptions"
     path = "/subscriptions"
     primary_keys = ["id"]
-    replication_key = "id"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -312,8 +303,6 @@ class PropertyTicketStream(HubspotStream):
     name = "property_tickets"
     path = "/properties/tickets"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -382,8 +371,6 @@ class PropertyDealStream(HubspotStream):
     name = "property_deals"
     path = "/properties/deals"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -453,8 +440,6 @@ class PropertyContactStream(HubspotStream):
     name = "property_contacts"
     path = "/properties/contacts"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -523,8 +508,6 @@ class PropertyCompanyStream(HubspotStream):
     name = "property_companies"
     path = "/properties/company"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -593,8 +576,6 @@ class PropertyProductStream(HubspotStream):
     name = "property_products"
     path = "/properties/product"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -663,8 +644,6 @@ class PropertyLineItemStream(HubspotStream):
     name = "property_line_items"
     path = "/properties/line_item"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -733,8 +712,6 @@ class PropertyEmailStream(HubspotStream):
     name = "property_emails"
     path = "/properties/email"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -803,8 +780,6 @@ class PropertyPostalMailStream(HubspotStream):
     name = "property_postal_mails"
     path = "/properties/postal_mail"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -873,8 +848,6 @@ class PropertyCallStream(HubspotStream):
     name = "property_calls"
     path = "/properties/call"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -943,8 +916,6 @@ class PropertyMeetingStream(HubspotStream):
     name = "property_meetings"
     path = "/properties/meeting"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1013,8 +984,6 @@ class PropertyTaskStream(HubspotStream):
     name = "property_tasks"
     path = "/properties/task"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1083,8 +1052,6 @@ class PropertyCommunicationStream(HubspotStream):
     name = "property_communications"
     path = "/properties/communication"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1153,8 +1120,6 @@ class PropertyNotesStream(HubspotStream):
     name = "properties"
     path = "/properties/notes"
     primary_keys = ["label"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1244,7 +1209,7 @@ class PropertyNotesStream(HubspotStream):
         return property_records
 
 
-class CompanyStream(DynamicHubspotStream):
+class CompanyStream(DynamicIncrementalHubspotStream):
 
     """
     https://developers.hubspot.com/docs/api/crm/companies
@@ -1261,8 +1226,9 @@ class CompanyStream(DynamicHubspotStream):
 
     name = "companies"
     path = "/objects/companies"
+    incremental_path = "/objects/companies/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1274,7 +1240,7 @@ class CompanyStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class DealStream(DynamicHubspotStream):
+class DealStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/deals
     """
@@ -1290,8 +1256,9 @@ class DealStream(DynamicHubspotStream):
 
     name = "deals"
     path = "/objects/deals"
+    incremental_path = "/objects/deals/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1320,8 +1287,6 @@ class FeedbackSubmissionsStream(HubspotStream):
     name = "feedback_submissions"
     path = "/objects/feedback_submissions"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1369,8 +1334,6 @@ class LineItemStream(HubspotStream):
     name = "line_items"
     path = "/objects/line_items"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1418,8 +1381,6 @@ class ProductStream(HubspotStream):
     name = "products"
     path = "/objects/products"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1467,8 +1428,6 @@ class TicketStream(HubspotStream):
     name = "tickets"
     path = "/objects/tickets"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1515,8 +1474,6 @@ class QuoteStream(HubspotStream):
     name = "quotes"
     path = "/objects/quotes"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1564,8 +1521,6 @@ class GoalStream(HubspotStream):
     name = "goals"
     path = "/objects/goal_targets"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1595,7 +1550,7 @@ class GoalStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class CallStream(DynamicHubspotStream):
+class CallStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/calls
     """
@@ -1611,8 +1566,9 @@ class CallStream(DynamicHubspotStream):
 
     name = "calls"
     path = "/objects/calls"
+    incremental_path = "/objects/calls/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1624,7 +1580,7 @@ class CallStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class CommunicationStream(DynamicHubspotStream):
+class CommunicationStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/communications
     """
@@ -1639,9 +1595,10 @@ class CommunicationStream(DynamicHubspotStream):
     """
 
     name = "communications"
-    path = "/objects/Communications"
+    path = "/objects/communications"
+    incremental_path = "/objects/communications/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1670,8 +1627,6 @@ class EmailStream(HubspotStream):
     name = "emails"
     path = "/objects/emails"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
-    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
     schema = PropertiesList(
@@ -1708,7 +1663,7 @@ class EmailStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class MeetingStream(DynamicHubspotStream):
+class MeetingStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/meetings
     """
@@ -1724,8 +1679,9 @@ class MeetingStream(DynamicHubspotStream):
 
     name = "meetings"
     path = "/objects/meetings"
+    incremental_path = "/objects/meetings/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1737,7 +1693,7 @@ class MeetingStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class NoteStream(DynamicHubspotStream):
+class NoteStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/notes
     """
@@ -1753,8 +1709,9 @@ class NoteStream(DynamicHubspotStream):
 
     name = "notes"
     path = "/objects/notes"
+    incremental_path = "/objects/notes/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1766,7 +1723,7 @@ class NoteStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class PostalMailStream(DynamicHubspotStream):
+class PostalMailStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/postal-mail
     """
@@ -1782,8 +1739,9 @@ class PostalMailStream(DynamicHubspotStream):
 
     name = "postal_mail"
     path = "/objects/postal_mail"
+    incremental_path = "/objects/postal_mail/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -1795,7 +1753,7 @@ class PostalMailStream(DynamicHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class TaskStream(DynamicHubspotStream):
+class TaskStream(DynamicIncrementalHubspotStream):
     """
     https://developers.hubspot.com/docs/api/crm/tasks
     """
@@ -1811,8 +1769,9 @@ class TaskStream(DynamicHubspotStream):
 
     name = "tasks"
     path = "/objects/tasks"
+    incremental_path = "/objects/tasks/search"
     primary_keys = ["id"]
-    replication_key = "updatedAt"
+    replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 

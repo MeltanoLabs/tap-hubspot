@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "tap-hubspot"
-version = "0.0.1"
+name = "meltano-tap-hubspot"
+version = "0.0.0"
 description = "`tap-hubspot` is a Singer tap for tap-hubspot, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Ethan Stein"]
@@ -8,7 +8,10 @@ keywords = [
     "ELT",
     "tap-hubspot",
 ]
-license = "Apache 2.0"
+license = "Apache-2.0"
+packages = [
+    { include = "tap_hubspot" },
+]
 
 [tool.poetry.dependencies]
 python = "<3.12,>=3.7.1"
@@ -52,9 +55,12 @@ known-first-party = ["tap_hubspot"]
 convention = "google"
 
 [build-system]
-requires = ["poetry-core>=1.0.8"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core==1.8.1", "poetry-dynamic-versioning==1.2.0"]
+build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry.scripts]
 # CLI declaration
 tap-hubspot = 'tap_hubspot.tap:TapHubspot.cli'
+
+[tool.poetry-dynamic-versioning]
+enable = true

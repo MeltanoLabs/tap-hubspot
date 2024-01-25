@@ -12,7 +12,9 @@ jobs:
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
-    environment: publishing
+    environment:
+      name: publishing
+      url: https://pypi.org/p/meltano-tap-hubspot
     env:
       PIP_CONSTRAINT: .github/workflows/constraints.txt
     steps:

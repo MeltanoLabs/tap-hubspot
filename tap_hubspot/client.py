@@ -5,7 +5,6 @@ from __future__ import annotations
 import sys
 import requests
 import datetime
-import pytz
 
 from typing import Any, Callable
 
@@ -22,6 +21,11 @@ else:
 from singer_sdk.authenticators import BearerTokenAuthenticator
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
 from tap_hubspot.auth import HubSpotOAuthAuthenticator
+
+if sys.version_info < (3, 11):
+    from backports.datetime_fromisoformat import MonkeyPatch
+
+    MonkeyPatch.patch_fromisoformat()
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
@@ -304,8 +308,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
-            ts = datetime.datetime.strptime(self.get_starting_replication_key_value(context), "%Y-%m-%dT%H:%M:%S.%fZ")
-            ts = pytz.utc.localize(ts)
+            ts = datetime.datetime.fromisoformat(self.get_starting_replication_key_value(context))
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token

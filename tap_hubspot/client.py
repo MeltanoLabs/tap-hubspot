@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-import sys
-import requests
 import datetime
-
+import sys
 from typing import Any, Callable
 
+import requests
 from singer_sdk import typing as th
+from singer_sdk._singerlib.utils import strptime_to_utc
 from singer_sdk.pagination import BaseAPIPaginator
 from singer_sdk.streams import RESTStream
-from singer_sdk._singerlib.utils import strptime_to_utc
 
 if sys.version_info >= (3, 8):
     from functools import cached_property
@@ -133,7 +132,6 @@ class HubspotStream(RESTStream):
         return params
 
 
-
 class DynamicHubspotStream(HubspotStream):
     """DynamicHubspotStream"""
 
@@ -150,13 +148,12 @@ class DynamicHubspotStream(HubspotStream):
         hs_props = []
         self.hs_properties = self._get_available_properties()
         for name, type in self.hs_properties.items():
-            hs_props.append(
-                th.Property(name, self._get_datatype(type))
-            )
+            hs_props.append(th.Property(name, self._get_datatype(type)))
         schema = th.PropertiesList(
             th.Property("id", th.StringType),
             th.Property(
-                "properties", th.ObjectType(*hs_props),
+                "properties",
+                th.ObjectType(*hs_props),
             ),
             th.Property("createdAt", th.DateTimeType),
             th.Property("updatedAt", th.DateTimeType),
@@ -198,11 +195,18 @@ class DynamicHubspotStream(HubspotStream):
 class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream"""
 
+    date_filter = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def _is_incremental_search(self, context):
-        return self.replication_method == REPLICATION_INCREMENTAL and self.get_starting_replication_key_value(context) and hasattr(self, "incremental_path") and self.incremental_path
+        return (
+            self.replication_method == REPLICATION_INCREMENTAL
+            and self.get_starting_replication_key_value(context)
+            and hasattr(self, "incremental_path")
+            and self.incremental_path
+        )
 
     @cached_property
     def schema(self) -> dict:
@@ -210,13 +214,12 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         hs_props = []
         self.hs_properties = self._get_available_properties()
         for name, type in self.hs_properties.items():
-            hs_props.append(
-                th.Property(name, self._get_datatype(type))
-            )
+            hs_props.append(th.Property(name, self._get_datatype(type)))
         schema = th.PropertiesList(
             th.Property("id", th.StringType),
             th.Property(
-                "properties", th.ObjectType(*hs_props),
+                "properties",
+                th.ObjectType(*hs_props),
             ),
             th.Property("createdAt", th.DateTimeType),
             th.Property("updatedAt", th.DateTimeType),
@@ -285,7 +288,6 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             self.rest_method = "POST"
         return super().prepare_request(context, next_page_token)
 
-
     def prepare_request_payload(
         self,
         context: dict | None,
@@ -308,17 +310,19 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
-            ts = datetime.datetime.fromisoformat(self.get_starting_replication_key_value(context))
+            if self.date_filter is None:
+                self.date_filter = datetime.datetime.fromisoformat(self.get_starting_replication_key_value(context))
+
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token
                 if int(next_page_token) + 100 >= 10000:
-                    ts = strptime_to_utc(
+                    self.date_filter = strptime_to_utc(
                         self.get_context_state(context).get("progress_markers").get("replication_key_value")
                     )
                 else:
                     body["after"] = next_page_token
-            epoch_ts = str(int(ts.timestamp() * 1000))
+            epoch_ts = str(int(self.date_filter.timestamp() * 1000))
 
             body.update(
                 {
@@ -344,7 +348,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                     ],
                     # Hubspot sets a limit of most 100 per request. Default is 10
                     "limit": 100,
-                    "properties": list(self.hs_properties)
+                    "properties": list(self.hs_properties),
                 }
             )
 

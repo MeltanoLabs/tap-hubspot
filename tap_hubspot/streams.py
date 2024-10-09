@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Iterable
+from typing import Any, ClassVar, Iterable, Type
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
@@ -74,8 +74,8 @@ class OwnersStream(HubspotStream):
         Property("firstName", StringType),
         Property("lastName", StringType),
         Property("userId", IntegerType),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
+        Property("createdAt", DateTimeType),
+        Property("updatedAt", DateTimeType),
         Property("archived", BooleanType),
     ).to_dict()
 
@@ -87,7 +87,7 @@ class OwnersStream(HubspotStream):
 class TicketPipelineStream(HubspotStream):
     name = "ticket_pipelines"
     path = "/pipelines/tickets"
-    primary_keys: ClassVar[list[str]] = ["createdAt"]
+    primary_keys: ClassVar[list[str]] = ["pipelineId"]
     records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
@@ -109,7 +109,7 @@ class TicketPipelineStream(HubspotStream):
                     ),
                     Property("stageId", StringType),
                     Property("createdAt", IntegerType),
-                    Property("updatedAt", StringType),
+                    Property("updatedAt", IntegerType),
                     Property("active", BooleanType),
                 ),
             ),
@@ -118,7 +118,7 @@ class TicketPipelineStream(HubspotStream):
         Property("objectTypeId", StringType),
         Property("pipelineId", StringType),
         Property("createdAt", IntegerType),
-        Property("updatedAt", StringType),
+        Property("updatedAt", IntegerType),
         Property("default", BooleanType),
     ).to_dict()
 
@@ -130,7 +130,7 @@ class TicketPipelineStream(HubspotStream):
 class DealPipelineStream(HubspotStream):
     name = "deal_pipelines"
     path = "/pipelines/deals"
-    primary_keys: ClassVar[list[str]] = ["createdAt"]
+    primary_keys: ClassVar[list[str]] = ["pipelineId"]
     records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
@@ -194,639 +194,61 @@ class EmailSubscriptionStream(HubspotStream):
         return "https://api.hubapi.com/email/public/v1"
 
 
-class PropertyTicketStream(HubspotStream):
-    name = "property_tickets"
-    path = "/properties/tickets"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
+PROPERTY_SCHEMA = PropertiesList(
+    Property("updatedAt", DateTimeType),
+    Property("createdAt", DateTimeType),
+    Property("name", StringType),
+    Property("label", StringType),
+    Property("type", StringType),
+    Property("fieldType", StringType),
+    Property("description", StringType),
+    Property("groupName", StringType),
+    Property(
+        "options",
+        ArrayType(
             ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
+                Property("label", StringType),
+                Property("description", StringType),
+                Property("value", StringType),
+                Property("displayOrder", IntegerType),
+                Property("hidden", BooleanType),
             ),
         ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyDealStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}."""
-
-    name = "property_deals"
-    path = "/properties/deals"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
+    ),
+    Property("displayOrder", IntegerType),
+    Property("calculated", BooleanType),
+    Property("externalOptions", BooleanType),
+    Property("hasUniqueValue", BooleanType),
+    Property("hidden", BooleanType),
+    Property("hubspotDefined", BooleanType),
+    Property(
+        "modificationMetadata",
+        ObjectType(
+            Property("readOnlyOptions", BooleanType),
+            Property("readOnlyValue", BooleanType),
+            Property("readOnlyDefinition", BooleanType),
+            Property("archivable", BooleanType),
         ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-        Property("calculationFormula", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
+    ),
+    Property("formField", BooleanType),
+    Property("referencedObjectType", StringType),
+).to_dict()
 
 
-class PropertyContactStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
+def _property_stream(object_name: str) -> Type[HubspotStream]:
+    class GenericPropertyStream(HubspotStream):
+        name = f"property_{object_name}"
+        path = "/properties/{object_name}"
+        primary_keys: ClassVar[list[str]] = ["label"]
+        records_jsonpath = "$[results][*]"
 
-    name = "property_contacts"
-    path = "/properties/contacts"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
+        schema = PROPERTY_SCHEMA
 
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
+        @property
+        def url_base(self) -> str:
+            return CRM_URL_V3
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyCompanyStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_companies"
-    path = "/properties/company"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyProductStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_products"
-    path = "/properties/product"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyLineItemStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_line_items"
-    path = "/properties/line_item"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyEmailStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_emails"
-    path = "/properties/email"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyPostalMailStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_postal_mails"
-    path = "/properties/postal_mail"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyCallStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_calls"
-    path = "/properties/call"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyMeetingStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_meetings"
-    path = "/properties/meeting"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyTaskStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_tasks"
-    path = "/properties/task"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
-
-class PropertyCommunicationStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
-
-    name = "property_communications"
-    path = "/properties/communication"
-    primary_keys: ClassVar[list[str]] = ["label"]
-    records_jsonpath = "$[results][*]"
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
+    return GenericPropertyStream
 
 
 class PropertyNotesStream(HubspotStream):
@@ -834,48 +256,10 @@ class PropertyNotesStream(HubspotStream):
 
     name = "properties"
     path = "/properties/notes"
-    primary_keys: ClassVar[list[str]] = ["label"]
+    primary_keys: ClassVar[list[str]] = ["name", "referencedObjectType"]
     records_jsonpath = "$[results][*]"
 
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
+    schema = PROPERTY_SCHEMA
 
     @property
     def url_base(self) -> str:
@@ -883,40 +267,25 @@ class PropertyNotesStream(HubspotStream):
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """Merges all the property stream data into a single property table"""
-        property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
-        property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
-        property_contact = PropertyContactStream(self._tap, schema={"properties": {}})
-        property_company = PropertyCompanyStream(self._tap, schema={"properties": {}})
-        property_product = PropertyProductStream(self._tap, schema={"properties": {}})
-        property_lineitem = PropertyLineItemStream(self._tap, schema={"properties": {}})
-        property_email = PropertyEmailStream(self._tap, schema={"properties": {}})
-        property_postalmail = PropertyPostalMailStream(
-            self._tap,
-            schema={"properties": {}},
-        )
-        property_call = PropertyCallStream(self._tap, schema={"properties": {}})
-        property_meeting = PropertyMeetingStream(self._tap, schema={"properties": {}})
-        property_task = PropertyTaskStream(self._tap, schema={"properties": {}})
-        property_communication = PropertyCommunicationStream(
-            self._tap,
-            schema={"properties": {}},
-        )
-
-        return (
-            list(property_ticket.get_records(context))
-            + list(property_deal.get_records(context))
-            + list(property_contact.get_records(context))
-            + list(property_company.get_records(context))
-            + list(property_product.get_records(context))
-            + list(property_lineitem.get_records(context))
-            + list(property_email.get_records(context))
-            + list(property_postalmail.get_records(context))
-            + list(property_call.get_records(context))
-            + list(property_meeting.get_records(context))
-            + list(property_task.get_records(context))
-            + list(property_communication.get_records(context))
-            + list(super().get_records(context))
-        )
+        for property_type in [
+            "ticket",
+            "deal",
+            "contact",
+            "company",
+            "product",
+            "line_item",
+            "email",
+            "postal_mail",
+            "call",
+            "meeting",
+            "task",
+            "communication",
+            "note",
+        ]:
+            property_stream = _property_stream(property_type)(
+                self._tap, schema={"properties": {}}
+            )
+            yield from property_stream.get_records(context)
 
 
 class CompanyStream(DynamicIncrementalHubspotStream):

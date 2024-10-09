@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Iterable, Type
 
-from singer_sdk import typing as th  # JSON Schema typing helpers
+from singer_sdk import metrics
+from singer_sdk import typing as th
 
 from tap_hubspot.client import (
     DynamicIncrementalHubspotStream,
@@ -20,35 +21,29 @@ ArrayType = th.ArrayType
 BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
-BASE_URL = "https://api.hubapi.com"
-CRM_URL_V3 = BASE_URL + "/crm/v3"
-SETTINGS_URL_V3 = BASE_URL + "/settings/v3"
-MARKETING_v3 = BASE_URL + "/marketing/v3"
+CRM_URL_V3 = "/crm/v3"
+SETTINGS_URL_V3 = "/settings/v3"
+MARKETING_v3 = "/marketing/v3"
+PIPELINES_V1 = "/crm-pipelines/v1/pipelines"
 
 
 class ContactStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/contacts"""
 
     name = "contacts"
-    path = "/objects/contacts"
+    path = f"{CRM_URL_V3}/contacts"
     incremental_path = "/objects/contacts/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class UsersStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/settings/user-provisioning"""
 
     name = "users"
-    path = "/users"
+    path = f"{SETTINGS_URL_V3}/users"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -57,16 +52,11 @@ class UsersStream(HubspotStream):
         Property("primaryteamid", StringType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return SETTINGS_URL_V3
-
 
 class OwnersStream(HubspotStream):
     name = "owners"
-    path = "/owners"
+    path = f"{CRM_URL_V3}/owners"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -79,16 +69,11 @@ class OwnersStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class TicketPipelineStream(HubspotStream):
     name = "ticket_pipelines"
-    path = "/pipelines/tickets"
+    path = f"{PIPELINES_V1}/tickets"
     primary_keys: ClassVar[list[str]] = ["pipelineId"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("label", StringType),
@@ -122,16 +107,11 @@ class TicketPipelineStream(HubspotStream):
         Property("default", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return "https://api.hubapi.com/crm-pipelines/v1"
-
 
 class DealPipelineStream(HubspotStream):
     name = "deal_pipelines"
-    path = "/pipelines/deals"
+    path = f"{PIPELINES_V1}/deals"
     primary_keys: ClassVar[list[str]] = ["pipelineId"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("label", StringType),
@@ -165,14 +145,10 @@ class DealPipelineStream(HubspotStream):
         Property("default", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return "https://api.hubapi.com/crm-pipelines/v1"
-
 
 class EmailSubscriptionStream(HubspotStream):
     name = "email_subscriptions"
-    path = "/subscriptions"
+    path = "/email/public/v1/subscriptions"
     primary_keys: ClassVar[list[str]] = ["id"]
     records_jsonpath = "$[subscriptionDefinitions][*]"
 
@@ -188,10 +164,6 @@ class EmailSubscriptionStream(HubspotStream):
         Property("internalName", StringType),
         Property("businessUnitId", IntegerType),
     ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return "https://api.hubapi.com/email/public/v1"
 
 
 PROPERTY_SCHEMA = PropertiesList(
@@ -238,15 +210,10 @@ PROPERTY_SCHEMA = PropertiesList(
 def _property_stream(object_name: str) -> Type[HubspotStream]:
     class GenericPropertyStream(HubspotStream):
         name = f"property_{object_name}"
-        path = "/properties/{object_name}"
+        path = f"{CRM_URL_V3}/properties/{object_name}"
         primary_keys: ClassVar[list[str]] = ["label"]
-        records_jsonpath = "$[results][*]"
 
         schema = PROPERTY_SCHEMA
-
-        @property
-        def url_base(self) -> str:
-            return CRM_URL_V3
 
     return GenericPropertyStream
 
@@ -255,9 +222,8 @@ class PropertyNotesStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "properties"
-    path = "/properties/notes"
+    path = "/properties"
     primary_keys: ClassVar[list[str]] = ["name", "referencedObjectType"]
-    records_jsonpath = "$[results][*]"
 
     schema = PROPERTY_SCHEMA
 
@@ -292,41 +258,30 @@ class CompanyStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/companies"""
 
     name = "companies"
-    path = "/objects/companies"
+    path = f"{CRM_URL_V3}/objects/companies"
     incremental_path = "/objects/companies/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class DealStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/deals"""
 
     name = "deals"
-    path = "/objects/deals"
+    path = f"{CRM_URL_V3}/objects/deals"
     incremental_path = "/objects/deals/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class FeedbackSubmissionsStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/feedback-submissions"""
 
     name = "feedback_submissions"
-    path = "/objects/feedback_submissions"
+    path = f"{CRM_URL_V3}/objects/feedback_submissions"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -348,18 +303,13 @@ class FeedbackSubmissionsStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class LineItemStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/line-items"""
 
     name = "line_items"
-    path = "/objects/line_items"
+    path = f"{CRM_URL_V3}/objects/line_items"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -381,18 +331,13 @@ class LineItemStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class ProductStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/products"""
 
     name = "products"
-    path = "/objects/products"
+    path = f"{CRM_URL_V3}/objects/products"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -414,18 +359,13 @@ class ProductStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class TicketStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/tickets"""
 
     name = "tickets"
-    path = "/objects/tickets"
+    path = f"{CRM_URL_V3}/objects/tickets"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -446,18 +386,13 @@ class TicketStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class QuoteStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/quotes"""
 
     name = "quotes"
-    path = "/objects/quotes"
+    path = f"{CRM_URL_V3}/objects/quotes"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -479,18 +414,13 @@ class QuoteStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class GoalStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/goals"""
 
     name = "goals"
-    path = "/objects/goal_targets"
+    path = f"{CRM_URL_V3}/objects/goal_targets"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -511,50 +441,35 @@ class GoalStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class CallStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/calls"""
 
     name = "calls"
-    path = "/objects/calls"
+    path = f"{CRM_URL_V3}/objects/calls"
     incremental_path = "/objects/calls/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class CommunicationStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/communications"""
 
     name = "communications"
-    path = "/objects/communications"
+    path = f"{CRM_URL_V3}/objects/communications"
     incremental_path = "/objects/communications/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class EmailStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/email"""
 
     name = "emails"
-    path = "/objects/emails"
+    path = f"{CRM_URL_V3}/objects/emails"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -582,82 +497,57 @@ class EmailStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
 
 class MeetingStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/meetings"""
 
     name = "meetings"
-    path = "/objects/meetings"
+    path = f"{CRM_URL_V3}/objects/meetings"
     incremental_path = "/objects/meetings/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class NoteStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/notes"""
 
     name = "notes"
-    path = "/objects/notes"
+    path = f"{CRM_URL_V3}/objects/notes"
     incremental_path = "/objects/notes/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class PostalMailStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/postal-mail"""
 
     name = "postal_mail"
-    path = "/objects/postal_mail"
+    path = f"{CRM_URL_V3}/objects/postal_mail"
     incremental_path = "/objects/postal_mail/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class TaskStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/tasks"""
 
     name = "tasks"
-    path = "/objects/tasks"
+    path = f"{CRM_URL_V3}/objects/tasks"
     incremental_path = "/objects/tasks/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"
-
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
 
 
 class FormStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/forms"""
 
     name = "forms"
-    path = "/forms"
+    path = f"{MARKETING_v3}/forms"
     primary_keys: ClassVar[list[str]] = ["id"]
-    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -673,6 +563,55 @@ class FormStream(HubspotStream):
         Property("legalConsentOptions", th.ObjectType()),
     ).to_dict()
 
-    @property
-    def base_url(self) -> str:
-        return MARKETING_v3
+    def get_child_context(self, record: dict, context: dict | None) -> dict | None:
+        return {
+            "form_id": record["id"],
+        }
+
+
+class FormSubmissionStream(HubspotStream):
+    """https://developers.hubspot.com/docs/api/crm/form-submissions"""
+
+    name = "form_submissions"
+    path = "/form-integrations/v1/submissions/forms/{form_id}"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key = "submittedAt"
+    ignore_parent_replication_keys = True
+    parent_stream_type = FormStream
+
+    schema = PropertiesList(
+        Property("form_id", StringType),
+        Property("conversionId", StringType),
+        Property("submittedAt", DateTimeType),
+        Property("values", th.ArrayType(th.ObjectType())),
+        Property("pageUrl", StringType),
+    ).to_dict()
+
+    def request_records(self, context: dict | None) -> Iterable[dict]:
+        paginator = self.get_new_paginator()
+        decorated_request = self.request_decorator(self._request)
+        initial_value = self.get_starting_replication_key_value(context)
+
+        with metrics.http_request_counter(self.name, self.path) as request_counter:
+            request_counter.context = context
+
+            while not paginator.finished:
+                prepared_request = self.prepare_request(
+                    context,
+                    next_page_token=paginator.current_value,
+                )
+                resp = decorated_request(prepared_request, context)
+                request_counter.increment()
+                self.update_sync_costs(prepared_request, resp, context)
+                # overriding the default pagination logic since this stream returns records in reverse order
+                for record in self.parse_response(resp):
+                    yield record
+                    if initial_value and record["submittedAt"] < initial_value:
+                        paginator.finished = True
+                        break
+
+                paginator.advance(resp)
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        row["form_id"] = context["form_id"]
+        return super().post_process(row, context)

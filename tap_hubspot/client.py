@@ -33,12 +33,12 @@ _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
 class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
 
+    records_jsonpath = "$[results][*]"
+
     @property
     def url_base(self) -> str:
         """Returns base url"""
         return "https://api.hubapi.com/"
-
-    records_jsonpath = "$[*]"
 
     @cached_property
     def authenticator(self) -> _Auth:

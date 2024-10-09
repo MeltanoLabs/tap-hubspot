@@ -38,11 +38,6 @@ python_version = "3.9"
 warn_unused_configs = true
 
 [tool.ruff]
-ignore = [
-    "ANN101",  # missing-type-self
-    "ANN102",  # missing-type-cls
-]
-select = ["ALL"]
 src = ["tap_hubspot"]
 target-version = "py37"
 

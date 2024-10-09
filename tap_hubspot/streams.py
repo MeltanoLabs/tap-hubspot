@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import Any, ClassVar, Iterable
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_hubspot.client import (
-    DynamicHubspotStream,
     DynamicIncrementalHubspotStream,
     HubspotStream,
 )
@@ -21,55 +20,35 @@ ArrayType = th.ArrayType
 BooleanType = th.BooleanType
 IntegerType = th.IntegerType
 
+BASE_URL = "https://api.hubapi.com"
+CRM_URL_V3 = BASE_URL + "/crm/v3"
+SETTINGS_URL_V3 = BASE_URL + "/settings/v3"
+MARKETING_v3 = BASE_URL + "/marketing/v3"
+
 
 class ContactStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/contacts
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/contacts"""
 
     name = "contacts"
     path = "/objects/contacts"
     incremental_path = "/objects/contacts/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class UsersStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/settings/user-provisioning
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = id keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/settings/user-provisioning"""
 
     name = "users"
     path = "/users"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -80,31 +59,14 @@ class UsersStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-
-        return "https://api.hubapi.com/settings/v3"
+        return SETTINGS_URL_V3
 
 
 class OwnersStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/owners#endpoint?spec=GET-/crm/v3/owners/
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
-
     name = "owners"
     path = "/owners"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -119,30 +81,14 @@ class OwnersStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class TicketPipelineStream(HubspotStream):
-    """
-    https://legacydocs.hubspot.com/docs/methods/tickets/get-all-tickets
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
-
     name = "ticket_pipelines"
     path = "/pipelines/tickets"
-    primary_keys = ["createdAt"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["createdAt"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("label", StringType),
@@ -178,30 +124,14 @@ class TicketPipelineStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
         return "https://api.hubapi.com/crm-pipelines/v1"
 
 
 class DealPipelineStream(HubspotStream):
-    """
-    https://legacydocs.hubspot.com/docs/methods/deals/get-all-deals
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
-
     name = "deal_pipelines"
     path = "/pipelines/deals"
-    primary_keys = ["createdAt"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["createdAt"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("label", StringType),
@@ -237,30 +167,14 @@ class DealPipelineStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
         return "https://api.hubapi.com/crm-pipelines/v1"
 
 
 class EmailSubscriptionStream(HubspotStream):
-    """
-    https://legacydocs.hubspot.com/docs/methods/email/get_subscriptions
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = id keys for replication
-    records_jsonpath = json response body
-    """
-
     name = "email_subscriptions"
     path = "/subscriptions"
-    primary_keys = ["id"]
-    records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[subscriptionDefinitions][*]"
 
     schema = PropertiesList(
         Property("id", IntegerType),
@@ -277,30 +191,14 @@ class EmailSubscriptionStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
         return "https://api.hubapi.com/email/public/v1"
 
 
 class PropertyTicketStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
-
     name = "property_tickets"
     path = "/properties/tickets"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -344,30 +242,16 @@ class PropertyTicketStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyDealStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}."""
 
     name = "property_deals"
     path = "/properties/deals"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -412,30 +296,16 @@ class PropertyDealStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyContactStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_contacts"
     path = "/properties/contacts"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -479,30 +349,16 @@ class PropertyContactStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyCompanyStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_companies"
     path = "/properties/company"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -546,30 +402,16 @@ class PropertyCompanyStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyProductStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_products"
     path = "/properties/product"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -613,30 +455,16 @@ class PropertyProductStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyLineItemStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_line_items"
     path = "/properties/line_item"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -680,30 +508,16 @@ class PropertyLineItemStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyEmailStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_emails"
     path = "/properties/email"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -747,30 +561,16 @@ class PropertyEmailStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyPostalMailStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_postal_mails"
     path = "/properties/postal_mail"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -814,30 +614,16 @@ class PropertyPostalMailStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyCallStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_calls"
     path = "/properties/call"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -881,30 +667,16 @@ class PropertyCallStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyMeetingStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_meetings"
     path = "/properties/meeting"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -948,30 +720,16 @@ class PropertyMeetingStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyTaskStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_tasks"
     path = "/properties/task"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1015,30 +773,16 @@ class PropertyTaskStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyCommunicationStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "property_communications"
     path = "/properties/communication"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1082,30 +826,16 @@ class PropertyCommunicationStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PropertyNotesStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "properties"
     path = "/properties/notes"
-    primary_keys = ["label"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["label"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("updatedAt", StringType),
@@ -1149,16 +879,10 @@ class PropertyNotesStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
-        """
-        Merges all the property stream data into a single property table
-        """
-
+        """Merges all the property stream data into a single property table"""
         property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
         property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
         property_contact = PropertyContactStream(self._tap, schema={"properties": {}})
@@ -1167,15 +891,18 @@ class PropertyNotesStream(HubspotStream):
         property_lineitem = PropertyLineItemStream(self._tap, schema={"properties": {}})
         property_email = PropertyEmailStream(self._tap, schema={"properties": {}})
         property_postalmail = PropertyPostalMailStream(
-            self._tap, schema={"properties": {}}
+            self._tap,
+            schema={"properties": {}},
         )
         property_call = PropertyCallStream(self._tap, schema={"properties": {}})
         property_meeting = PropertyMeetingStream(self._tap, schema={"properties": {}})
         property_task = PropertyTaskStream(self._tap, schema={"properties": {}})
         property_communication = PropertyCommunicationStream(
-            self._tap, schema={"properties": {}}
+            self._tap,
+            schema={"properties": {}},
         )
-        property_records = (
+
+        return (
             list(property_ticket.get_records(context))
             + list(property_deal.get_records(context))
             + list(property_contact.get_records(context))
@@ -1191,87 +918,46 @@ class PropertyNotesStream(HubspotStream):
             + list(super().get_records(context))
         )
 
-        return property_records
-
 
 class CompanyStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/companies
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/companies"""
 
     name = "companies"
     path = "/objects/companies"
     incremental_path = "/objects/companies/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class DealStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/deals
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/deals"""
 
     name = "deals"
     path = "/objects/deals"
     incremental_path = "/objects/deals/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class FeedbackSubmissionsStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/feedback-submissions
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/feedback-submissions"""
 
     name = "feedback_submissions"
     path = "/objects/feedback_submissions"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1295,30 +981,16 @@ class FeedbackSubmissionsStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class LineItemStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/line-items
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/line-items"""
 
     name = "line_items"
     path = "/objects/line_items"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1342,30 +1014,16 @@ class LineItemStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class ProductStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/products
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/products"""
 
     name = "products"
     path = "/objects/products"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1389,30 +1047,16 @@ class ProductStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class TicketStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/tickets
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/tickets"""
 
     name = "tickets"
     path = "/objects/tickets"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1435,30 +1079,16 @@ class TicketStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class QuoteStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/quotes
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/quotes"""
 
     name = "quotes"
     path = "/objects/quotes"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1482,30 +1112,16 @@ class QuoteStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class GoalStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/goals
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/goals"""
 
     name = "goals"
     path = "/objects/goal_targets"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1528,90 +1144,48 @@ class GoalStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class CallStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/calls
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/calls"""
 
     name = "calls"
     path = "/objects/calls"
     incremental_path = "/objects/calls/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class CommunicationStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/communications
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/communications"""
 
     name = "communications"
     path = "/objects/communications"
     incremental_path = "/objects/communications/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class EmailStream(HubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/email
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/email"""
 
     name = "emails"
     path = "/objects/emails"
-    primary_keys = ["id"]
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1641,127 +1215,95 @@ class EmailStream(HubspotStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class MeetingStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/meetings
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/meetings"""
 
     name = "meetings"
     path = "/objects/meetings"
     incremental_path = "/objects/meetings/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class NoteStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/notes
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/notes"""
 
     name = "notes"
     path = "/objects/notes"
     incremental_path = "/objects/notes/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class PostalMailStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/postal-mail
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/postal-mail"""
 
     name = "postal_mail"
     path = "/objects/postal_mail"
     incremental_path = "/objects/postal_mail/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
 
 
 class TaskStream(DynamicIncrementalHubspotStream):
-    """
-    https://developers.hubspot.com/docs/api/crm/tasks
-    """
-
-    """
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+    """https://developers.hubspot.com/docs/api/crm/tasks"""
 
     name = "tasks"
     path = "/objects/tasks"
     incremental_path = "/objects/tasks/search"
-    primary_keys = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[results][*]"
 
     @property
     def url_base(self) -> str:
-        """
-        Returns an updated path which includes the api version
-        """
-        return "https://api.hubapi.com/crm/v3"
+        return CRM_URL_V3
+
+
+class FormStream(HubspotStream):
+    """https://developers.hubspot.com/docs/api/crm/forms"""
+
+    name = "forms"
+    path = "/forms"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    records_jsonpath = "$[results][*]"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property("name", StringType),
+        Property("formType", StringType),
+        Property("createdAt", DateTimeType),
+        Property("updatedAt", DateTimeType),
+        Property("archived", BooleanType),
+        Property("archivedAt", DateTimeType),
+        Property("fieldGroups", th.ArrayType(th.ObjectType())),
+        Property("configuration", th.ObjectType()),
+        Property("displayOptions", th.ObjectType()),
+        Property("legalConsentOptions", th.ObjectType()),
+    ).to_dict()
+
+    @property
+    def base_url(self) -> str:
+        return MARKETING_v3

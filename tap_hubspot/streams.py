@@ -6,7 +6,11 @@ from pathlib import Path
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_hubspot.client import DynamicHubspotStream, DynamicIncrementalHubspotStream, HubspotStream
+from tap_hubspot.client import (
+    DynamicHubspotStream,
+    DynamicIncrementalHubspotStream,
+    HubspotStream,
+)
 
 PropertiesList = th.PropertiesList
 Property = th.Property
@@ -19,7 +23,6 @@ IntegerType = th.IntegerType
 
 
 class ContactStream(DynamicIncrementalHubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/contacts
     """
@@ -50,7 +53,6 @@ class ContactStream(DynamicIncrementalHubspotStream):
 
 
 class UsersStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/settings/user-provisioning
     """
@@ -86,7 +88,6 @@ class UsersStream(HubspotStream):
 
 
 class OwnersStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/owners#endpoint?spec=GET-/crm/v3/owners/
     """
@@ -125,7 +126,6 @@ class OwnersStream(HubspotStream):
 
 
 class TicketPipelineStream(HubspotStream):
-
     """
     https://legacydocs.hubspot.com/docs/methods/tickets/get-all-tickets
     """
@@ -185,7 +185,6 @@ class TicketPipelineStream(HubspotStream):
 
 
 class DealPipelineStream(HubspotStream):
-
     """
     https://legacydocs.hubspot.com/docs/methods/deals/get-all-deals
     """
@@ -245,7 +244,6 @@ class DealPipelineStream(HubspotStream):
 
 
 class EmailSubscriptionStream(HubspotStream):
-
     """
     https://legacydocs.hubspot.com/docs/methods/email/get_subscriptions
     """
@@ -286,7 +284,6 @@ class EmailSubscriptionStream(HubspotStream):
 
 
 class PropertyTicketStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -354,7 +351,6 @@ class PropertyTicketStream(HubspotStream):
 
 
 class PropertyDealStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -423,7 +419,6 @@ class PropertyDealStream(HubspotStream):
 
 
 class PropertyContactStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -491,7 +486,6 @@ class PropertyContactStream(HubspotStream):
 
 
 class PropertyCompanyStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -559,7 +553,6 @@ class PropertyCompanyStream(HubspotStream):
 
 
 class PropertyProductStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -627,7 +620,6 @@ class PropertyProductStream(HubspotStream):
 
 
 class PropertyLineItemStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -695,7 +687,6 @@ class PropertyLineItemStream(HubspotStream):
 
 
 class PropertyEmailStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -763,7 +754,6 @@ class PropertyEmailStream(HubspotStream):
 
 
 class PropertyPostalMailStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -831,7 +821,6 @@ class PropertyPostalMailStream(HubspotStream):
 
 
 class PropertyCallStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -899,7 +888,6 @@ class PropertyCallStream(HubspotStream):
 
 
 class PropertyMeetingStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -967,7 +955,6 @@ class PropertyMeetingStream(HubspotStream):
 
 
 class PropertyTaskStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -1035,7 +1022,6 @@ class PropertyTaskStream(HubspotStream):
 
 
 class PropertyCommunicationStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -1103,7 +1089,6 @@ class PropertyCommunicationStream(HubspotStream):
 
 
 class PropertyNotesStream(HubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}
     """
@@ -1210,7 +1195,6 @@ class PropertyNotesStream(HubspotStream):
 
 
 class CompanyStream(DynamicIncrementalHubspotStream):
-
     """
     https://developers.hubspot.com/docs/api/crm/companies
     """

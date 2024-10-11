@@ -9,7 +9,6 @@ from typing import Any, Callable
 import requests
 from singer_sdk import typing as th
 from singer_sdk._singerlib.utils import strptime_to_utc
-from singer_sdk.pagination import BaseAPIPaginator
 from singer_sdk.streams import RESTStream
 
 if sys.version_info >= (3, 8):
@@ -34,20 +33,22 @@ class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
 
     records_jsonpath = "$[results][*]"
+    next_page_token_jsonpath = "$[paging][next][after]"
 
     @property
     def url_base(self) -> str:
         """Returns base url"""
-        return "https://api.hubapi.com/"
+        return "https://api.hubapi.com"
 
     @cached_property
     def authenticator(self) -> _Auth:
         """Return a new authenticator object.
 
-        Returns:
-            An authenticator instance.
+        Depending on the configuration, this will return either a BearerTokenAuthenticator or a HubSpotOAuthAuthenticator.
         """
-        if self.config.get("refresh_token") and self.config["refresh_token"] != "None":
+        if (
+            refresh_token := self.config.get("refresh_token")
+        ) and refresh_token != "None":
             return HubSpotOAuthAuthenticator(
                 self,
                 auth_endpoint="https://api.hubapi.com/oauth/v1/token",
@@ -57,34 +58,6 @@ class HubspotStream(RESTStream):
             self,
             token=self.config.get("access_token"),
         )
-
-    @property
-    def http_headers(self) -> dict:
-        headers = {}
-        if "user_agent" in self.config:
-            headers["User-Agent"] = self.config.get("user_agent")
-        return headers
-
-    def get_new_paginator(self) -> BaseAPIPaginator:
-        return super().get_new_paginator()
-
-    def get_next_page_token(
-        self,
-        response: requests.Response,
-        previous_token: str | None,
-    ) -> str | None:
-        """Return a token for identifying next page or None if no more pages."""
-        # If pagination is required, return a token which can be used to get the
-        #       next page. If this is the final page, return "None" to end the
-        #       pagination loop.
-        resp_json = response.json()
-        paging = resp_json.get("paging")
-
-        if paging is not None:
-            next_page_token = resp_json.get("paging", {}).get("next", {}).get("after")
-        else:
-            next_page_token = None
-        return next_page_token
 
     def get_url_params(
         self,

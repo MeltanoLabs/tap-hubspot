@@ -32,7 +32,7 @@ class ContactStream(DynamicIncrementalHubspotStream):
 
     name = "contacts"
     path = f"{CRM_URL_V3}/contacts"
-    incremental_path = "/objects/contacts/search"
+    incremental_path = f"{CRM_URL_V3}/objects/contacts/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -49,7 +49,9 @@ class UsersStream(HubspotStream):
         Property("id", StringType),
         Property("email", StringType),
         Property("roleIds", ArrayType(StringType)),
-        Property("primaryteamid", StringType),
+        Property("primaryTeamId", StringType),
+        Property("secondaryTeamIds", ArrayType(StringType)),
+        Property("superAdmin", BooleanType),
     ).to_dict()
 
 
@@ -218,7 +220,7 @@ def _property_stream(object_name: str) -> Type[HubspotStream]:
     return GenericPropertyStream
 
 
-class PropertyNotesStream(HubspotStream):
+class PropertyStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}"""
 
     name = "properties"
@@ -227,14 +229,10 @@ class PropertyNotesStream(HubspotStream):
 
     schema = PROPERTY_SCHEMA
 
-    @property
-    def url_base(self) -> str:
-        return CRM_URL_V3
-
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """Merges all the property stream data into a single property table"""
         for property_type in [
-            "ticket",
+            # "ticket",
             "deal",
             "contact",
             "company",
@@ -247,11 +245,14 @@ class PropertyNotesStream(HubspotStream):
             "task",
             "communication",
             "note",
+            "user",
         ]:
             property_stream = _property_stream(property_type)(
                 self._tap, schema={"properties": {}}
             )
-            yield from property_stream.get_records(context)
+            for record in property_stream.get_records(context):
+                # this should be in post_process, but there is no info on the object type
+                yield record | {"referencedObjectType": property_type}
 
 
 class CompanyStream(DynamicIncrementalHubspotStream):
@@ -259,7 +260,7 @@ class CompanyStream(DynamicIncrementalHubspotStream):
 
     name = "companies"
     path = f"{CRM_URL_V3}/objects/companies"
-    incremental_path = "/objects/companies/search"
+    incremental_path = f"{CRM_URL_V3}/objects/companies/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -270,7 +271,7 @@ class DealStream(DynamicIncrementalHubspotStream):
 
     name = "deals"
     path = f"{CRM_URL_V3}/objects/deals"
-    incremental_path = "/objects/deals/search"
+    incremental_path = f"{CRM_URL_V3}/objects/deals/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -447,7 +448,7 @@ class CallStream(DynamicIncrementalHubspotStream):
 
     name = "calls"
     path = f"{CRM_URL_V3}/objects/calls"
-    incremental_path = "/objects/calls/search"
+    incremental_path = f"{CRM_URL_V3}/objects/calls/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -458,7 +459,7 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
 
     name = "communications"
     path = f"{CRM_URL_V3}/objects/communications"
-    incremental_path = "/objects/communications/search"
+    incremental_path = f"{CRM_URL_V3}/objects/communications/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -503,7 +504,7 @@ class MeetingStream(DynamicIncrementalHubspotStream):
 
     name = "meetings"
     path = f"{CRM_URL_V3}/objects/meetings"
-    incremental_path = "/objects/meetings/search"
+    incremental_path = f"{CRM_URL_V3}/objects/meetings/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -514,7 +515,7 @@ class NoteStream(DynamicIncrementalHubspotStream):
 
     name = "notes"
     path = f"{CRM_URL_V3}/objects/notes"
-    incremental_path = "/objects/notes/search"
+    incremental_path = f"{CRM_URL_V3}/objects/notes/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -525,7 +526,7 @@ class PostalMailStream(DynamicIncrementalHubspotStream):
 
     name = "postal_mail"
     path = f"{CRM_URL_V3}/objects/postal_mail"
-    incremental_path = "/objects/postal_mail/search"
+    incremental_path = f"{CRM_URL_V3}/objects/postal_mail/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -536,7 +537,7 @@ class TaskStream(DynamicIncrementalHubspotStream):
 
     name = "tasks"
     path = f"{CRM_URL_V3}/objects/tasks"
-    incremental_path = "/objects/tasks/search"
+    incremental_path = f"{CRM_URL_V3}/objects/tasks/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -591,11 +592,12 @@ class FormSubmissionStream(HubspotStream):
         paginator = self.get_new_paginator()
         decorated_request = self.request_decorator(self._request)
         initial_value = self.get_starting_replication_key_value(context)
+        finished = paginator.finished
 
         with metrics.http_request_counter(self.name, self.path) as request_counter:
             request_counter.context = context
 
-            while not paginator.finished:
+            while not finished:
                 prepared_request = self.prepare_request(
                     context,
                     next_page_token=paginator.current_value,
@@ -607,9 +609,10 @@ class FormSubmissionStream(HubspotStream):
                 for record in self.parse_response(resp):
                     yield record
                     if initial_value and record["submittedAt"] < initial_value:
-                        paginator.finished = True
+                        finished = True
                         break
 
+            if not finished:
                 paginator.advance(resp)
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:

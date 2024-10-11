@@ -31,7 +31,7 @@ class ContactStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/contacts"""
 
     name = "contacts"
-    path = f"{CRM_URL_V3}/contacts"
+    path = f"{CRM_URL_V3}/objects/contacts"
     incremental_path = f"{CRM_URL_V3}/objects/contacts/search"
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key = "lastmodifieddate"

@@ -571,7 +571,7 @@ class FormStream(HubspotStream):
 
 
 class FormSubmissionStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/form-submissions"""
+    """https://legacydocs.hubspot.com/docs/methods/forms/get-submissions-for-a-form"""
 
     name = "form_submissions"
     path = "/form-integrations/v1/submissions/forms/{form_id}"

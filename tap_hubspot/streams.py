@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any, ClassVar, Iterable, Type
 
 from singer_sdk import metrics
@@ -232,7 +233,7 @@ class PropertyStream(HubspotStream):
     def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
         """Merges all the property stream data into a single property table"""
         for property_type in [
-            # "ticket",
+            "ticket",
             "deal",
             "contact",
             "company",
@@ -575,15 +576,16 @@ class FormSubmissionStream(HubspotStream):
 
     name = "form_submissions"
     path = "/form-integrations/v1/submissions/forms/{form_id}"
-    primary_keys: ClassVar[list[str]] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["form_id", "conversionId"]
     replication_key = "submittedAt"
     ignore_parent_replication_keys = True
     parent_stream_type = FormStream
+    limit = 50
 
     schema = PropertiesList(
         Property("form_id", StringType),
         Property("conversionId", StringType),
-        Property("submittedAt", DateTimeType),
+        Property("submittedAt", IntegerType),
         Property("values", th.ArrayType(th.ObjectType())),
         Property("pageUrl", StringType),
     ).to_dict()
@@ -608,7 +610,9 @@ class FormSubmissionStream(HubspotStream):
                 # overriding the default pagination logic since this stream returns records in reverse order
                 for record in self.parse_response(resp):
                     yield record
-                    if initial_value and record["submittedAt"] < initial_value:
+                    if initial_value and record["submittedAt"] < convert_date_to_epoch(
+                        initial_value
+                    ):
                         finished = True
                         break
 
@@ -618,3 +622,13 @@ class FormSubmissionStream(HubspotStream):
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         row["form_id"] = context["form_id"]
         return super().post_process(row, context)
+
+
+def convert_date_to_epoch(date: str | int) -> int:
+    if isinstance(date, str):
+        if len(date) == 10:
+            dt = datetime.fromisoformat(f"{date}T00:00:00")
+        else:
+            dt = datetime.fromisoformat(date)
+        return (dt - datetime(1970, 1, 1)).total_seconds() * 1000
+    return date

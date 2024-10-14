@@ -34,6 +34,7 @@ class HubspotStream(RESTStream):
 
     records_jsonpath = "$[results][*]"
     next_page_token_jsonpath = "$[paging][next][after]"
+    limit = 100
 
     @property
     def url_base(self) -> str:
@@ -65,7 +66,7 @@ class HubspotStream(RESTStream):
         next_page_token: str | None,
     ) -> dict[str, Any]:
         params: dict = {}
-        params["limit"] = 100
+        params["limit"] = self.limit
         if next_page_token:
             params["after"] = next_page_token
         if self.replication_key:

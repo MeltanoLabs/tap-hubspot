@@ -619,10 +619,6 @@ class FormSubmissionStream(HubspotStream):
             if not finished:
                 paginator.advance(resp)
 
-    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        row["form_id"] = context["form_id"]
-        return super().post_process(row, context)
-
 
 def convert_date_to_epoch(date: str | int) -> int:
     if isinstance(date, str):

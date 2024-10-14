@@ -78,12 +78,14 @@ class HubspotStream(RESTStream):
 class DynamicHubspotStream(HubspotStream):
     """DynamicHubspotStream"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def _get_datatype(self, data_type: str) -> th.JSONTypeHelper:
-        # TODO: consider typing more precisely
-        return th.StringType()
+        return th.StringType
+
+    def properties_schema(self) -> list[th.Property]:
+        return [
+            th.Property(prop, self._get_datatype(data_type))
+            for prop, data_type in self.hs_properties.items()
+        ]
 
     @cached_property
     def schema(self) -> dict:
@@ -92,7 +94,7 @@ class DynamicHubspotStream(HubspotStream):
             th.Property("id", th.StringType),
             th.Property(
                 "properties",
-                th.ObjectType(),
+                th.ObjectType(*self.properties_schema()),
             ),
             th.Property("createdAt", th.DateTimeType),
             th.Property("updatedAt", th.DateTimeType),
@@ -125,8 +127,7 @@ class DynamicHubspotStream(HubspotStream):
 class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    cursor_position = None
 
     def _is_incremental_search(self, context: dict | None) -> bool:
         return (
@@ -143,7 +144,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             th.Property("id", th.StringType),
             th.Property(
                 "properties",
-                th.ObjectType(),
+                th.ObjectType(*self.properties_schema()),
             ),
             th.Property("createdAt", th.DateTimeType),
             th.Property("updatedAt", th.DateTimeType),
@@ -199,21 +200,22 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
-            ts = datetime.datetime.fromisoformat(
-                self.get_starting_replication_key_value(context),
-            )
+            if self.cursor_position is None:
+                self.cursor_position = datetime.datetime.fromisoformat(
+                    self.get_starting_replication_key_value(context),
+                )
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token
                 if int(next_page_token) + 100 >= 10000:
-                    ts = strptime_to_utc(
+                    self.cursor_position = strptime_to_utc(
                         self.get_context_state(context)
                         .get("progress_markers")
                         .get("replication_key_value"),
                     )
                 else:
                     body["after"] = next_page_token
-            epoch_ts = str(int(ts.timestamp() * 1000))
+            epoch_ts = str(int(self.cursor_position.timestamp() * 1000))
 
             body.update(
                 {

@@ -618,6 +618,7 @@ class FormSubmissionStream(HubspotStream):
 
             if not finished:
                 paginator.advance(resp)
+                finished = paginator.finished
 
 
 def convert_date_to_epoch(date: str | int) -> int:

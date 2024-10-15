@@ -128,6 +128,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream"""
 
     cursor_position = None
+    start_of_sync = datetime.datetime.now(tz=datetime.timezone.utc)
 
     def _is_incremental_search(self, context: dict | None) -> bool:
         return (
@@ -177,6 +178,9 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             val = None
             if props := row.get("properties"):
                 val = props[self.replication_key]
+                # skip records that are newer than the start of the sync
+                if val > self.start_of_sync.isoformat():
+                    return None
             row[self.replication_key] = val
         return row
 
@@ -207,7 +211,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token
-                if int(next_page_token) + 100 >= 10000:
+                if int(next_page_token) + self.limit >= 10000:
                     self.cursor_position = strptime_to_utc(
                         self.get_context_state(context)
                         .get("progress_markers")
@@ -215,7 +219,6 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                     )
                 else:
                     body["after"] = next_page_token
-            epoch_ts = str(int(self.cursor_position.timestamp() * 1000))
 
             body.update(
                 {
@@ -227,7 +230,16 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                                     "operator": "GTE",
                                     # Timestamps need to be in milliseconds
                                     # https://legacydocs.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis
-                                    "value": epoch_ts,
+                                    "value": self.timestamp_to_milliseconds(
+                                        self.cursor_position
+                                    ),
+                                },
+                                {
+                                    "propertyName": self.replication_key,
+                                    "operator": "LTE",
+                                    "value": self.timestamp_to_milliseconds(
+                                        self.start_of_sync
+                                    ),
                                 },
                             ],
                         },
@@ -240,9 +252,12 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                         },
                     ],
                     # Hubspot sets a limit of most 100 per request. Default is 10
-                    "limit": 100,
+                    "limit": self.limit,
                     "properties": list(self.hs_properties),
                 },
             )
 
         return body
+
+    def timestamp_to_milliseconds(self, value: datetime.datetime) -> str:
+        return str(int(value.timestamp() * 1000))

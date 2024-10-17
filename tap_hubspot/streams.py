@@ -551,18 +551,114 @@ class FormStream(HubspotStream):
     path = f"{MARKETING_v3}/forms"
     primary_keys: ClassVar[list[str]] = ["id"]
 
-    schema = PropertiesList(
+    schema = th.PropertiesList(
         Property("id", StringType),
         Property("name", StringType),
         Property("formType", StringType),
         Property("createdAt", DateTimeType),
         Property("updatedAt", DateTimeType),
         Property("archived", BooleanType),
-        Property("archivedAt", DateTimeType),
-        Property("fieldGroups", th.ArrayType(th.ObjectType())),
-        Property("configuration", th.ObjectType()),
-        Property("displayOptions", th.ObjectType()),
-        Property("legalConsentOptions", th.ObjectType()),
+        Property(
+            "fieldGroups",
+            ArrayType(
+                ObjectType(
+                    Property("groupType", StringType),
+                    Property("richTextType", StringType),
+                    Property(
+                        "fields",
+                        ArrayType(
+                            ObjectType(
+                                Property("objectTypeId", StringType),
+                                Property("name", StringType),
+                                Property("label", StringType),
+                                Property("required", BooleanType),
+                                Property("hidden", BooleanType),
+                                Property("fieldType", StringType),
+                                Property(
+                                    "validation",
+                                    ObjectType(
+                                        Property(
+                                            "blockedEmailDomains", ArrayType(StringType)
+                                        ),
+                                        Property("useDefaultBlockList", BooleanType),
+                                    ),
+                                ),
+                            )
+                        ),
+                    ),
+                )
+            ),
+        ),
+        Property(
+            "configuration",
+            ObjectType(
+                Property("language", StringType),
+                Property("cloneable", BooleanType),
+                Property("editable", BooleanType),
+                Property("archivable", BooleanType),
+                Property("recaptchaEnabled", BooleanType),
+                Property("notifyContactOwner", BooleanType),
+                Property("notifyRecipients", ArrayType(StringType)),
+                Property("createNewContactForNewEmail", BooleanType),
+                Property("prePopulateKnownValues", BooleanType),
+                Property("allowLinkToResetKnownValues", BooleanType),
+                Property(
+                    "lifecycleStages",
+                    ArrayType(
+                        ObjectType(
+                            Property("objectTypeId", StringType),
+                            Property("value", StringType),
+                        )
+                    ),
+                ),
+            ),
+        ),
+        Property(
+            "displayOptions",
+            ObjectType(
+                Property("renderRawHtml", BooleanType),
+                Property("theme", StringType),
+                Property("submitButtonText", StringType),
+                Property(
+                    "style",
+                    ObjectType(
+                        Property("fontFamily", StringType),
+                        Property("backgroundWidth", StringType),
+                        Property("labelTextColor", StringType),
+                        Property("labelTextSize", StringType),
+                        Property("helpTextColor", StringType),
+                        Property("helpTextSize", StringType),
+                        Property("legalConsentTextColor", StringType),
+                        Property("legalConsentTextSize", StringType),
+                        Property("submitColor", StringType),
+                        Property("submitAlignment", StringType),
+                        Property("submitFontColor", StringType),
+                        Property("submitSize", StringType),
+                    ),
+                ),
+                Property("cssClass", StringType),
+            ),
+        ),
+        Property(
+            "legalConsentOptions",
+            ObjectType(
+                Property("type", StringType),
+                Property("communicationConsentText", StringType),
+                Property(
+                    "communicationsCheckboxes",
+                    ArrayType(
+                        ObjectType(
+                            Property("required", BooleanType),
+                            Property("subscriptionTypeId", StringType),
+                            Property("label", StringType),
+                        )
+                    ),
+                ),
+                Property("consentToProcessText", StringType),
+                Property("consentToProcessCheckboxLabel", StringType),
+                Property("privacyText", StringType),
+            ),
+        ),
     ).to_dict()
 
     def get_child_context(self, record: dict, context: dict | None) -> dict | None:
@@ -586,7 +682,15 @@ class FormSubmissionStream(HubspotStream):
         Property("form_id", StringType),
         Property("conversionId", StringType),
         Property("submittedAt", IntegerType),
-        Property("values", th.ArrayType(th.ObjectType())),
+        Property(
+            "values",
+            th.ArrayType(
+                th.ObjectType(
+                    Property("name", StringType),
+                    Property("value", StringType),
+                )
+            ),
+        ),
         Property("pageUrl", StringType),
     ).to_dict()
 

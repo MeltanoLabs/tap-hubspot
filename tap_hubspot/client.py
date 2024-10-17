@@ -105,9 +105,10 @@ class DynamicHubspotStream(HubspotStream):
     def _get_available_properties(self) -> dict[str, str]:
         session = requests.Session()
         session.auth = self.authenticator
+        object_name = self.path.split("/")[-1]
 
         resp = session.get(
-            f"https://api.hubapi.com/crm/v3/properties/{self.name}",
+            f"https://api.hubapi.com/crm/v3/properties/{object_name}",
         )
         resp.raise_for_status()
         results = resp.json().get("results", [])

@@ -466,38 +466,15 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
 
 
-class EmailStream(HubspotStream):
+class EmailStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/email"""
 
     name = "emails"
     path = f"{CRM_URL_V3}/objects/emails"
+    incremental_path = f"{CRM_URL_V3}/objects/emails/search"
     primary_keys: ClassVar[list[str]] = ["id"]
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_email_direction", StringType),
-                Property("hs_email_sender_email", StringType),
-                Property("hs_email_sender_firstname", StringType),
-                Property("hs_email_sender_lastname", StringType),
-                Property("hs_email_status", StringType),
-                Property("hs_email_subject", StringType),
-                Property("hs_email_text", StringType),
-                Property("hs_email_to_email", StringType),
-                Property("hs_email_to_firstname", StringType),
-                Property("hs_email_to_lastname", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
+    replication_key = "hs_lastmodifieddate"
+    replication_method = "INCREMENTAL"
 
 
 class MeetingStream(DynamicIncrementalHubspotStream):
@@ -649,7 +626,7 @@ class FormStream(HubspotStream):
                     ArrayType(
                         ObjectType(
                             Property("required", BooleanType),
-                            Property("subscriptionTypeId", StringType),
+                            Property("subscriptionTypeId", IntegerType),
                             Property("label", StringType),
                         )
                     ),

@@ -317,8 +317,19 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token
                 if int(next_page_token) + 100 >= 10000:
-                    self.date_filter = strptime_to_utc(
+                    next_date_filter = strptime_to_utc(
                         self.get_context_state(context).get("progress_markers").get("replication_key_value")
+                    )
+                    if self.date_filter == next_date_filter:
+                        # TODO: Temporary workaround, this has to be fixed the proper way otherwise data will be missing
+                        self.logger.warning(
+                            "More than 10k objects in the search result have the same lastmodifieddate. Adding 1 second in the next iteration date filter to avoid getting stuck in an infinite loop."
+                        )
+                        self.date_filter = self.date_filter + datetime.timedelta(seconds=1)
+                    else:
+                        self.date_filter = next_date_filter
+                    self.logger.warning(
+                        f"Date filter set to {self.date_filter.isoformat()} based on progress marker value."
                     )
                 else:
                     body["after"] = next_page_token
@@ -346,7 +357,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                             "direction": "ASCENDING",
                         }
                     ],
-                    # Hubspot sets a limit of most 100 per request. Default is 10
+                    # Hubspot sets a limit of most 200 per request. Default is 10
                     "limit": 100,
                     "properties": list(self.hs_properties),
                 }

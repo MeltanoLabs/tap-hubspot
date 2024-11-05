@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime
 import sys
-from typing import Any, Callable
+from typing import Any, Callable, Iterable
 
 import requests
 from singer_sdk import typing as th
@@ -196,6 +196,8 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream"""
 
     date_filter = None
+    record_id_filter = None
+    last_record_id = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -270,11 +272,13 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         Returns:
             The resulting record dict, or `None` if the record should be excluded.
         """
+
         if self.replication_key:
             val = None
             if props := row.get("properties"):
                 val = props[self.replication_key]
             row[self.replication_key] = val
+        self.last_record_id = row.get("id")
         return row
 
     def prepare_request(
@@ -307,6 +311,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 next page of data.
         """
         body = {}
+
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
@@ -317,48 +322,39 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the next_page_token
                 if int(next_page_token) + 100 >= 10000:
-                    next_date_filter = strptime_to_utc(
-                        self.get_context_state(context).get("progress_markers").get("replication_key_value")
-                    )
-                    if self.date_filter == next_date_filter:
-                        # TODO: Temporary workaround, this has to be fixed the proper way otherwise data will be missing
-                        self.logger.warning(
-                            "More than 10k objects in the search result have the same lastmodifieddate. Adding 1 second in the next iteration date filter to avoid getting stuck in an infinite loop."
-                        )
-                        self.date_filter = self.date_filter + datetime.timedelta(seconds=1)
-                    else:
-                        self.date_filter = next_date_filter
                     self.logger.warning(
-                        f"Date filter set to {self.date_filter.isoformat()} based on progress marker value."
+                        f"More than 10k objects in the search result. Updating record_id filter to {self.last_record_id} and date filter to {self.date_filter.isoformat()}."
                     )
+                    self.record_id_filter = {
+                        "propertyName": "hs_object_id",
+                        "operator": "GTE",
+                        "value": self.last_record_id,
+                    }
                 else:
                     body["after"] = next_page_token
+
             epoch_ts = str(int(self.date_filter.timestamp() * 1000))
+
+            filters = [
+                {
+                    "propertyName": self.replication_key,
+                    "operator": "GTE",
+                    "value": epoch_ts,
+                }
+            ]
+            if self.record_id_filter:
+                filters.append(self.record_id_filter)
 
             body.update(
                 {
-                    "filterGroups": [
-                        {
-                            "filters": [
-                                {
-                                    "propertyName": self.replication_key,
-                                    "operator": "GTE",
-                                    # Timestamps need to be in milliseconds
-                                    # https://legacydocs.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis
-                                    "value": epoch_ts,
-                                }
-                            ]
-                        }
-                    ],
+                    "filterGroups": [{"filters": filters}],
                     "sorts": [
                         {
-                            # This is inside the properties object
-                            "propertyName": self.replication_key,
+                            "propertyName": "hs_object_id",
                             "direction": "ASCENDING",
                         }
                     ],
-                    # Hubspot sets a limit of most 200 per request. Default is 10
-                    "limit": 100,
+                    "limit": 200,  # Hubspot sets a limit of most 200 per request. Default is 10
                     "properties": list(self.hs_properties),
                 }
             )

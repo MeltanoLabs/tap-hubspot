@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, ClassVar, Iterable, Type
 
 from singer_sdk import metrics
@@ -11,6 +11,7 @@ from singer_sdk import typing as th
 from tap_hubspot.client import (
     DynamicHubspotStream,
     DynamicIncrementalHubspotStream,
+    HubspotAnalyticsStream,
     HubspotStream,
 )
 
@@ -22,6 +23,7 @@ StringType = th.StringType
 ArrayType = th.ArrayType
 BooleanType = th.BooleanType
 IntegerType = th.IntegerType
+FloatType = th.NumberType
 
 CRM_URL_V3 = "/crm/v3"
 SETTINGS_URL_V3 = "/settings/v3"
@@ -618,3 +620,148 @@ def convert_date_to_epoch(date: str | int) -> int:
             dt = datetime.fromisoformat(date)
         return (dt - datetime(1970, 1, 1)).total_seconds() * 1000
     return date
+
+
+class AnalyticsSourcesDaily(HubspotAnalyticsStream):
+    name = "analytics_sources_daily"
+    path = "/analytics/v2/reports/sources/daily"
+    replication_key = "date"
+    primary_keys: ClassVar[list[str]] = ["date", "breakdown"]
+    schema = th.PropertiesList(
+        Property("date", th.DateType),
+        Property("breakdown", StringType),
+        Property("contactsPerPageview", FloatType),
+        Property("returningVisits", IntegerType),
+        Property("rawViews", IntegerType),
+        Property("standardViews", IntegerType),
+        Property("sessionToContactRate", FloatType),
+        Property("pageviewsPerSession", FloatType),
+        Property("bounceRate", FloatType),
+        Property("marketingQualifiedLeads", IntegerType),
+        Property("visits", IntegerType),
+        Property("visitors", IntegerType),
+        Property("pageviewsMinusExits", IntegerType),
+        Property("opportunities", IntegerType),
+        Property("leads", IntegerType),
+        Property("leadsPerView", FloatType),
+        Property("bounces", IntegerType),
+        Property("time", IntegerType),
+        Property("timePerSession", FloatType),
+        Property("contacts", IntegerType),
+        Property("newVisitorSessionRate", FloatType),
+        Property("subscribers", IntegerType),
+    ).to_dict()
+
+
+class AnalyticsSessionsDaily(HubspotAnalyticsStream):
+    name = "analytics_sessions_daily"
+    path = "/analytics/v2/reports/sessions/daily"
+    replication_key = "date"
+    primary_keys: ClassVar[list[str]] = ["date", "breakdown"]
+
+    schema = th.PropertiesList(
+        Property("date", th.DateType),
+        Property("breakdown", StringType),
+        Property("others", IntegerType),
+        Property("mobile", IntegerType),
+        Property("desktop", IntegerType),
+        Property("organicSearch", IntegerType),
+        Property("emailMarketing", IntegerType),
+        Property("paidSearch", IntegerType),
+        Property("paidSocial", IntegerType),
+        Property("socialMedia", IntegerType),
+        Property("directTraffic", IntegerType),
+        Property("referrals", IntegerType),
+        Property("otherCampaigns", IntegerType),
+    ).to_dict()
+
+
+class AnalyticsPagesTotals(HubspotStream):
+    """HubspotAnalyticsPagesTotals"""
+
+    name = "analytics_pages_totals"
+    path = "/analytics/v2/reports/pages/total"
+    records_jsonpath = "$[breakdowns][*]"
+    next_page_token_jsonpath = "$[offset]"
+    primary_keys: ClassVar[list[str]] = ["breakdown"]
+    replication_key = "last_updated_date"
+    limit = 350
+
+    schema = th.PropertiesList(
+        Property("meta", StringType),
+        Property("last_updated_date", th.DateType),
+        Property("breakdown", StringType),
+        Property("newVisitorRawViews", IntegerType),
+        Property("exits", IntegerType),
+        Property("pageviewsMinusExits", IntegerType),
+        Property("exitsPerPageview", FloatType),
+        Property("rawViews", IntegerType),
+        Property("standardViews", IntegerType),
+        Property("entrances", IntegerType),
+        Property("pageBounceRate", FloatType),
+    ).to_dict()
+
+    def get_url_params(
+        self, context: dict | None, next_page_token: str | None
+    ) -> dict[str, Any]:
+        params = {}
+        if replication_key_value := self.get_starting_replication_key_value(context):
+            # Retrieving last 30 days of data just to be sure
+            params["start"] = (
+                datetime.strptime(replication_key_value, "%Y-%m-%d")
+                - timedelta(days=30)
+            ).strftime("%Y-%m-%d")
+        if next_page_token:
+            params["offset"] = next_page_token
+        return params
+
+    def post_process(
+        self, row: dict[str, Any], context: dict[str, Any] | None
+    ) -> dict[str, Any]:
+        row["last_updated_date"] = datetime.now().strftime("%Y-%m-%d")
+        return row
+
+    def get_child_context(
+        self, record: dict[str, Any], context: dict[str, Any] | None
+    ) -> dict[str, Any] | None:
+        return {"breakdown": record["breakdown"]}
+
+
+class AnalyticsPagesDaily(HubspotStream):
+    name = "analytics_pages_daily"
+    primary_keys: ClassVar[list[str]] = ["date", "breakdown"]
+    state_partitioning_keys = []
+    path = "/analytics/v2/reports/pages/daily"
+    parent_stream_type = AnalyticsPagesTotals
+    records_jsonpath = "$[*]"
+
+    def get_url_params(
+        self, context: dict[str, Any] | None, next_page_token: str | None
+    ) -> dict[str, Any]:
+        return super().get_url_params(context, next_page_token) | {
+            "f": context["breakdown"]
+        }
+
+    def get_records(self, context: dict[str, Any] | None) -> Iterable[dict[str, Any]]:
+        rows = super().get_records(context)
+        for row in rows:
+            for date, breakdowns in row.items():
+                for breakdown in breakdowns:
+                    breakdown["date"] = date
+                    yield breakdown
+
+    schema = th.PropertiesList(
+        Property("date", th.DateType),
+        Property("breakdown", StringType),
+        Property("meta", StringType),
+        Property("newVisitorRawViews", IntegerType),
+        Property("exits", IntegerType),
+        Property("pageviewsMinusExits", IntegerType),
+        Property("exitsPerPageview", FloatType),
+        Property("rawViews", IntegerType),
+        Property("pageTime", IntegerType),
+        Property("timePerPageview", FloatType),
+        Property("entrances", IntegerType),
+        Property("pageBounceRate", FloatType),
+        Property("standardViews", IntegerType),
+    ).to_dict()

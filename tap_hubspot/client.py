@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime
 import sys
-from typing import Any, Callable
+from typing import Any, Callable, Iterable
 
 import requests
 from singer_sdk import typing as th
@@ -262,3 +262,32 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
 
     def timestamp_to_milliseconds(self, value: datetime.datetime) -> str:
         return str(int(value.timestamp() * 1000))
+
+
+class HubspotAnalyticsStream(HubspotStream):
+    """HubspotAnalyticsStream"""
+
+    records_jsonpath = "$[*]"
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: str | None,
+    ) -> dict[str, Any]:
+        params = {}
+        if replication_key_value := self.get_starting_replication_key_value(context):
+            # Retrieving last 30 days of data just to be sure
+            params["start"] = (
+                datetime.datetime.strptime(replication_key_value, "%Y-%m-%d")
+                - datetime.timedelta(days=30)
+            ).strftime("%Y-%m-%d")
+
+        return params
+
+    def get_records(self, context: dict[str, Any] | None) -> Iterable[dict[str, Any]]:
+        rows = super().get_records(context)
+        for row in rows:
+            for date, breakdowns in row.items():
+                for breakdown in breakdowns:
+                    breakdown["date"] = date
+                    yield breakdown

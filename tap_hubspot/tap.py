@@ -81,6 +81,10 @@ class TapHubspot(Tap):
             streams.TaskStream(self),
             streams.TicketPipelineStream(self),
             streams.UsersStream(self),
+            streams.AnalyticsSourcesDaily(self),
+            streams.AnalyticsPagesTotals(self),
+            streams.AnalyticsPagesDaily(self),
+            streams.AnalyticsSessionsDaily(self),
         ]
 
 

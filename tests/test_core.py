@@ -7,7 +7,7 @@ from singer_sdk.testing import SuiteConfig, get_tap_test_class
 from tap_hubspot.tap import TapHubspot
 
 SAMPLE_CONFIG = {
-    "start_date": "2020-01-01T00:00:00.0Z",
+    "start_date": "2020-01-01",
     "client_id": os.getenv("TAP_HUBSPOT_CLIENT_ID"),
     "client_secret": os.getenv("TAP_HUBSPOT_CLIENT_SECRET"),
     "refresh_token": os.getenv("TAP_HUBSPOT_REFRESH_TOKEN"),

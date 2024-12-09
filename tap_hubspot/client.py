@@ -2,32 +2,30 @@
 
 from __future__ import annotations
 
-import sys
-import requests
 import datetime
+import sys
+import typing as t
+from functools import cached_property
 
-from typing import Any, Callable
-
+import requests
 from singer_sdk import typing as th
-from singer_sdk.pagination import BaseAPIPaginator
-from singer_sdk.streams import RESTStream
 from singer_sdk._singerlib.utils import strptime_to_utc
-
-if sys.version_info >= (3, 8):
-    from functools import cached_property
-else:
-    from cached_property import cached_property
-
 from singer_sdk.authenticators import BearerTokenAuthenticator
+from singer_sdk.streams import RESTStream
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
+
 from tap_hubspot.auth import HubSpotOAuthAuthenticator
+
+if t.TYPE_CHECKING:
+    from singer_sdk.helpers.types import Context
+    from singer_sdk.pagination import BaseAPIPaginator
 
 if sys.version_info < (3, 11):
     from backports.datetime_fromisoformat import MonkeyPatch
 
     MonkeyPatch.patch_fromisoformat()
 
-_Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
+_Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
 
 class HubspotStream(RESTStream):
@@ -35,15 +33,13 @@ class HubspotStream(RESTStream):
 
     @property
     def url_base(self) -> str:
-        """
-        Returns base url
-        """
+        """Returns base url."""
         return "https://api.hubapi.com/"
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
     # Set this value or override `get_new_paginator`.
-    next_page_token_jsonpath = "$.next_page"
+    next_page_token_jsonpath = "$.next_page"  # noqa: S105
 
     @cached_property
     def authenticator(self) -> _Auth:
@@ -52,17 +48,15 @@ class HubspotStream(RESTStream):
         Returns:
             An authenticator instance.
         """
-
         if "refresh_token" in self.config:
             return HubSpotOAuthAuthenticator(
                 self,
                 auth_endpoint="https://api.hubapi.com/oauth/v1/token",
             )
-        else:
-            return BearerTokenAuthenticator(
-                self,
-                token=self.config.get("access_token"),
-            )
+        return BearerTokenAuthenticator(
+            self,
+            token=self.config.get("access_token"),
+        )
 
     @property
     def http_headers(self) -> dict:
@@ -94,8 +88,8 @@ class HubspotStream(RESTStream):
     def get_next_page_token(
         self,
         response: requests.Response,
-        previous_token: t.Any | None,
-    ) -> t.Any | None:
+        previous_token: int | None,  # noqa: ARG002
+    ) -> int | None:
         """Return a token for identifying next page or None if no more pages."""
         # If pagination is required, return a token which can be used to get the
         #       next page. If this is the final page, return "None" to end the
@@ -111,9 +105,9 @@ class HubspotStream(RESTStream):
 
     def get_url_params(
         self,
-        context: dict | None,
-        next_page_token: Any | None,
-    ) -> dict[str, Any]:
+        context: Context | None,  # noqa: ARG002
+        next_page_token: int | None,
+    ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
@@ -133,15 +127,14 @@ class HubspotStream(RESTStream):
         return params
 
 
-
 class DynamicHubspotStream(HubspotStream):
-    """DynamicHubspotStream"""
+    """DynamicHubspotStream."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: D107
         super().__init__(*args, **kwargs)
 
-    def _get_datatype(self, data_type: str) -> th.JSONTypeHelper:
-        # TODO: consider typing more precisely
+    def _get_datatype(self, data_type: str) -> th.JSONTypeHelper:  # noqa: ARG002
+        # TODO: consider typing more precisely  # noqa: TD002, TD003, FIX002
         return th.StringType()
 
     @cached_property
@@ -149,14 +142,15 @@ class DynamicHubspotStream(HubspotStream):
         """Return a draft JSON schema for this stream."""
         hs_props = []
         self.hs_properties = self._get_available_properties()
-        for name, type in self.hs_properties.items():
+        for name, prop_type in self.hs_properties.items():
             hs_props.append(
-                th.Property(name, self._get_datatype(type))
+                th.Property(name, self._get_datatype(prop_type)),
             )
         schema = th.PropertiesList(
             th.Property("id", th.StringType),
             th.Property(
-                "properties", th.ObjectType(*hs_props),
+                "properties",
+                th.ObjectType(*hs_props),
             ),
             th.Property("createdAt", th.DateTimeType),
             th.Property("updatedAt", th.DateTimeType),
@@ -177,9 +171,9 @@ class DynamicHubspotStream(HubspotStream):
 
     def get_url_params(
         self,
-        context: dict | None,
-        next_page_token: Any | None,
-    ) -> dict[str, Any]:
+        context: Context | None,
+        next_page_token: int | None,
+    ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
@@ -196,27 +190,33 @@ class DynamicHubspotStream(HubspotStream):
 
 
 class DynamicIncrementalHubspotStream(DynamicHubspotStream):
-    """DynamicIncrementalHubspotStream"""
+    """DynamicIncrementalHubspotStream."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: D107
         super().__init__(*args, **kwargs)
 
-    def _is_incremental_search(self, context):
-        return self.replication_method == REPLICATION_INCREMENTAL and self.get_starting_replication_key_value(context) and hasattr(self, "incremental_path") and self.incremental_path
+    def _is_incremental_search(self, context: Context | None) -> bool:
+        return (
+            self.replication_method == REPLICATION_INCREMENTAL
+            and self.get_starting_replication_key_value(context)
+            and hasattr(self, "incremental_path")
+            and self.incremental_path
+        )
 
     @cached_property
     def schema(self) -> dict:
         """Return a draft JSON schema for this stream."""
         hs_props = []
         self.hs_properties = self._get_available_properties()
-        for name, type in self.hs_properties.items():
+        for name, prop_type in self.hs_properties.items():
             hs_props.append(
-                th.Property(name, self._get_datatype(type))
+                th.Property(name, self._get_datatype(prop_type)),
             )
         schema = th.PropertiesList(
             th.Property("id", th.StringType),
             th.Property(
-                "properties", th.ObjectType(*hs_props),
+                "properties",
+                th.ObjectType(*hs_props),
             ),
             th.Property("createdAt", th.DateTimeType),
             th.Property("updatedAt", th.DateTimeType),
@@ -227,15 +227,15 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 th.Property(
                     self.replication_key,
                     th.DateTimeType,
-                )
+                ),
             )
         return schema.to_dict()
 
     def get_url_params(
         self,
-        context: dict | None,
-        next_page_token: Any | None,
-    ) -> dict[str, Any]:
+        context: Context | None,
+        next_page_token: int | None,
+    ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
@@ -255,15 +255,18 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         context: dict | None = None,  # noqa: ARG002
     ) -> dict | None:
         """As needed, append or transform raw data to match expected structure.
+
         Optional. This method gives developers an opportunity to "clean up" the results
         prior to returning records to the downstream tap - for instance: cleaning,
         renaming, or appending properties to the raw record result returned from the
         API.
         Developers may also return `None` from this method to filter out
         invalid or not-applicable records from the stream.
+
         Args:
             row: Individual record in the stream.
             context: Stream partition or context dictionary.
+
         Returns:
             The resulting record dict, or `None` if the record should be excluded.
         """
@@ -274,10 +277,10 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             row[self.replication_key] = val
         return row
 
-    def prepare_request(
+    def prepare_request(  # noqa: D102
         self,
-        context: dict | None,
-        next_page_token: _TToken | None,
+        context: Context | None,
+        next_page_token: int | None,
     ) -> requests.PreparedRequest:
         if self._is_incremental_search(context):
             # Search endpoints use POST request
@@ -285,11 +288,10 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             self.rest_method = "POST"
         return super().prepare_request(context, next_page_token)
 
-
     def prepare_request_payload(
         self,
-        context: dict | None,
-        next_page_token: _TToken | None,
+        context: Context | None,
+        next_page_token: int | None,
     ) -> dict | None:
         """Prepare the data payload for the REST API request.
 
@@ -308,13 +310,18 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
-            ts = datetime.datetime.fromisoformat(self.get_starting_replication_key_value(context))
+            ts = datetime.datetime.fromisoformat(
+                self.get_starting_replication_key_value(context),
+            )
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
-                # need to reset our epoch to most recent and not send the next_page_token
-                if int(next_page_token) + 100 >= 10000:
+                # need to reset our epoch to most recent and not send the
+                # next_page_token
+                if int(next_page_token) + 100 >= 10000:  # noqa: PLR2004
                     ts = strptime_to_utc(
-                        self.get_context_state(context).get("progress_markers").get("replication_key_value")
+                        self.get_context_state(context)
+                        .get("progress_markers")
+                        .get("replication_key_value"),
                     )
                 else:
                     body["after"] = next_page_token
@@ -331,21 +338,21 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                                     # Timestamps need to be in milliseconds
                                     # https://legacydocs.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis
                                     "value": epoch_ts,
-                                }
-                            ]
-                        }
+                                },
+                            ],
+                        },
                     ],
                     "sorts": [
                         {
                             # This is inside the properties object
                             "propertyName": self.replication_key,
                             "direction": "ASCENDING",
-                        }
+                        },
                     ],
                     # Hubspot sets a limit of most 100 per request. Default is 10
                     "limit": 100,
-                    "properties": list(self.hs_properties)
-                }
+                    "properties": list(self.hs_properties),
+                },
             )
 
         return body

@@ -55,7 +55,7 @@ class HubspotStream(RESTStream):
             )
         return BearerTokenAuthenticator(
             self,
-            token=self.config.get("access_token"),
+            token=self.config.get("access_token"),  # type: ignore[arg-type]
         )
 
     @property
@@ -197,7 +197,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
 
     def _is_incremental_search(self, context: Context | None) -> bool:
         return (
-            self.replication_method == REPLICATION_INCREMENTAL
+            self.replication_method == REPLICATION_INCREMENTAL  # type: ignore[return-value]
             and self.get_starting_replication_key_value(context)
             and hasattr(self, "incremental_path")
             and self.incremental_path
@@ -252,7 +252,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     def post_process(
         self,
         row: dict,
-        context: dict | None = None,  # noqa: ARG002
+        context: Context | None = None,  # noqa: ARG002
     ) -> dict | None:
         """As needed, append or transform raw data to match expected structure.
 
@@ -284,7 +284,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     ) -> requests.PreparedRequest:
         if self._is_incremental_search(context):
             # Search endpoints use POST request
-            self.path = self.incremental_path
+            self.path = self.incremental_path  # type: ignore[attr-defined]
             self.rest_method = "POST"
         return super().prepare_request(context, next_page_token)
 
@@ -306,12 +306,12 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             next_page_token: Token, page number or any request argument to request the
                 next page of data.
         """
-        body = {}
+        body: dict[str, t.Any] = {}
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
             ts = datetime.datetime.fromisoformat(
-                self.get_starting_replication_key_value(context),
+                self.get_starting_replication_key_value(context),  # type: ignore[arg-type]
             )
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
@@ -319,7 +319,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 # next_page_token
                 if int(next_page_token) + 100 >= 10000:  # noqa: PLR2004
                     ts = strptime_to_utc(
-                        self.get_context_state(context)
+                        self.get_context_state(context)  # type: ignore[union-attr]
                         .get("progress_markers")
                         .get("replication_key_value"),
                     )

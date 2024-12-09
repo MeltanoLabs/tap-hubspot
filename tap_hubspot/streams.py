@@ -11,6 +11,9 @@ from tap_hubspot.client import (
     HubspotStream,
 )
 
+if t.TYPE_CHECKING:
+    from singer_sdk.helpers.types import Context
+
 PropertiesList = th.PropertiesList
 Property = th.Property
 ObjectType = th.ObjectType
@@ -1076,7 +1079,7 @@ class PropertyNotesStream(HubspotStream):
         """Returns an updated path which includes the api version."""
         return "https://api.hubapi.com/crm/v3"
 
-    def get_records(self, context: dict | None) -> t.Iterable[dict[str, t.Any]]:
+    def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
         """Merges all the property stream data into a single property table."""
         property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
         property_deal = PropertyDealStream(self._tap, schema={"properties": {}})

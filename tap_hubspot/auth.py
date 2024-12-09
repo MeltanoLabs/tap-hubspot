@@ -7,7 +7,7 @@ class HubSpotOAuthAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
     """Authenticator class for HubSpot."""
 
     @property
-    def oauth_request_body(self):
+    def oauth_request_body(self):  # noqa: ANN201, D102
         return {
             "grant_type": "refresh_token",
             "client_id": self.config["client_id"],

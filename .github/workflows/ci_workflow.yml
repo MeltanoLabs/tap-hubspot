@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         # Only lint using the primary version used for dev
-        python-version: [3.9]
+        python-version: [3.13]
 
     steps:
     - uses: actions/checkout@v4
@@ -33,7 +33,7 @@ jobs:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [3.13]
 
     steps:
     - uses: actions/checkout@v4
@@ -51,8 +51,6 @@ jobs:
       id: test_pytest
       continue-on-error: false
       env:
-        TAP_HUBSPOT_CLIENT_ID: ${{secrets.TAP_HUBSPOT_CLIENT_ID}}
-        TAP_HUBSPOT_CLIENT_SECRET: ${{secrets.TAP_HUBSPOT_CLIENT_SECRET}}
-        TAP_HUBSPOT_REFRESH_TOKEN: ${{secrets.TAP_HUBSPOT_REFRESH_TOKEN}}
+        TAP_HUBSPOT_ACCESS_TOKEN: ${{secrets.TAP_HUBSPOT_ACCESS_TOKEN}}
       run: |
         poetry run pytest --capture=no

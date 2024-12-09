@@ -19,7 +19,7 @@ plugins:
     - name: start_date
       value: '2023-01-01T00:00:00Z'
     - name: end_date
-      value: '2023-05-22T00:00:00Z'      
+      value: '2023-05-22T00:00:00Z'
 environments:
 - name: dev
 - name: staging

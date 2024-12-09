@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "tap-hubspot",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceRoot}/tap_hubspot/tap.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--config",
+        ".secrets/config.json",
+        "--state",
+        ".secrets/state.json"
+      ],
+      "env": { "PYTHONPATH": "${workspaceRoot}" },
+      // Change this to false if you wish to debug and add breakpoints outside of your code e.g. the singer-sdk package
+      "justMyCode": false
+    },
+    {
+      "name": "tap-hubspot full-refresh",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceRoot}/tap_hubspot/tap.py",
+      "console": "integratedTerminal",
+      "args": ["--config", ".secrets/config.json"],
+      "env": { "PYTHONPATH": "${workspaceRoot}" },
+      // Change this to false if you wish to debug and add breakpoints outside of your code e.g. the singer-sdk package
+      "justMyCode": false
+    }
+  ]
+}

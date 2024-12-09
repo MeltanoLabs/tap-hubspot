@@ -19,11 +19,11 @@ backports-datetime-fromisoformat = {version = "^2.0.1", python = "<3.11"}
 cached-property = "^1" # Remove after Python 3.7 support is dropped
 fs-s3fs = { version = "^1.1.1", optional = true }
 requests = "^2.28.2"
-singer-sdk = { version="^0.33.1" }
+singer-sdk = { version=">=0.33.1,<0.35.0" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.1"
-singer-sdk = { version="^0.33.1", extras = ["testing"] }
+singer-sdk = { version=">=0.33.1,<0.35.0", extras = ["testing"] }
 
 [tool.isort]
 profile = "black"

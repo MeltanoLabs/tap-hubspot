@@ -1099,44 +1099,53 @@ files = [
 
 [[package]]
 name = "singer-sdk"
-version = "0.33.1"
+version = "0.34.1"
 description = "A framework for building Singer taps"
 optional = false
-python-versions = ">=3.7.1,<4"
+python-versions = ">=3.7.1"
 files = [
-    {file = "singer_sdk-0.33.1-py3-none-any.whl", hash = "sha256:2ba3fb9d7b8726c4d8cd66414fef71e117f52646e8aef35b4077ff8a8040587e"},
-    {file = "singer_sdk-0.33.1.tar.gz", hash = "sha256:25a9f06e54574a5a432519f11506591dfc4073237df39389ac41dcb0e19dace9"},
+    {file = "singer_sdk-0.34.1-py3-none-any.whl", hash = "sha256:2b9afa40722c2d7288992d86d16298128e38387941306267d908b9cd954227a3"},
+    {file = "singer_sdk-0.34.1.tar.gz", hash = "sha256:5da11da3de07cc31cc8c1f3f19a40b8f8be4a0df9b5535fb90880c263e58aee5"},
 ]
 
 [package.dependencies]
-backoff = ">=2.0.0"
+backoff = {version = ">=2.0.0", markers = "python_version < \"4\""}
+backports-datetime-fromisoformat = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
 click = ">=8.0,<9.0"
-cryptography = ">=3.4.6,<42.0.0"
+cryptography = ">=3.4.6"
 fs = ">=2.4.16"
-importlib-metadata = {version = "<7.0.0", markers = "python_version < \"3.8\""}
+importlib-metadata = {version = "<7.0.0", markers = "python_version < \"3.12\""}
 importlib-resources = {version = ">=5.12.0", markers = "python_version < \"3.9\""}
 inflection = ">=0.5.1"
 joblib = ">=1.0.1"
 jsonpath-ng = ">=1.5.3"
-jsonschema = ">=4.16.0"
-memoization = ">=0.3.2,<0.5.0"
+jsonschema = [
+    {version = ">=4.16.0", markers = "python_version >= \"3.8\""},
+    {version = ">=4.16.0,<4.18", markers = "python_version < \"3.8\""},
+]
+memoization = {version = ">=0.3.2,<0.5.0", markers = "python_version < \"4\""}
 packaging = ">=23.1"
-pendulum = ">=2.1.0"
+pendulum = [
+    {version = ">=2.1.0,<4", markers = "python_version >= \"3.8\""},
+    {version = ">=2.1.0,<3", markers = "python_version < \"3.8\""},
+]
 PyJWT = ">=2.4,<3.0"
 pytest = {version = ">=7.2.1", optional = true, markers = "extra == \"testing\""}
 pytest-durations = {version = ">=1.2.0", optional = true, markers = "extra == \"testing\""}
-python-dotenv = ">=0.20,<0.22"
-pytz = ">=2022.2.1,<2024.0.0"
+python-dateutil = ">=2.8.2"
+python-dotenv = ">=0.20"
+pytz = ">=2022.2.1"
 PyYAML = ">=6.0"
 requests = ">=2.25.1"
-simpleeval = ">=0.9.13,<0.10.0"
+simpleeval = ">=0.9.13"
 simplejson = ">=3.17.6"
 sqlalchemy = ">=1.4,<3.0"
-typing-extensions = ">=4.2.0"
+typing-extensions = ">=4.5.0"
 urllib3 = ">=1.26,<2"
 
 [package.extras]
-docs = ["furo (>=2022.12.7)", "myst-parser (>=1)", "sphinx (>=4.5)", "sphinx-autobuild (>=2021.3.14)", "sphinx-copybutton (>=0.3.1)", "sphinx-inline-tabs (>=2023.4.21)", "sphinx-reredirects (>=0.1.1)"]
+docs = ["furo (>=2022.12.7)", "myst-parser (>=1)", "sphinx (>=4.5)", "sphinx-autobuild (>=2021.3.14)", "sphinx-copybutton (>=0.3.1)", "sphinx-inline-tabs (>=2023.4.21)", "sphinx-notfound-page (>=1.0.0)", "sphinx-reredirects (>=0.1.1)"]
+parquet = ["numpy (<1.22)", "numpy (>=1.22)", "numpy (>=1.22,<1.25)", "pyarrow (>=11,<13)", "pyarrow (>=13)"]
 s3 = ["fs-s3fs (>=1.1.1)"]
 testing = ["pytest (>=7.2.1)", "pytest-durations (>=1.2.0)"]
 
@@ -1285,4 +1294,4 @@ s3 = ["fs-s3fs"]
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.12,>=3.7.1"
-content-hash = "df8aed9f61b21edc6f446272c3f7f47ef596860fb815f69caecbfa224a485630"
+content-hash = "0b24bc1e7e31974e898ce2e09eae7b1a341a78a839bc31fcfe03e4b8343901dd"

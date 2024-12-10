@@ -4,6 +4,9 @@ name: Test tap-hubspot
 
 on: [push]
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   linting:
 
@@ -32,8 +35,14 @@ jobs:
     env:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     strategy:
+      max-parallel: 2
       matrix:
-        python-version: [3.13]
+        python-version:
+        - "3.13"
+        - "3.12"
+        - "3.11"
+        - "3.10"
+        - "3.9"
 
     steps:
     - uses: actions/checkout@v4

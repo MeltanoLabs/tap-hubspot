@@ -6,6 +6,9 @@ permissions:
   contents: write # Upload artifacts to release
   id-token: write # Use PyPI trusted publishing
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   build:
     name: Build and Inspect

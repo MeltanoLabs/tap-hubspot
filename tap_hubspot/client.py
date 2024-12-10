@@ -285,7 +285,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         if self._is_incremental_search(context):
             # Search endpoints use POST request
             self.path = self.incremental_path  # type: ignore[attr-defined]
-            self.rest_method = "POST"
+            self.http_method = "POST"
         return super().prepare_request(context, next_page_token)
 
     def prepare_request_payload(

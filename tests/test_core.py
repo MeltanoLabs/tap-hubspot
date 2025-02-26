@@ -19,7 +19,7 @@ TestTapHubspot = get_tap_test_class(
             "communications",
             "emails",
             "feedback_submissions",
-            "goals",
+            "goal_targets",
             "line_items",
             "meetings",
             "notes",

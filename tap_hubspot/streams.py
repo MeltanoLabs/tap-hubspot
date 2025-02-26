@@ -765,6 +765,69 @@ class PropertyPostalMailStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
+class PropertyGoalStream(HubspotStream):
+    """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}."""
+
+    """
+    name: stream name
+    path: path which will be added to api url in client.py
+    schema: instream schema
+    primary_keys = primary keys for the table
+    replication_key = datetime keys for replication
+    records_jsonpath = json response body
+    """
+
+    name = "goal_targets"
+    path = "/properties/goal_targets"
+    primary_keys = ("label",)
+    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
+
+    schema = PropertiesList(
+        Property("updatedAt", StringType),
+        Property("createdAt", StringType),
+        Property("name", StringType),
+        Property("label", StringType),
+        Property("type", StringType),
+        Property("fieldType", StringType),
+        Property("description", StringType),
+        Property("groupName", StringType),
+        Property(
+            "options",
+            ArrayType(
+                ObjectType(
+                    Property("label", StringType),
+                    Property("description", StringType),
+                    Property("value", StringType),
+                    Property("displayOrder", IntegerType),
+                    Property("hidden", BooleanType),
+                ),
+            ),
+        ),
+        Property("displayOrder", IntegerType),
+        Property("calculated", BooleanType),
+        Property("externalOptions", BooleanType),
+        Property("hasUniqueValue", BooleanType),
+        Property("hidden", BooleanType),
+        Property("hubspotDefined", BooleanType),
+        Property(
+            "modificationMetadata",
+            ObjectType(
+                Property("readOnlyOptions", BooleanType),
+                Property("readOnlyValue", BooleanType),
+                Property("readOnlyDefinition", BooleanType),
+                Property("archivable", BooleanType),
+            ),
+        ),
+        Property("formField", BooleanType),
+        Property("hubspot_object", StringType),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """Returns an updated path which includes the api version."""
+        return "https://api.hubapi.com/crm/v3"
+
+
 class PropertyCallStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/properties#endpoint?spec=PATCH-/crm/v3/properties/{objectType}/{propertyName}."""
 
@@ -1093,6 +1156,7 @@ class PropertyNotesStream(HubspotStream):
             schema={"properties": {}},
         )
         property_call = PropertyCallStream(self._tap, schema={"properties": {}})
+        property_goal = PropertyGoalStream(self._tap, schema={"properties": {}})
         property_meeting = PropertyMeetingStream(self._tap, schema={"properties": {}})
         property_task = PropertyTaskStream(self._tap, schema={"properties": {}})
         property_communication = PropertyCommunicationStream(
@@ -1109,6 +1173,7 @@ class PropertyNotesStream(HubspotStream):
             + list(property_email.get_records(context))
             + list(property_postalmail.get_records(context))
             + list(property_call.get_records(context))
+            + list(property_goal.get_records(context))
             + list(property_meeting.get_records(context))
             + list(property_task.get_records(context))
             + list(property_communication.get_records(context))
@@ -1380,7 +1445,7 @@ class QuoteStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class GoalStream(HubspotStream):
+class GoalStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/goals.
 
     name: stream name
@@ -1391,29 +1456,13 @@ class GoalStream(HubspotStream):
     records_jsonpath = json response body
     """
 
-    name = "goals"
+    name = "goal_targets"
     path = "/objects/goal_targets"
+    incremental_path = "/objects/goal_targets/search"
     primary_keys = ("id",)
+    replication_key = "hs_lastmodifieddate"
+    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_created_by_user_id", StringType),
-                Property("hs_end_datetime", StringType),
-                Property("hs_goal_name", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_start_datetime", StringType),
-                Property("hs_target_amount", StringType),
-            ),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:
@@ -1471,47 +1520,15 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class EmailStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api/crm/email.
-
-    name: stream name
-    path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
-    """
+class EmailStream(DynamicIncrementalHubspotStream):
+    """https://developers.hubspot.com/docs/api/crm/email."""
 
     name = "emails"
     path = "/objects/emails"
+    incremental_path = "/objects/emails/search"
     primary_keys = ("id",)
+    replication_key = "hs_lastmodifieddate"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_email_direction", StringType),
-                Property("hs_email_sender_email", StringType),
-                Property("hs_email_sender_firstname", StringType),
-                Property("hs_email_sender_lastname", StringType),
-                Property("hs_email_status", StringType),
-                Property("hs_email_subject", StringType),
-                Property("hs_email_text", StringType),
-                Property("hs_email_to_email", StringType),
-                Property("hs_email_to_firstname", StringType),
-                Property("hs_email_to_lastname", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_timestamp", StringType),
-                Property("hubspot_owner_id", StringType),
-            ),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:

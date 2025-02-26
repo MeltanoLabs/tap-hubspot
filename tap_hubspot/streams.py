@@ -1275,7 +1275,7 @@ class FeedbackSubmissionsStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
-class LineItemStream(HubspotStream):
+class LineItemStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/line-items."""
 
     """
@@ -1289,28 +1289,11 @@ class LineItemStream(HubspotStream):
 
     name = "line_items"
     path = "/objects/line_items"
+    incremental_path = "/objects/line_items/search"
     primary_keys = ("id",)
+    replication_key = "hs_lastmodifieddate"
+    replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("id", StringType),
-        Property(
-            "properties",
-            ObjectType(
-                Property("createdate", StringType),
-                Property("hs_lastmodifieddate", StringType),
-                Property("hs_product_id", StringType),
-                Property("hs_recurring_billing_period", StringType),
-                Property("name", StringType),
-                Property("price", StringType),
-                Property("quantity", StringType),
-                Property("recurringbillingfrequency", StringType),
-            ),
-        ),
-        Property("createdAt", StringType),
-        Property("updatedAt", StringType),
-        Property("archived", BooleanType),
-    ).to_dict()
 
     @property
     def url_base(self) -> str:

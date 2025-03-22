@@ -5,7 +5,7 @@ from __future__ import annotations
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-from tap_hubspot import streams
+from tap_hubspot import streams, marketing_streams
 
 
 class TapHubspot(Tap):
@@ -79,6 +79,10 @@ class TapHubspot(Tap):
             streams.NoteStream(self),
             streams.PostalMailStream(self),
             streams.TaskStream(self),
+            marketing_streams.CampaignStream(self),
+            marketing_streams.CampaignRevenueStream(self),
+            marketing_streams.CampaignMetricsStream(self),
+            marketing_streams.CampaignAssetsStream(self),
         ]
 
 

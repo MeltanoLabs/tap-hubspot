@@ -48,6 +48,18 @@ class TapHubspot(Tap):
             th.DateTimeType,
             description="Latest record date to sync",
         ),
+        th.Property(
+            "enabled_hubspot_pull_web_events",
+            th.BooleanType,
+            default=False,
+            description="Enable syncing of web events for contacts (incremental, only for modified contacts)",
+        ),
+        th.Property(
+            "enabled_hubspot_pull_global_web_events",
+            th.BooleanType,
+            default=False,
+            description="Enable syncing of all web events globally (comprehensive, but may be slower)",
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[streams.HubspotStream]:
@@ -58,27 +70,11 @@ class TapHubspot(Tap):
         """
         return [
             streams.ContactStream(self),
-            streams.UsersStream(self),
-            streams.OwnersStream(self),
-            streams.TicketPipelineStream(self),
-            streams.DealPipelineStream(self),
-            streams.EmailSubscriptionStream(self),
-            streams.PropertyNotesStream(self),
             streams.CompanyStream(self),
             streams.DealStream(self),
-            streams.FeedbackSubmissionsStream(self),
-            streams.LineItemStream(self),
-            streams.ProductStream(self),
-            streams.TicketStream(self),
-            streams.QuoteStream(self),
-            streams.GoalStream(self),
-            streams.CallStream(self),
-            streams.CommunicationStream(self),
-            streams.EmailStream(self),
-            streams.MeetingStream(self),
-            streams.NoteStream(self),
-            streams.PostalMailStream(self),
-            streams.TaskStream(self),
+            streams.EmailEventsStream(self),
+            streams.WebEventsStream(self),
+            streams.FormSubmissionsStream(self),
         ]
 
 

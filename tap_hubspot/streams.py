@@ -1962,6 +1962,31 @@ class WebEventsStream(HubspotStream):
                 Property("hs_user_agent", StringType),
                 Property("hs_session_id", StringType),
                 Property("hs_timestamp", StringType),
+                Property("hs_form_id", StringType),
+                Property("hs_region", StringType),
+                Property("hs_device_name", StringType),
+                Property("hs_company_id", StringType),
+                Property("hs_log_line_timestamp", StringType),
+                Property("hs_browser", StringType),
+                Property("hs_country", StringType),
+                Property("hs_matched_campaign_and_assets", StringType),
+                Property("hs_utm_source", StringType),
+                Property("hs_utm_medium", StringType),
+                Property("hs_operating_system", StringType),
+                Property("hs_processed_timestamp", StringType),
+                Property("hs_web_interactives_data", StringType),
+                Property("hs_form_submission_data", StringType),
+                Property("hs_device_type", StringType),
+                Property("hs_form_type", StringType),
+                Property("hs_original_canonical_url", StringType),
+                Property("hs_utm_content", StringType),
+                Property("hs_lead_source_id", StringType),
+                Property("hs_browser_version_major", StringType),
+                Property("hs_form_correlation_id", StringType),
+                Property("hs_is_contact", StringType),
+                Property("hs_utm_campaign", StringType),
+                Property("hs_vendor", StringType),
+                Property("hs_browser_type", StringType),
             ),
         ),
         Property("contact_id", StringType),
@@ -2087,7 +2112,6 @@ class WebEventsStream(HubspotStream):
             row["contact_id"] = context["contact_id"]
         return row
 
-
 class FormSubmissionsStream(HubspotStream):
     """HubSpot Form Submissions Stream (child of ContactStream).
 
@@ -2116,6 +2140,10 @@ class FormSubmissionsStream(HubspotStream):
             Property("name", StringType),
             Property("value", StringType),
         ))),
+        Property("canonicalUrl", StringType),
+        Property("contentType", StringType),
+        Property("pageId", StringType),
+        Property("title", StringType),
     ).to_dict()
 
     @property
@@ -2173,3 +2201,4 @@ class FormSubmissionsStream(HubspotStream):
     def post_process(self, row: dict, context: t.Optional[dict] = None) -> dict | None:
         # Optionally, flatten or clean up fields
         return row
+

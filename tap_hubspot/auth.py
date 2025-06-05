@@ -1,7 +1,7 @@
 """HubSpot Authentication."""
 
 from singer_sdk.authenticators import OAuthAuthenticator, SingletonMeta
-
+ 
 
 class HubSpotOAuthAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
     """Authenticator class for HubSpot."""

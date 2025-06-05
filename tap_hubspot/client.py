@@ -9,8 +9,8 @@ from functools import cached_property
 
 import requests
 from singer_sdk import typing as th
-from singer_sdk._singerlib.utils import strptime_to_utc
 from singer_sdk.authenticators import BearerTokenAuthenticator
+from singer_sdk.singerlib.utils import strptime_to_utc
 from singer_sdk.streams import RESTStream
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
 
@@ -44,7 +44,6 @@ class HubspotStream(RESTStream):
     @cached_property
     def authenticator(self) -> _Auth:
         """Return a new authenticator object.
-
         Returns:
             An authenticator instance.
         """
@@ -61,7 +60,6 @@ class HubspotStream(RESTStream):
     @property
     def http_headers(self) -> dict:
         """Return the http headers needed.
-
         Returns:
             A dictionary of HTTP headers.
         """
@@ -72,14 +70,11 @@ class HubspotStream(RESTStream):
 
     def get_new_paginator(self) -> BaseAPIPaginator:
         """Create a new pagination helper instance.
-
         If the source API can make use of the `next_page_token_jsonpath`
         attribute, or it contains a `X-Next-Page` header in the response
         then you can remove this method.
-
         If you need custom pagination that uses page numbers, "next" links, or
         other approaches, please read the guide: https://sdk.meltano.com/en/v0.25.0/guides/pagination-classes.html.
-
         Returns:
             A pagination helper instance.
         """
@@ -109,11 +104,9 @@ class HubspotStream(RESTStream):
         next_page_token: int | None,
     ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
-
         Args:
             context: The stream context.
             next_page_token: The next page index or value.
-
         Returns:
             A dictionary of URL query parameters.
         """
@@ -175,11 +168,9 @@ class DynamicHubspotStream(HubspotStream):
         next_page_token: int | None,
     ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
-
         Args:
             context: The stream context.
             next_page_token: The next page index or value.
-
         Returns:
             A dictionary of URL query parameters.
         """
@@ -237,11 +228,9 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         next_page_token: int | None,
     ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
-
         Args:
             context: The stream context.
             next_page_token: The next page index or value.
-
         Returns:
             A dictionary of URL query parameters.
         """
@@ -255,18 +244,15 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         context: Context | None = None,  # noqa: ARG002
     ) -> dict | None:
         """As needed, append or transform raw data to match expected structure.
-
         Optional. This method gives developers an opportunity to "clean up" the results
         prior to returning records to the downstream tap - for instance: cleaning,
         renaming, or appending properties to the raw record result returned from the
         API.
         Developers may also return `None` from this method to filter out
         invalid or not-applicable records from the stream.
-
         Args:
             row: Individual record in the stream.
             context: Stream partition or context dictionary.
-
         Returns:
             The resulting record dict, or `None` if the record should be excluded.
         """
@@ -294,13 +280,10 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         next_page_token: int | None,
     ) -> dict | None:
         """Prepare the data payload for the REST API request.
-
         By default, no payload will be sent (return None).
-
         Developers may override this method if the API requires a custom payload along
         with the request. (This is generally not required for APIs which use the
         HTTP 'GET' method.)
-
         Args:
             context: Stream partition or context dictionary.
             next_page_token: Token, page number or any request argument to request the

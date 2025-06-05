@@ -2120,29 +2120,29 @@ class FormSubmissionsStream(HubspotStream):
     name = "form_submissions"
     parent_stream_type = ContactStream
     ignore_parent_replication_key = False
-    primary_keys = ("contact_id", "formId", "timestamp")
+    primary_keys = ("contact_id", "form_id", "timestamp")
     records_jsonpath = "$[*]"  # We'll yield a flat list
 
     schema = PropertiesList(
         Property("contact_id", StringType),
-        Property("formId", StringType),
-        Property("formType", StringType),
+        Property("form_id", StringType),
+        Property("form_type", StringType),
         Property("timestamp", IntegerType),
-        Property("pageUrl", StringType),
-        Property("pageTitle", StringType),
-        Property("portalId", IntegerType),
-        Property("conversionId", StringType),
-        Property("formInstanceId", StringType),
-        Property("formName", StringType),
-        Property("formVersion", StringType),
-        Property("formUrl", StringType),
-        Property("formFields", ArrayType(ObjectType(
+        Property("page_url", StringType),
+        Property("page_title", StringType),
+        Property("portal_id", IntegerType),
+        Property("conversion_id", StringType),
+        Property("form_instance_id", StringType),
+        Property("form_name", StringType),
+        Property("form_version", StringType),
+        Property("form_url", StringType),
+        Property("form_fields", ArrayType(ObjectType(
             Property("name", StringType),
             Property("value", StringType),
         ))),
-        Property("canonicalUrl", StringType),
-        Property("contentType", StringType),
-        Property("pageId", StringType),
+        Property("canonical_url", StringType),
+        Property("content_type", StringType),
+        Property("page_id", StringType),
         Property("title", StringType),
     ).to_dict()
 
@@ -2159,18 +2159,18 @@ class FormSubmissionsStream(HubspotStream):
         endpoint = f"{self.url_base}/contacts/v1/contact/vids/batch"
 
         FIELD_MAP = {
-            "form-id": "formId",
-            "form-type": "formType",
+            "form-id": "form_id",
+            "form-type": "form_type",
             "timestamp": "timestamp",
-            "page-url": "pageUrl",
-            "page-title": "pageTitle",
-            "portal-id": "portalId",
-            "conversion-id": "conversionId",
-            "form-instance-id": "formInstanceId",
-            "form-name": "formName",
-            "form-version": "formVersion",
-            "form-url": "formUrl",
-            "meta-data": "formFields",
+            "page-url": "page_url",
+            "page-title": "page_title",
+            "portal-id": "portal_id",
+            "conversion-id": "conversion_id",
+            "form-instance-id": "form_instance_id",
+            "form-name": "form_name",
+            "form-version": "form_version",
+            "form-url": "form_url",
+            "meta-data": "form_fields",
         }
 
         # If context is provided, fetch for just that contact

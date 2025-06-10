@@ -1924,12 +1924,9 @@ class EmailEventsStream(HubspotStream):
 class WebEventsStream(HubspotStream):
     """HubSpot Web Events Stream.
 
-    Collects web activity events associated with contacts.
-    Requires contact_id and uses cursor-based pagination.
-
-    NOTE: This implementation only collects web events for contacts that have been
-    collected since the last sync, using the replication key state for efficient
-    incremental sync with the occurredAfter parameter.
+    Collects web activity events using the Event Analytics API.
+    First lists all event types, then iterates through each event type to collect events.
+    Handles 403 errors gracefully by skipping inaccessible event types.
     """
 
     name = "web_events"
@@ -1938,8 +1935,6 @@ class WebEventsStream(HubspotStream):
     replication_key = "occurredAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"
-    parent_stream_type = ContactStream
-    ignore_parent_replication_key = False
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1987,15 +1982,106 @@ class WebEventsStream(HubspotStream):
                 Property("hs_utm_campaign", StringType),
                 Property("hs_vendor", StringType),
                 Property("hs_browser_type", StringType),
+                # Adding missing properties from the log
+                Property("hs_query_params", StringType),
+                Property("hs_is_virtual_url", BooleanType),
+                Property("hs_is_virtual_referrer", BooleanType),
+                Property("hs_is_external", BooleanType),
+                Property("hs_browser_fingerprint", StringType),
+                Property("hs_historical_contact_associatedcompanyid", StringType),
+                Property("hs_hash_id", StringType),
+                Property("hs_is_new_cookie", BooleanType),
+                Property("hs_historical_contact_lifecyclestage", StringType),
+                Property("hs_canonical_url", StringType),
+                Property("hs_targeted_content_aggregation", StringType),
+                Property("hs_visit_source", StringType),
+                Property("hs_page_id", StringType),
+                Property("hs_is_amp", BooleanType),
+                Property("hs_city", StringType),
+                Property("hs_is_in_chat_view", BooleanType),
+                Property("hs_visit_source_details_2", StringType),
+                Property("hs_visit_source_details_1", StringType),
+                # Adding more common properties that might appear
+                Property("hs_email", StringType),
+                Property("hs_contact_id", StringType),
+                Property("hs_ip_address", StringType),
+                Property("hs_latitude", NumberType),
+                Property("hs_longitude", NumberType),
+                Property("hs_state", StringType),
+                Property("hs_zip_code", StringType),
+                Property("hs_country_code", StringType),
+                Property("hs_browser_family", StringType),
+                Property("hs_browser_version", StringType),
+                Property("hs_device_family", StringType),
+                Property("hs_os_family", StringType),
+                Property("hs_os_version", StringType),
+                Property("hs_mobile", BooleanType),
+                Property("hs_tablet", BooleanType),
+                Property("hs_bot", BooleanType),
+                Property("hs_search_keyword", StringType),
+                Property("hs_social_network", StringType),
+                Property("hs_utm_term", StringType),
+                Property("hs_event_id", StringType),
+                Property("hs_object_id", StringType),
+                Property("hs_portal_id", StringType),
+                Property("hs_app_id", StringType),
+                Property("hs_visitor_id", StringType),
+                Property("hs_session_start", StringType),
+                Property("hs_session_timeout", IntegerType),
+                Property("hs_page_sequence", IntegerType),
+                Property("hs_visit_id", StringType),
+                Property("hs_visit_duration", IntegerType),
+                Property("hs_page_views", IntegerType),
+                Property("hs_bounce", BooleanType),
+                Property("hs_conversion", BooleanType),
+                Property("hs_goal_id", StringType),
+                Property("hs_goal_value", NumberType),
+                Property("hs_revenue", NumberType),
+                Property("hs_content_group_1", StringType),
+                Property("hs_content_group_2", StringType),
+                Property("hs_content_group_3", StringType),
+                Property("hs_content_group_4", StringType),
+                Property("hs_content_group_5", StringType),
+                Property("hs_experiment_id", StringType),
+                Property("hs_experiment_variant", StringType),
+                Property("hs_custom_dimension_1", StringType),
+                Property("hs_custom_dimension_2", StringType),
+                Property("hs_custom_dimension_3", StringType),
+                Property("hs_custom_dimension_4", StringType),
+                Property("hs_custom_dimension_5", StringType),
+                Property("hs_custom_metric_1", NumberType),
+                Property("hs_custom_metric_2", NumberType),
+                Property("hs_custom_metric_3", NumberType),
+                Property("hs_custom_metric_4", NumberType),
+                Property("hs_custom_metric_5", NumberType),
             ),
         ),
-        Property("contact_id", StringType),
     ).to_dict()
 
     @property
     def url_base(self) -> str:
         """Returns base url for web events."""
         return "https://api.hubapi.com"
+
+    def get_event_types(self) -> list[str]:
+        """Fetch all available event types from the API."""
+        event_types_url = f"{self.url_base}/events/v3/events/event-types"
+
+        # Create session with proper authentication like FormSubmissionsStream
+        session = requests.Session()
+        session.headers.update(self.http_headers)
+        session.auth = self.authenticator
+
+        try:
+            response = session.get(event_types_url, timeout=60)
+            response.raise_for_status()
+            data = response.json()
+            event_types = data.get("eventTypes", [])
+            self.logger.info(f"Found {len(event_types)} event types")
+            return event_types
+        except Exception as e:
+            self.logger.error(f"Failed to fetch event types: {e}")
+            return []
 
     def get_next_page_token(
         self,
@@ -2009,114 +2095,153 @@ class WebEventsStream(HubspotStream):
             return paging["next"]["after"]
         return None
 
-    def get_url_params(
-        self,
-        context: Context | None,
-        next_page_token: t.Any | None,
-    ) -> dict[str, t.Any]:
-        """Return URL parameters for web events API."""
-        params = {
-            "objectType": "contact",
-            "limit": 10000,  # Increased limit for better performance
-        }
+    def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
+        """Get records by iterating through all event types."""
+        event_types = self.get_event_types()
 
-        # Log the context for debugging
-        if context:
-            self.logger.info(f"Web events context: {context}")
-        else:
-            self.logger.info("Web events: No context provided")
+        if not event_types:
+            self.logger.warning("No event types found, skipping web events collection")
+            return
 
-        # Try different approaches for contact filtering
-        if context and context.get("contact_id"):
-            contact_id = context["contact_id"]
-            params["objectId"] = contact_id
-            self.logger.info(f"Fetching web events for contact: {contact_id}")
-        else:
-            # For debugging, let's try without objectId to see if we get any events at all
-            self.logger.info("Fetching web events without specific contact filter")
-            # Remove the objectId parameter to get all contact events
-            # This might help diagnose if the issue is contact-specific
+        # Create session with proper authentication
+        session = requests.Session()
+        session.headers.update(self.http_headers)
+        session.auth = self.authenticator
 
-        # Add cursor for pagination
-        if next_page_token:
-            params["after"] = next_page_token
-
-        # For debugging, let's use a wider date range
+        # Get replication value for incremental sync
         starting_replication_value = self.get_starting_replication_key_value(context)
-        if starting_replication_value:
-            params["occurredAfter"] = starting_replication_value
-            self.logger.info(f"Using replication key: {starting_replication_value}")
-        elif self.config.get("start_date"):
-            params["occurredAfter"] = self.config["start_date"]
-            self.logger.info(f"Using start_date: {self.config['start_date']}")
-        else:
-            # For debugging, let's try without date filter
-            self.logger.info("No date filter applied")
 
-        self.logger.info(f"Web events API params: {params}")
-        return params
+        for event_type in event_types:
+            self.logger.info(f"Fetching events for event type: {event_type}")
 
-    def prepare_request(
+            # Start pagination for this event type
+            next_page_token = None
+
+            while True:
+                try:
+                    # Build URL and parameters
+                    url = f"{self.url_base}/events/v3/events"
+                    params = {
+                        "eventType": event_type,
+                        "limit": 1000,
+                    }
+
+                    # Add cursor for pagination
+                    if next_page_token:
+                        params["after"] = next_page_token
+
+                    # Add date range based on replication state
+                    if starting_replication_value:
+                        params["occurredAfter"] = starting_replication_value
+
+                    if self.config.get("end_date"):
+                        # Convert end_date to timestamp in milliseconds
+                        end_dt = datetime.datetime.fromisoformat(
+                            self.config["end_date"].replace("Z", "+00:00")
+                        )
+                        params["occurredBefore"] = int(end_dt.timestamp() * 1000)
+
+                    # Make request
+                    response = session.get(url, params=params, timeout=60)
+
+                    # Handle 403 errors gracefully
+                    if response.status_code == 403:
+                        error_data = response.json()
+                        if "event-detail-read" in str(error_data):
+                            self.logger.warning(
+                                f"Skipping event type '{event_type}' due to insufficient permissions: "
+                                f"requires 'event-detail-read' scope"
+                            )
+                            break  # Skip to next event type
+                        else:
+                            response.raise_for_status()
+
+                    response.raise_for_status()
+                    data = response.json()
+
+                    # Process results
+                    results = data.get("results", [])
+                    self.logger.info(f"Found {len(results)} events for {event_type}")
+
+                    for record in results:
+                        # Add event type to record for reference
+                        record["eventType"] = event_type
+                        processed_record = self.post_process(record, context)
+                        if processed_record:
+                            yield processed_record
+
+                    # Check for next page
+                    paging = data.get("paging")
+                    if paging and paging.get("next"):
+                        next_page_token = paging["next"]["after"]
+                    else:
+                        break  # No more pages for this event type
+
+                except requests.exceptions.RequestException as e:
+                    if (
+                        hasattr(e, "response")
+                        and e.response
+                        and e.response.status_code == 403
+                    ):
+                        self.logger.warning(
+                            f"Skipping event type '{event_type}' due to 403 permission error"
+                        )
+                        break  # Skip to next event type
+                    else:
+                        self.logger.error(
+                            f"Error fetching events for {event_type}: {e}"
+                        )
+                        break  # Skip to next event type on other errors
+
+    def get_starting_replication_key_value(
         self,
         context: Context | None,
-        next_page_token: t.Any | None,
-    ) -> requests.PreparedRequest:
-        """Prepare the request and log it for debugging."""
-        request = super().prepare_request(context, next_page_token)
-        self.logger.info(f"Web events API URL: {request.url}")
-        return request
+    ) -> t.Any | None:
+        """Return the starting replication key value as integer timestamp."""
+        # Get the state value
+        state_value = super().get_starting_replication_key_value(context)
 
-    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
-        """Parse the API response and extract records."""
-        try:
-            resp_json = response.json()
+        # If we have a datetime string from state, convert it to integer timestamp
+        if isinstance(state_value, str):
+            try:
+                dt = datetime.datetime.fromisoformat(state_value.replace("Z", "+00:00"))
+                return int(dt.timestamp() * 1000)
+            except (ValueError, AttributeError):
+                pass
 
-            # Debug logging - let's see what we get
-            self.logger.info(f"Web events API response status: {response.status_code}")
-            self.logger.info(
-                f"Web events response keys: {list(resp_json.keys()) if resp_json else 'None'}"
+        # If we have an integer, return as-is
+        if isinstance(state_value, int):
+            return state_value
+
+        # If no state value and we have start_date config, convert to integer timestamp
+        if state_value is None and self.config.get("start_date"):
+            dt = datetime.datetime.fromisoformat(
+                self.config["start_date"].replace("Z", "+00:00")
             )
+            return int(dt.timestamp() * 1000)
 
-            if response.status_code != 200:
-                self.logger.error(f"Web events API error: {resp_json}")
-                return
-
-            if "results" in resp_json:
-                results = resp_json["results"]
-                self.logger.info(f"Found {len(results)} web events")
-                if len(results) > 0:
-                    # Log first event for debugging
-                    self.logger.info(f"First web event sample: {results[0]}")
-                for record in results:
-                    yield record
-            else:
-                self.logger.warning(
-                    f"No 'results' key in web events response. Available keys: {list(resp_json.keys())}"
-                )
-                # Log the full response for debugging (truncated)
-                response_str = str(resp_json)[:1000]
-                self.logger.info(f"Full response (truncated): {response_str}")
-
-        except Exception as e:
-            self.logger.error(f"Error parsing web events response: {e}")
-            self.logger.error(f"Response content: {response.text[:1000]}")
-            raise
+        return state_value
 
     def post_process(
         self,
         row: dict,
         context: Context | None = None,
     ) -> dict | None:
-        """Add contact_id from context for easier reference."""
-        if context and context.get("contact_id"):
-            row["contact_id"] = context["contact_id"]
+        """Process web event records."""
+        # Convert occurredAt to datetime format if it's a timestamp
+        if "occurredAt" in row and isinstance(row["occurredAt"], int):
+            row["occurredAt"] = datetime.datetime.fromtimestamp(
+                row["occurredAt"] / 1000, tz=datetime.timezone.utc
+            ).isoformat()
         return row
+
 
 class FormSubmissionsStream(HubspotStream):
     """HubSpot Form Submissions Stream (child of ContactStream).
 
     Fetches form submissions for contacts using the v1 batch endpoint.
     """
+
     name = "form_submissions"
     parent_stream_type = ContactStream
     ignore_parent_replication_key = False
@@ -2136,10 +2261,15 @@ class FormSubmissionsStream(HubspotStream):
         Property("form_name", StringType),
         Property("form_version", StringType),
         Property("form_url", StringType),
-        Property("form_fields", ArrayType(ObjectType(
-            Property("name", StringType),
-            Property("value", StringType),
-        ))),
+        Property(
+            "form_fields",
+            ArrayType(
+                ObjectType(
+                    Property("name", StringType),
+                    Property("value", StringType),
+                )
+            ),
+        ),
         Property("canonical_url", StringType),
         Property("content_type", StringType),
         Property("page_id", StringType),
@@ -2152,7 +2282,8 @@ class FormSubmissionsStream(HubspotStream):
 
     def get_records(self, context: t.Optional[dict]) -> t.Iterable[dict]:
         import logging
-        logger = getattr(self, 'logger', logging.getLogger(__name__))
+
+        logger = getattr(self, "logger", logging.getLogger(__name__))
         session = requests.Session()
         session.headers.update(self.http_headers)
         session.auth = self.authenticator
@@ -2189,7 +2320,9 @@ class FormSubmissionsStream(HubspotStream):
                     mapped["contact_id"] = contact_id
                     yield mapped
             except Exception as e:
-                logger.error(f"Failed to fetch form submissions for contact {contact_id}: {e}")
+                logger.error(
+                    f"Failed to fetch form submissions for contact {contact_id}: {e}"
+                )
             return
 
         # If no context, do nothing
@@ -2201,4 +2334,3 @@ class FormSubmissionsStream(HubspotStream):
     def post_process(self, row: dict, context: t.Optional[dict] = None) -> dict | None:
         # Optionally, flatten or clean up fields
         return row
-

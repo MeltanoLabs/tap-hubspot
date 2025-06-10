@@ -1925,7 +1925,8 @@ class WebEventsStream(HubspotStream):
     """HubSpot Web Events Stream.
 
     Collects web activity events using the Event Analytics API.
-    Fetches all contact-related web events in batches based on the last replication state.
+    First lists all event types, then iterates through each event type to collect events.
+    Handles 403 errors gracefully by skipping inaccessible event types.
     """
 
     name = "web_events"
@@ -1990,6 +1991,22 @@ class WebEventsStream(HubspotStream):
         """Returns base url for web events."""
         return "https://api.hubapi.com"
 
+    def get_event_types(self) -> list[str]:
+        """Fetch all available event types from the API."""
+        event_types_url = f"{self.url_base}/events/v3/events/event-types"
+        session = self.requests_session
+
+        try:
+            response = session.get(event_types_url, timeout=60)
+            response.raise_for_status()
+            data = response.json()
+            event_types = data.get("eventTypes", [])
+            self.logger.info(f"Found {len(event_types)} event types")
+            return event_types
+        except Exception as e:
+            self.logger.error(f"Failed to fetch event types: {e}")
+            return []
+
     def get_next_page_token(
         self,
         response: requests.Response,
@@ -2002,43 +2019,100 @@ class WebEventsStream(HubspotStream):
             return paging["next"]["after"]
         return None
 
-    def get_url_params(
-        self,
-        context: Context | None,
-        next_page_token: t.Any | None,
-    ) -> dict[str, t.Any]:
-        """Return URL parameters for Event Analytics API."""
-        params = {
-            "objectType": "contact",
-            "limit": 1000,
-        }
+    def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
+        """Get records by iterating through all event types."""
+        event_types = self.get_event_types()
 
-        # Add cursor for pagination
-        if next_page_token:
-            params["after"] = next_page_token
+        if not event_types:
+            self.logger.warning("No event types found, skipping web events collection")
+            return
 
-        # Add date range based on replication state
+        session = self.requests_session
+
+        # Get replication value for incremental sync
         starting_replication_value = self.get_starting_replication_key_value(context)
-        if starting_replication_value:
-            params["occurredAfter"] = starting_replication_value
-            self.logger.info(f"Using replication key: {starting_replication_value}")
-        elif self.config.get("start_date"):
-            # Convert start_date to timestamp in milliseconds
-            start_dt = datetime.datetime.fromisoformat(
-                self.config["start_date"].replace("Z", "+00:00")
-            )
-            params["occurredAfter"] = int(start_dt.timestamp() * 1000)
-            self.logger.info(f"Using start_date: {self.config['start_date']}")
 
-        if self.config.get("end_date"):
-            # Convert end_date to timestamp in milliseconds
-            end_dt = datetime.datetime.fromisoformat(
-                self.config["end_date"].replace("Z", "+00:00")
-            )
-            params["occurredBefore"] = int(end_dt.timestamp() * 1000)
+        for event_type in event_types:
+            self.logger.info(f"Fetching events for event type: {event_type}")
 
-        self.logger.info(f"Web events API params: {params}")
-        return params
+            # Start pagination for this event type
+            next_page_token = None
+
+            while True:
+                try:
+                    # Build URL and parameters
+                    url = f"{self.url_base}/events/v3/events"
+                    params = {
+                        "eventType": event_type,
+                        "limit": 1000,
+                    }
+
+                    # Add cursor for pagination
+                    if next_page_token:
+                        params["after"] = next_page_token
+
+                    # Add date range based on replication state
+                    if starting_replication_value:
+                        params["occurredAfter"] = starting_replication_value
+
+                    if self.config.get("end_date"):
+                        # Convert end_date to timestamp in milliseconds
+                        end_dt = datetime.datetime.fromisoformat(
+                            self.config["end_date"].replace("Z", "+00:00")
+                        )
+                        params["occurredBefore"] = int(end_dt.timestamp() * 1000)
+
+                    # Make request
+                    response = session.get(url, params=params, timeout=60)
+
+                    # Handle 403 errors gracefully
+                    if response.status_code == 403:
+                        error_data = response.json()
+                        if "event-detail-read" in str(error_data):
+                            self.logger.warning(
+                                f"Skipping event type '{event_type}' due to insufficient permissions: "
+                                f"requires 'event-detail-read' scope"
+                            )
+                            break  # Skip to next event type
+                        else:
+                            response.raise_for_status()
+
+                    response.raise_for_status()
+                    data = response.json()
+
+                    # Process results
+                    results = data.get("results", [])
+                    self.logger.info(f"Found {len(results)} events for {event_type}")
+
+                    for record in results:
+                        # Add event type to record for reference
+                        record["eventType"] = event_type
+                        processed_record = self.post_process(record, context)
+                        if processed_record:
+                            yield processed_record
+
+                    # Check for next page
+                    paging = data.get("paging")
+                    if paging and paging.get("next"):
+                        next_page_token = paging["next"]["after"]
+                    else:
+                        break  # No more pages for this event type
+
+                except requests.exceptions.RequestException as e:
+                    if (
+                        hasattr(e, "response")
+                        and e.response
+                        and e.response.status_code == 403
+                    ):
+                        self.logger.warning(
+                            f"Skipping event type '{event_type}' due to 403 permission error"
+                        )
+                        break  # Skip to next event type
+                    else:
+                        self.logger.error(
+                            f"Error fetching events for {event_type}: {e}"
+                        )
+                        break  # Skip to next event type on other errors
 
     def get_starting_replication_key_value(
         self,
@@ -2060,40 +2134,14 @@ class WebEventsStream(HubspotStream):
         if isinstance(state_value, int):
             return state_value
 
-        # If we have start_date config, convert to integer timestamp
-        if self.config.get("start_date"):
+        # If no state value and we have start_date config, convert to integer timestamp
+        if state_value is None and self.config.get("start_date"):
             dt = datetime.datetime.fromisoformat(
                 self.config["start_date"].replace("Z", "+00:00")
             )
             return int(dt.timestamp() * 1000)
 
         return state_value
-
-    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
-        """Parse the Event Analytics API response and extract records."""
-        try:
-            resp_json = response.json()
-
-            self.logger.info(f"Web events API response status: {response.status_code}")
-
-            if response.status_code != 200:
-                self.logger.error(f"Web events API error: {resp_json}")
-                return
-
-            if "results" in resp_json:
-                results = resp_json["results"]
-                self.logger.info(f"Found {len(results)} web events")
-                for record in results:
-                    yield record
-            else:
-                self.logger.warning(
-                    f"No 'results' key in web events response. Available keys: {list(resp_json.keys()) if resp_json else 'None'}"
-                )
-
-        except Exception as e:
-            self.logger.error(f"Error parsing web events response: {e}")
-            self.logger.error(f"Response content: {response.text[:1000]}")
-            raise
 
     def post_process(
         self,

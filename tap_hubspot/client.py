@@ -289,53 +289,75 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             next_page_token: Token, page number or any request argument to request the
                 next page of data.
         """
-        body: dict[str, t.Any] = {}
-        if self._is_incremental_search(context):
-            # Only filter in case we have a value to filter on
-            # https://developers.hubspot.com/docs/api/crm/search
-            ts = datetime.datetime.fromisoformat(
-                self.get_starting_replication_key_value(context),  # type: ignore[arg-type]
-            )
-            if next_page_token:
-                # Hubspot wont return more than 10k records so when we hit 10k we
-                # need to reset our epoch to most recent and not send the
-                # next_page_token
-                if int(next_page_token) + 100 >= 10000:  # noqa: PLR2004
-                    ts = strptime_to_utc(
-                        self.get_context_state(context)  # type: ignore[union-attr]
-                        .get("progress_markers")
-                        .get("replication_key_value"),
-                    )
-                else:
+        # Check if we're using the search endpoint (POST method)
+        if hasattr(self, "http_method") and self.http_method == "POST":
+            body: dict[str, t.Any] = {}
+
+            if self._is_incremental_search(context):
+                # Only filter in case we have a value to filter on
+                # https://developers.hubspot.com/docs/api/crm/search
+                ts = datetime.datetime.fromisoformat(
+                    self.get_starting_replication_key_value(context),  # type: ignore[arg-type]
+                )
+                if next_page_token:
+                    # Hubspot wont return more than 10k records so when we hit 10k we
+                    # need to reset our epoch to most recent and not send the
+                    # next_page_token
+                    if int(next_page_token) + 100 >= 10000:  # noqa: PLR2004
+                        ts = strptime_to_utc(
+                            self.get_context_state(context)  # type: ignore[union-attr]
+                            .get("progress_markers")
+                            .get("replication_key_value"),
+                        )
+                    else:
+                        body["after"] = next_page_token
+                epoch_ts = str(int(ts.timestamp() * 1000))
+
+                body.update(
+                    {
+                        "filterGroups": [
+                            {
+                                "filters": [
+                                    {
+                                        "propertyName": self.replication_key,
+                                        "operator": "GTE",
+                                        # Timestamps need to be in milliseconds
+                                        # https://legacydocs.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis
+                                        "value": epoch_ts,
+                                    },
+                                ],
+                            },
+                        ],
+                        "sorts": [
+                            {
+                                # This is inside the properties object
+                                "propertyName": self.replication_key,
+                                "direction": "ASCENDING",
+                            },
+                        ],
+                        # Hubspot sets a limit of most 100 per request. Default is 10
+                        "limit": 100,
+                        "properties": list(self.hs_properties),
+                    },
+                )
+            else:
+                # If we're using POST but not incremental search, provide a basic search body
+                # This handles the case where the stream is configured for search but doesn't
+                # meet all incremental conditions
+                body.update(
+                    {
+                        "limit": 100,
+                        "properties": list(self.hs_properties)
+                        if hasattr(self, "hs_properties") and self.hs_properties
+                        else [],
+                    }
+                )
+
+                # Add pagination if needed
+                if next_page_token:
                     body["after"] = next_page_token
-            epoch_ts = str(int(ts.timestamp() * 1000))
 
-            body.update(
-                {
-                    "filterGroups": [
-                        {
-                            "filters": [
-                                {
-                                    "propertyName": self.replication_key,
-                                    "operator": "GTE",
-                                    # Timestamps need to be in milliseconds
-                                    # https://legacydocs.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis
-                                    "value": epoch_ts,
-                                },
-                            ],
-                        },
-                    ],
-                    "sorts": [
-                        {
-                            # This is inside the properties object
-                            "propertyName": self.replication_key,
-                            "direction": "ASCENDING",
-                        },
-                    ],
-                    # Hubspot sets a limit of most 100 per request. Default is 10
-                    "limit": 100,
-                    "properties": list(self.hs_properties),
-                },
-            )
+            return body
 
-        return body
+        # For non-POST requests, return None (no body needed)
+        return None

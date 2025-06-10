@@ -1924,12 +1924,8 @@ class EmailEventsStream(HubspotStream):
 class WebEventsStream(HubspotStream):
     """HubSpot Web Events Stream.
 
-    Collects web activity events associated with contacts.
-    Requires contact_id and uses cursor-based pagination.
-
-    NOTE: This implementation only collects web events for contacts that have been
-    collected since the last sync, using the replication key state for efficient
-    incremental sync with the occurredAfter parameter.
+    Collects web activity events using the Event Analytics API.
+    Fetches all contact-related web events in batches based on the last replication state.
     """
 
     name = "web_events"
@@ -1938,8 +1934,6 @@ class WebEventsStream(HubspotStream):
     replication_key = "occurredAt"
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"
-    parent_stream_type = ContactStream
-    ignore_parent_replication_key = False
 
     schema = PropertiesList(
         Property("id", StringType),
@@ -1989,7 +1983,6 @@ class WebEventsStream(HubspotStream):
                 Property("hs_browser_type", StringType),
             ),
         ),
-        Property("contact_id", StringType),
     ).to_dict()
 
     @property
@@ -2014,68 +2007,74 @@ class WebEventsStream(HubspotStream):
         context: Context | None,
         next_page_token: t.Any | None,
     ) -> dict[str, t.Any]:
-        """Return URL parameters for web events API."""
+        """Return URL parameters for Event Analytics API."""
         params = {
             "objectType": "contact",
-            "limit": 10000,  # Increased limit for better performance
+            "limit": 1000,
         }
-
-        # Log the context for debugging
-        if context:
-            self.logger.info(f"Web events context: {context}")
-        else:
-            self.logger.info("Web events: No context provided")
-
-        # Try different approaches for contact filtering
-        if context and context.get("contact_id"):
-            contact_id = context["contact_id"]
-            params["objectId"] = contact_id
-            self.logger.info(f"Fetching web events for contact: {contact_id}")
-        else:
-            # For debugging, let's try without objectId to see if we get any events at all
-            self.logger.info("Fetching web events without specific contact filter")
-            # Remove the objectId parameter to get all contact events
-            # This might help diagnose if the issue is contact-specific
 
         # Add cursor for pagination
         if next_page_token:
             params["after"] = next_page_token
 
-        # For debugging, let's use a wider date range
+        # Add date range based on replication state
         starting_replication_value = self.get_starting_replication_key_value(context)
         if starting_replication_value:
             params["occurredAfter"] = starting_replication_value
             self.logger.info(f"Using replication key: {starting_replication_value}")
         elif self.config.get("start_date"):
-            params["occurredAfter"] = self.config["start_date"]
+            # Convert start_date to timestamp in milliseconds
+            start_dt = datetime.datetime.fromisoformat(
+                self.config["start_date"].replace("Z", "+00:00")
+            )
+            params["occurredAfter"] = int(start_dt.timestamp() * 1000)
             self.logger.info(f"Using start_date: {self.config['start_date']}")
-        else:
-            # For debugging, let's try without date filter
-            self.logger.info("No date filter applied")
+
+        if self.config.get("end_date"):
+            # Convert end_date to timestamp in milliseconds
+            end_dt = datetime.datetime.fromisoformat(
+                self.config["end_date"].replace("Z", "+00:00")
+            )
+            params["occurredBefore"] = int(end_dt.timestamp() * 1000)
 
         self.logger.info(f"Web events API params: {params}")
         return params
 
-    def prepare_request(
+    def get_starting_replication_key_value(
         self,
         context: Context | None,
-        next_page_token: t.Any | None,
-    ) -> requests.PreparedRequest:
-        """Prepare the request and log it for debugging."""
-        request = super().prepare_request(context, next_page_token)
-        self.logger.info(f"Web events API URL: {request.url}")
-        return request
+    ) -> t.Any | None:
+        """Return the starting replication key value as integer timestamp."""
+        # Get the state value
+        state_value = super().get_starting_replication_key_value(context)
+
+        # If we have a datetime string from state, convert it to integer timestamp
+        if isinstance(state_value, str):
+            try:
+                dt = datetime.datetime.fromisoformat(state_value.replace("Z", "+00:00"))
+                return int(dt.timestamp() * 1000)
+            except (ValueError, AttributeError):
+                pass
+
+        # If we have an integer, return as-is
+        if isinstance(state_value, int):
+            return state_value
+
+        # If we have start_date config, convert to integer timestamp
+        if self.config.get("start_date"):
+            dt = datetime.datetime.fromisoformat(
+                self.config["start_date"].replace("Z", "+00:00")
+            )
+            return int(dt.timestamp() * 1000)
+
+        return state_value
 
     def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
-        """Parse the API response and extract records."""
+        """Parse the Event Analytics API response and extract records."""
         try:
             resp_json = response.json()
 
-            # Debug logging - let's see what we get
             self.logger.info(f"Web events API response status: {response.status_code}")
-            self.logger.info(
-                f"Web events response keys: {list(resp_json.keys()) if resp_json else 'None'}"
-            )
 
             if response.status_code != 200:
                 self.logger.error(f"Web events API error: {resp_json}")
@@ -2084,18 +2083,12 @@ class WebEventsStream(HubspotStream):
             if "results" in resp_json:
                 results = resp_json["results"]
                 self.logger.info(f"Found {len(results)} web events")
-                if len(results) > 0:
-                    # Log first event for debugging
-                    self.logger.info(f"First web event sample: {results[0]}")
                 for record in results:
                     yield record
             else:
                 self.logger.warning(
-                    f"No 'results' key in web events response. Available keys: {list(resp_json.keys())}"
+                    f"No 'results' key in web events response. Available keys: {list(resp_json.keys()) if resp_json else 'None'}"
                 )
-                # Log the full response for debugging (truncated)
-                response_str = str(resp_json)[:1000]
-                self.logger.info(f"Full response (truncated): {response_str}")
 
         except Exception as e:
             self.logger.error(f"Error parsing web events response: {e}")
@@ -2107,16 +2100,21 @@ class WebEventsStream(HubspotStream):
         row: dict,
         context: Context | None = None,
     ) -> dict | None:
-        """Add contact_id from context for easier reference."""
-        if context and context.get("contact_id"):
-            row["contact_id"] = context["contact_id"]
+        """Process web event records."""
+        # Convert occurredAt to datetime format if it's a timestamp
+        if "occurredAt" in row and isinstance(row["occurredAt"], int):
+            row["occurredAt"] = datetime.datetime.fromtimestamp(
+                row["occurredAt"] / 1000, tz=datetime.timezone.utc
+            ).isoformat()
         return row
+
 
 class FormSubmissionsStream(HubspotStream):
     """HubSpot Form Submissions Stream (child of ContactStream).
 
     Fetches form submissions for contacts using the v1 batch endpoint.
     """
+
     name = "form_submissions"
     parent_stream_type = ContactStream
     ignore_parent_replication_key = False
@@ -2136,10 +2134,15 @@ class FormSubmissionsStream(HubspotStream):
         Property("form_name", StringType),
         Property("form_version", StringType),
         Property("form_url", StringType),
-        Property("form_fields", ArrayType(ObjectType(
-            Property("name", StringType),
-            Property("value", StringType),
-        ))),
+        Property(
+            "form_fields",
+            ArrayType(
+                ObjectType(
+                    Property("name", StringType),
+                    Property("value", StringType),
+                )
+            ),
+        ),
         Property("canonical_url", StringType),
         Property("content_type", StringType),
         Property("page_id", StringType),
@@ -2152,7 +2155,8 @@ class FormSubmissionsStream(HubspotStream):
 
     def get_records(self, context: t.Optional[dict]) -> t.Iterable[dict]:
         import logging
-        logger = getattr(self, 'logger', logging.getLogger(__name__))
+
+        logger = getattr(self, "logger", logging.getLogger(__name__))
         session = requests.Session()
         session.headers.update(self.http_headers)
         session.auth = self.authenticator
@@ -2189,7 +2193,9 @@ class FormSubmissionsStream(HubspotStream):
                     mapped["contact_id"] = contact_id
                     yield mapped
             except Exception as e:
-                logger.error(f"Failed to fetch form submissions for contact {contact_id}: {e}")
+                logger.error(
+                    f"Failed to fetch form submissions for contact {contact_id}: {e}"
+                )
             return
 
         # If no context, do nothing
@@ -2201,4 +2207,3 @@ class FormSubmissionsStream(HubspotStream):
     def post_process(self, row: dict, context: t.Optional[dict] = None) -> dict | None:
         # Optionally, flatten or clean up fields
         return row
-

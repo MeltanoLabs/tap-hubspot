@@ -1994,7 +1994,11 @@ class WebEventsStream(HubspotStream):
     def get_event_types(self) -> list[str]:
         """Fetch all available event types from the API."""
         event_types_url = f"{self.url_base}/events/v3/events/event-types"
-        session = self.requests_session
+
+        # Create session with proper authentication like FormSubmissionsStream
+        session = requests.Session()
+        session.headers.update(self.http_headers)
+        session.auth = self.authenticator
 
         try:
             response = session.get(event_types_url, timeout=60)
@@ -2027,7 +2031,10 @@ class WebEventsStream(HubspotStream):
             self.logger.warning("No event types found, skipping web events collection")
             return
 
-        session = self.requests_session
+        # Create session with proper authentication
+        session = requests.Session()
+        session.headers.update(self.http_headers)
+        session.auth = self.authenticator
 
         # Get replication value for incremental sync
         starting_replication_value = self.get_starting_replication_key_value(context)

@@ -1284,13 +1284,20 @@ class DealStream(DynamicIncrementalHubspotStream):
         
         # Add association properties
         base_properties.update({
-            "associatedvids": "string",  # Array of contact IDs
+            "associatedvids": "array",  # Array of contact IDs
             "associatedvid": "string",   # First contact ID
-            "associatedCompanyIds": "string",  # Array of company IDs
+            "associatedCompanyIds": "array",  # Array of company IDs
             "associatedCompanyId": "string",   # First company ID
         })
         
         return base_properties
+
+    def _get_datatype(self, data_type: str) -> th.JSONTypeHelper:
+        """Override to handle array types for association properties."""
+        if data_type == "array":
+            return th.ArrayType(th.StringType)
+        # Fall back to parent implementation for other types
+        return super()._get_datatype(data_type)
 
     def _fetch_associations(
         self,

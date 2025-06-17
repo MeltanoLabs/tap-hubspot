@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 import typing as t
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from singer_sdk import typing as th  # JSON Schema typing helpers
@@ -1276,6 +1277,172 @@ class DealStream(DynamicIncrementalHubspotStream):
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
         return "https://api.hubapi.com/crm/v3"
+
+    def _get_available_properties(self) -> dict[str, str]:
+        """Override to add association properties to the dynamic schema."""
+        base_properties = super()._get_available_properties()
+        
+        # Add association properties
+        base_properties.update({
+            "associatedvids": "string",  # Array of contact IDs
+            "associatedvid": "string",   # First contact ID
+            "associatedCompanyIds": "string",  # Array of company IDs
+            "associatedCompanyId": "string",   # First company ID
+        })
+        
+        return base_properties
+
+    def _fetch_associations(
+        self,
+        deal_ids: list[str],
+        association_type: str,
+    ) -> dict[str, list[str]]:
+        """Fetch associations for a batch of deal IDs.
+        
+        Args:
+            deal_ids: List of deal IDs to fetch associations for
+            association_type: Either 'contacts' or 'companies'
+            
+        Returns:
+            Dictionary mapping deal ID to list of associated object IDs
+        """
+        if not deal_ids:
+            return {}
+            
+        # Prepare the request
+        url = f"https://api.hubapi.com/crm/v4/associations/deal/{association_type}/batch/read"
+        payload = {
+            "inputs": [{"id": deal_id} for deal_id in deal_ids]
+        }
+        
+        headers = {
+            "Content-Type": "application/json",
+            **self.http_headers,
+        }
+        
+        # Create a session with authentication
+        session = requests.Session()
+        session.auth = self.authenticator
+        
+        try:
+            response = session.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            
+            data = response.json()
+            associations = {}
+            
+            # Process results
+            for result in data.get("results", []):
+                deal_id = result.get("from", {}).get("id")
+                if deal_id:
+                    associated_ids = [
+                        str(obj.get("toObjectId")) 
+                        for obj in result.get("to", [])
+                        if obj.get("toObjectId")
+                    ]
+                    associations[deal_id] = associated_ids
+                    
+            # Add empty arrays for deals with no associations (including those with errors)
+            for deal_id in deal_ids:
+                if deal_id not in associations:
+                    associations[deal_id] = []
+                    
+            return associations
+            
+        except requests.exceptions.RequestException as e:
+            self.logger.warning(f"Failed to fetch {association_type} associations: {e}")
+            # Return empty associations for all deals if the request fails
+            return {deal_id: [] for deal_id in deal_ids}
+
+    def _batch_fetch_all_associations(
+        self,
+        deal_ids: list[str],
+    ) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+        """Fetch both contact and company associations in parallel.
+        
+        Args:
+            deal_ids: List of deal IDs to fetch associations for
+            
+        Returns:
+            Tuple of (contact_associations, company_associations)
+        """
+        if not deal_ids:
+            return {}, {}
+        
+        # Split into batches (1000 for contacts, 100 for companies per HubSpot limits)
+        contact_batches = [deal_ids[i:i+1000] for i in range(0, len(deal_ids), 1000)]
+        company_batches = [deal_ids[i:i+100] for i in range(0, len(deal_ids), 100)]
+        
+        contact_associations = {}
+        company_associations = {}
+        
+        # Use ThreadPoolExecutor for parallel requests
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            # Submit all contact batch requests
+            contact_futures = [
+                executor.submit(self._fetch_associations, batch, "contacts")
+                for batch in contact_batches
+            ]
+            
+            # Submit all company batch requests  
+            company_futures = [
+                executor.submit(self._fetch_associations, batch, "companies")
+                for batch in company_batches
+            ]
+            
+            # Collect contact results
+            for future in as_completed(contact_futures):
+                try:
+                    batch_result = future.result()
+                    contact_associations.update(batch_result)
+                except Exception as e:
+                    self.logger.warning(f"Failed to fetch contact associations batch: {e}")
+            
+            # Collect company results
+            for future in as_completed(company_futures):
+                try:
+                    batch_result = future.result()
+                    company_associations.update(batch_result)
+                except Exception as e:
+                    self.logger.warning(f"Failed to fetch company associations batch: {e}")
+        
+        return contact_associations, company_associations
+
+    def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
+        """Get records and process them with associations in batches."""
+        # Get all records from parent
+        records = list(super().get_records(context))
+        
+        if not records:
+            return records
+            
+        # Extract deal IDs
+        deal_ids = [record.get("id") for record in records if record.get("id")]
+        
+        if deal_ids:
+            # Fetch all associations in parallel batches
+            contact_associations, company_associations = self._batch_fetch_all_associations(deal_ids)
+            
+            # Add associations to each record
+            for record in records:
+                deal_id = record.get("id")
+                if deal_id:
+                    contact_ids = contact_associations.get(deal_id, [])
+                    company_ids = company_associations.get(deal_id, [])
+                    
+                    # Ensure properties dict exists
+                    if "properties" not in record:
+                        record["properties"] = {}
+                        
+                    # Add contact associations
+                    record["properties"]["associatedvids"] = contact_ids
+                    record["properties"]["associatedvid"] = contact_ids[0] if contact_ids else None
+                    
+                    # Add company associations  
+                    record["properties"]["associatedCompanyIds"] = company_ids
+                    record["properties"]["associatedCompanyId"] = company_ids[0] if company_ids else None
+        
+        return records
 
 
 class FeedbackSubmissionsStream(HubspotStream):

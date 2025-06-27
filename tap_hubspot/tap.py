@@ -74,7 +74,6 @@ class TapHubspot(Tap):
             streams.DealStream(self),
             streams.EmailEventsStream(self),
             streams.WebEventsStream(self),
-            streams.FormSubmissionsStream(self),
         ]
 
 

@@ -2121,6 +2121,7 @@ class WebEventsStream(HubspotStream):
         Property("occurredAt", DateTimeType),
         Property("utk", StringType),
         Property("sessionId", StringType),
+        Property("form_title", StringType),
         Property(
             "properties",
             ObjectType(
@@ -2260,6 +2261,56 @@ class WebEventsStream(HubspotStream):
             self.logger.error(f"Failed to fetch event types: {e}")
             return []
 
+    def get_forms_mapping(self) -> dict[str, str]:
+        """Fetch all forms and create a mapping from form ID to form name."""
+        forms_mapping = {}
+        forms_url = f"{self.url_base}/marketing/v3/forms"
+
+        # Create session with proper authentication
+        session = requests.Session()
+        session.headers.update(self.http_headers)
+        session.auth = self.authenticator
+
+        next_page_token = None
+
+        try:
+            while True:
+                params = {
+                    "limit": 1000,
+                }
+
+                # Add cursor for pagination
+                if next_page_token:
+                    params["after"] = next_page_token
+
+                response = session.get(forms_url, params=params, timeout=60)
+                response.raise_for_status()
+                data = response.json()
+
+                # Process forms
+                forms = data.get("results", [])
+                self.logger.info(f"Found {len(forms)} forms in this batch")
+
+                for form in forms:
+                    form_id = form.get("id")
+                    form_name = form.get("name", "")
+                    if form_id:
+                        forms_mapping[str(form_id)] = form_name
+
+                # Check for next page
+                paging = data.get("paging")
+                if paging and paging.get("next"):
+                    next_page_token = paging["next"]["after"]
+                else:
+                    break  # No more pages
+
+            self.logger.info(f"Created forms mapping with {len(forms_mapping)} forms")
+            return forms_mapping
+
+        except Exception as e:
+            self.logger.error(f"Failed to fetch forms: {e}")
+            return {}
+
     def get_next_page_token(
         self,
         response: requests.Response,
@@ -2274,6 +2325,10 @@ class WebEventsStream(HubspotStream):
 
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
         """Get records by iterating through all event types."""
+        # Fetch forms mapping first
+        self.logger.info("Fetching forms mapping for title enrichment")
+        self.forms_mapping = self.get_forms_mapping()
+        
         event_types = self.get_event_types()
 
         if not event_types:
@@ -2410,104 +2465,16 @@ class WebEventsStream(HubspotStream):
             row["occurredAt"] = datetime.datetime.fromtimestamp(
                 row["occurredAt"] / 1000, tz=datetime.timezone.utc
             ).isoformat()
+        
+        # Add form title based on hs_form_id mapping
+        form_id = None
+        if "properties" in row and isinstance(row["properties"], dict):
+            form_id = row["properties"].get("hs_form_id")
+        
+        if form_id and hasattr(self, 'forms_mapping'):
+            row["form_title"] = self.forms_mapping.get(str(form_id))
+        else:
+            row["form_title"] = None
+            
         return row
 
-
-class FormSubmissionsStream(HubspotStream):
-    """HubSpot Form Submissions Stream (child of ContactStream).
-
-    Fetches form submissions for contacts using the v1 batch endpoint.
-    """
-
-    name = "form_submissions"
-    parent_stream_type = ContactStream
-    ignore_parent_replication_key = False
-    primary_keys = ("contact_id", "form_id", "timestamp")
-    records_jsonpath = "$[*]"  # We'll yield a flat list
-
-    schema = PropertiesList(
-        Property("contact_id", StringType),
-        Property("form_id", StringType),
-        Property("form_type", StringType),
-        Property("timestamp", IntegerType),
-        Property("page_url", StringType),
-        Property("page_title", StringType),
-        Property("portal_id", IntegerType),
-        Property("conversion_id", StringType),
-        Property("form_instance_id", StringType),
-        Property("form_name", StringType),
-        Property("form_version", StringType),
-        Property("form_url", StringType),
-        Property(
-            "form_fields",
-            ArrayType(
-                ObjectType(
-                    Property("name", StringType),
-                    Property("value", StringType),
-                )
-            ),
-        ),
-        Property("canonical_url", StringType),
-        Property("content_type", StringType),
-        Property("page_id", StringType),
-        Property("title", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        return "https://api.hubapi.com"
-
-    def get_records(self, context: t.Optional[dict]) -> t.Iterable[dict]:
-        import logging
-
-        logger = getattr(self, "logger", logging.getLogger(__name__))
-        session = requests.Session()
-        session.headers.update(self.http_headers)
-        session.auth = self.authenticator
-        endpoint = f"{self.url_base}/contacts/v1/contact/vids/batch"
-
-        FIELD_MAP = {
-            "form-id": "form_id",
-            "form-type": "form_type",
-            "timestamp": "timestamp",
-            "page-url": "page_url",
-            "page-title": "page_title",
-            "portal-id": "portal_id",
-            "conversion-id": "conversion_id",
-            "form-instance-id": "form_instance_id",
-            "form-name": "form_name",
-            "form-version": "form_version",
-            "form-url": "form_url",
-            "meta-data": "form_fields",
-        }
-
-        # If context is provided, fetch for just that contact
-        if context and "contact_id" in context:
-            contact_id = context["contact_id"]
-            vid_params = f"vid={contact_id}"
-            url = f"{endpoint}?property=vid&formSubmissionMode=all&includeAssociations=true&{vid_params}"
-            try:
-                resp = session.get(url, timeout=60)
-                resp.raise_for_status()
-                data = resp.json()
-                contact_data = data.get(str(contact_id), {})
-                form_submissions = contact_data.get("form-submissions", [])
-                for form in form_submissions:
-                    mapped = {FIELD_MAP.get(k, k): v for k, v in form.items()}
-                    mapped["contact_id"] = contact_id
-                    yield mapped
-            except Exception as e:
-                logger.error(
-                    f"Failed to fetch form submissions for contact {contact_id}: {e}"
-                )
-            return
-
-        # If no context, do nothing
-        return
-
-    def get_child_context(self, record: dict, context: t.Optional[dict]) -> dict:
-        return {"contact_id": record["contact_id"]}
-
-    def post_process(self, row: dict, context: t.Optional[dict] = None) -> dict | None:
-        # Optionally, flatten or clean up fields
-        return row

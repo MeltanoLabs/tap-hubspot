@@ -33,7 +33,7 @@ jobs:
           name: Packages
           path: dist
       - name: Upload wheel to release
-        uses: svenstaro/upload-release-action@02f15da06d6f85e8b956dd4b1eaacffaaede7644 # 2.11.0
+        uses: svenstaro/upload-release-action@81c65b7cd4de9b2570615ce3aad67a41de5b1a13 # 2.11.2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/*.whl

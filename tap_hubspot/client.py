@@ -192,8 +192,6 @@ class DynamicHubspotStream(HubspotStream):
 class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream."""
 
-    is_sorted = True
-
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: D107
         super().__init__(*args, **kwargs)
 

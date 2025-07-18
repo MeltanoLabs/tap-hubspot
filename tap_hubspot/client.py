@@ -6,6 +6,7 @@ import datetime
 import sys
 import typing as t
 from functools import cached_property
+from http import HTTPStatus
 
 import requests
 from singer_sdk import typing as th
@@ -165,7 +166,21 @@ class DynamicHubspotStream(HubspotStream):
         resp = session.get(
             f"https://api.hubapi.com/crm/v3/properties/{self.name}",
         )
-        resp.raise_for_status()
+
+        try:
+            resp.raise_for_status()
+        except requests.HTTPError as e:
+            if e.response.status_code != HTTPStatus.FORBIDDEN:
+                raise
+
+            self.logger.warning(self.response_error_message(e.response))
+            self.logger.warning(
+                "No properties available for object type '%s'",
+                self.name,
+            )
+
+            return {}
+
         results = resp.json().get("results", [])
         return {prop["name"]: prop["type"] for prop in results}
 

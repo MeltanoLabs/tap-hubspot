@@ -430,35 +430,27 @@ class PropertyNotesStream(PropertyStream):
 
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
         """Merges all the property stream data into a single property table."""
-        property_ticket = PropertyTicketStream(self._tap)
-        property_deal = PropertyDealStream(self._tap)
-        property_contact = PropertyContactStream(self._tap)
-        property_company = PropertyCompanyStream(self._tap)
-        property_product = PropertyProductStream(self._tap)
-        property_lineitem = PropertyLineItemStream(self._tap)
-        property_email = PropertyEmailStream(self._tap)
-        property_postalmail = PropertyPostalMailStream(self._tap)
-        property_call = PropertyCallStream(self._tap)
-        property_goal = PropertyGoalStream(self._tap)
-        property_meeting = PropertyMeetingStream(self._tap)
-        property_task = PropertyTaskStream(self._tap)
-        property_communication = PropertyCommunicationStream(self._tap)
-        return (
-            list(property_ticket.get_records(context))
-            + list(property_deal.get_records(context))
-            + list(property_contact.get_records(context))
-            + list(property_company.get_records(context))
-            + list(property_product.get_records(context))
-            + list(property_lineitem.get_records(context))
-            + list(property_email.get_records(context))
-            + list(property_postalmail.get_records(context))
-            + list(property_call.get_records(context))
-            + list(property_goal.get_records(context))
-            + list(property_meeting.get_records(context))
-            + list(property_task.get_records(context))
-            + list(property_communication.get_records(context))
-            + list(super().get_records(context))
-        )
+        property_stream_classes: list[type[PropertyStream]] = [
+            PropertyTicketStream,
+            PropertyDealStream,
+            PropertyContactStream,
+            PropertyCompanyStream,
+            PropertyProductStream,
+            PropertyLineItemStream,
+            PropertyEmailStream,
+            PropertyPostalMailStream,
+            PropertyCallStream,
+            PropertyGoalStream,
+            PropertyMeetingStream,
+            PropertyTaskStream,
+            PropertyCommunicationStream,
+        ]
+
+        for stream_cls in property_stream_classes:
+            stream = stream_cls(self._tap)
+            yield from stream.get_records(context)
+
+        yield from super().get_records(context)
 
 
 class CompanyStream(DynamicIncrementalHubspotStream):

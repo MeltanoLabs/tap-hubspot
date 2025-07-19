@@ -267,61 +267,10 @@ class PropertyTicketStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_tickets"
     path = "/properties/tickets"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyDealStream(PropertyStream):
@@ -330,62 +279,10 @@ class PropertyDealStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_deals"
     path = "/properties/deals"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-        Property("calculationFormula", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyContactStream(PropertyStream):
@@ -394,61 +291,10 @@ class PropertyContactStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_contacts"
     path = "/properties/contacts"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyCompanyStream(PropertyStream):
@@ -457,61 +303,10 @@ class PropertyCompanyStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_companies"
     path = "/properties/company"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyProductStream(PropertyStream):
@@ -520,61 +315,10 @@ class PropertyProductStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_products"
     path = "/properties/product"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyLineItemStream(PropertyStream):
@@ -583,61 +327,10 @@ class PropertyLineItemStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_line_items"
     path = "/properties/line_item"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyEmailStream(PropertyStream):
@@ -646,61 +339,10 @@ class PropertyEmailStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_emails"
     path = "/properties/email"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyPostalMailStream(PropertyStream):
@@ -709,61 +351,10 @@ class PropertyPostalMailStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_postal_mails"
     path = "/properties/postal_mail"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyGoalStream(PropertyStream):
@@ -772,61 +363,10 @@ class PropertyGoalStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "goal_targets"
     path = "/properties/goal_targets"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyCallStream(PropertyStream):
@@ -835,61 +375,10 @@ class PropertyCallStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_calls"
     path = "/properties/call"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyMeetingStream(PropertyStream):
@@ -898,61 +387,10 @@ class PropertyMeetingStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_meetings"
     path = "/properties/meeting"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyTaskStream(PropertyStream):
@@ -961,61 +399,10 @@ class PropertyTaskStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_tasks"
     path = "/properties/task"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyCommunicationStream(PropertyStream):
@@ -1024,61 +411,10 @@ class PropertyCommunicationStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "property_communications"
     path = "/properties/communication"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
 
 class PropertyNotesStream(PropertyStream):
@@ -1087,61 +423,10 @@ class PropertyNotesStream(PropertyStream):
     """
     name: stream name
     path: path which will be added to api url in client.py
-    schema: instream schema
-    primary_keys = primary keys for the table
-    replication_key = datetime keys for replication
-    records_jsonpath = json response body
     """
 
     name = "properties"
     path = "/properties/notes"
-    primary_keys = ("label",)
-    records_jsonpath = "$[results][*]"  # Or override `parse_response`.
-
-    schema = PropertiesList(
-        Property("updatedAt", StringType),
-        Property("createdAt", StringType),
-        Property("name", StringType),
-        Property("label", StringType),
-        Property("type", StringType),
-        Property("fieldType", StringType),
-        Property("description", StringType),
-        Property("groupName", StringType),
-        Property(
-            "options",
-            ArrayType(
-                ObjectType(
-                    Property("label", StringType),
-                    Property("description", StringType),
-                    Property("value", StringType),
-                    Property("displayOrder", IntegerType),
-                    Property("hidden", BooleanType),
-                ),
-            ),
-        ),
-        Property("displayOrder", IntegerType),
-        Property("calculated", BooleanType),
-        Property("externalOptions", BooleanType),
-        Property("hasUniqueValue", BooleanType),
-        Property("hidden", BooleanType),
-        Property("hubspotDefined", BooleanType),
-        Property(
-            "modificationMetadata",
-            ObjectType(
-                Property("readOnlyOptions", BooleanType),
-                Property("readOnlyValue", BooleanType),
-                Property("readOnlyDefinition", BooleanType),
-                Property("archivable", BooleanType),
-            ),
-        ),
-        Property("formField", BooleanType),
-        Property("hubspot_object", StringType),
-    ).to_dict()
-
-    @property
-    def url_base(self) -> str:
-        """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
 
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
         """Merges all the property stream data into a single property table."""

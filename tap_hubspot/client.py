@@ -130,6 +130,47 @@ class HubspotStream(RESTStream):
 class PropertyStream(HubspotStream):
     """Property stream class."""
 
+    schema = th.PropertiesList(
+        th.Property("updatedAt", th.StringType),
+        th.Property("createdAt", th.StringType),
+        th.Property("name", th.StringType),
+        th.Property("label", th.StringType),
+        th.Property("type", th.StringType),
+        th.Property("fieldType", th.StringType),
+        th.Property("description", th.StringType),
+        th.Property("groupName", th.StringType),
+        th.Property(
+            "options",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("label", th.StringType),
+                    th.Property("description", th.StringType),
+                    th.Property("value", th.StringType),
+                    th.Property("displayOrder", th.IntegerType),
+                    th.Property("hidden", th.BooleanType),
+                ),
+            ),
+        ),
+        th.Property("displayOrder", th.IntegerType),
+        th.Property("calculated", th.BooleanType),
+        th.Property("externalOptions", th.BooleanType),
+        th.Property("hasUniqueValue", th.BooleanType),
+        th.Property("hidden", th.BooleanType),
+        th.Property("hubspotDefined", th.BooleanType),
+        th.Property(
+            "modificationMetadata",
+            th.ObjectType(
+                th.Property("readOnlyOptions", th.BooleanType),
+                th.Property("readOnlyValue", th.BooleanType),
+                th.Property("readOnlyDefinition", th.BooleanType),
+                th.Property("archivable", th.BooleanType),
+            ),
+        ),
+        th.Property("formField", th.BooleanType),
+        th.Property("hubspot_object", th.StringType),
+    ).to_dict()
+
+    primary_keys = ("label",)
     records_jsonpath = "$[results][*]"
 
     @property

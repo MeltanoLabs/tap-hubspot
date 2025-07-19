@@ -127,6 +127,24 @@ class HubspotStream(RESTStream):
             params["order_by"] = self.replication_key
         return params
 
+class PropertyStream(HubspotStream):
+    """Property stream class."""
+
+    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
+        if response.status_code == HTTPStatus.FORBIDDEN:
+            self.logger.warning(self.response_error_message(response))
+            self.logger.warning(
+                "No properties available for object type '%s'",
+                self.name,
+            )
+        else:
+            super().validate_response(response)
+
+    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:  # noqa: D102
+        if response.status_code == HTTPStatus.FORBIDDEN:
+            return []
+
+        return super().parse_response(response)
 
 class DynamicHubspotStream(HubspotStream):
     """DynamicHubspotStream."""

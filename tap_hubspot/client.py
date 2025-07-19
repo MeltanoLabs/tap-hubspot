@@ -130,6 +130,16 @@ class HubspotStream(RESTStream):
 class PropertyStream(HubspotStream):
     """Property stream class."""
 
+    records_jsonpath = "$[results][*]"
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com/crm/v3"
+
+    @property
+    def path(self) -> str:  # noqa: D102
+        return f"/properties/{self.name}"
+
     def validate_response(self, response: requests.Response) -> None:  # noqa: D102
         if response.status_code == HTTPStatus.FORBIDDEN:
             self.logger.warning(self.response_error_message(response))
@@ -178,28 +188,9 @@ class DynamicHubspotStream(HubspotStream):
         return schema.to_dict()
 
     def _get_available_properties(self) -> dict[str, str]:
-        session = requests.Session()
-        session.auth = self.authenticator
+        property_stream = PropertyStream(self._tap, self.name, {"properties": {}})
+        results = property_stream.get_records(None)
 
-        resp = session.get(
-            f"https://api.hubapi.com/crm/v3/properties/{self.name}",
-        )
-
-        try:
-            resp.raise_for_status()
-        except requests.HTTPError as e:
-            if e.response.status_code != HTTPStatus.FORBIDDEN:
-                raise
-
-            self.logger.warning(self.response_error_message(e.response))
-            self.logger.warning(
-                "No properties available for object type '%s'",
-                self.name,
-            )
-
-            return {}
-
-        results = resp.json().get("results", [])
         return {prop["name"]: prop["type"] for prop in results}
 
     def get_url_params(

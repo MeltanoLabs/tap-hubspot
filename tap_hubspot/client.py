@@ -229,7 +229,7 @@ class DynamicHubspotStream(HubspotStream):
         return schema.to_dict()
 
     def _get_available_properties(self) -> dict[str, str]:
-        property_stream = PropertyStream(self._tap, self.name, {"properties": {}})
+        property_stream = PropertyStream(self._tap, self.name)
         results = property_stream.get_records(None)
 
         return {prop["name"]: prop["type"] for prop in results}

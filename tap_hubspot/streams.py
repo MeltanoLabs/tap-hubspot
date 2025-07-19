@@ -430,25 +430,19 @@ class PropertyNotesStream(PropertyStream):
 
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
         """Merges all the property stream data into a single property table."""
-        property_ticket = PropertyTicketStream(self._tap, schema={"properties": {}})
-        property_deal = PropertyDealStream(self._tap, schema={"properties": {}})
-        property_contact = PropertyContactStream(self._tap, schema={"properties": {}})
-        property_company = PropertyCompanyStream(self._tap, schema={"properties": {}})
-        property_product = PropertyProductStream(self._tap, schema={"properties": {}})
-        property_lineitem = PropertyLineItemStream(self._tap, schema={"properties": {}})
-        property_email = PropertyEmailStream(self._tap, schema={"properties": {}})
-        property_postalmail = PropertyPostalMailStream(
-            self._tap,
-            schema={"properties": {}},
-        )
-        property_call = PropertyCallStream(self._tap, schema={"properties": {}})
-        property_goal = PropertyGoalStream(self._tap, schema={"properties": {}})
-        property_meeting = PropertyMeetingStream(self._tap, schema={"properties": {}})
-        property_task = PropertyTaskStream(self._tap, schema={"properties": {}})
-        property_communication = PropertyCommunicationStream(
-            self._tap,
-            schema={"properties": {}},
-        )
+        property_ticket = PropertyTicketStream(self._tap)
+        property_deal = PropertyDealStream(self._tap)
+        property_contact = PropertyContactStream(self._tap)
+        property_company = PropertyCompanyStream(self._tap)
+        property_product = PropertyProductStream(self._tap)
+        property_lineitem = PropertyLineItemStream(self._tap)
+        property_email = PropertyEmailStream(self._tap)
+        property_postalmail = PropertyPostalMailStream(self._tap)
+        property_call = PropertyCallStream(self._tap)
+        property_goal = PropertyGoalStream(self._tap)
+        property_meeting = PropertyMeetingStream(self._tap)
+        property_task = PropertyTaskStream(self._tap)
+        property_communication = PropertyCommunicationStream(self._tap)
         return (
             list(property_ticket.get_records(context))
             + list(property_deal.get_records(context))

@@ -10,7 +10,6 @@ from http import HTTPStatus
 
 import requests
 from singer_sdk import typing as th
-from singer_sdk._singerlib.utils import strptime_to_utc
 from singer_sdk.authenticators import BearerTokenAuthenticator
 from singer_sdk.streams import RESTStream
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
@@ -210,10 +209,17 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: D107
         super().__init__(*args, **kwargs)
 
+    @property
+    def replication_key_value(self) -> str | None:
+        """Latest replication key value."""
+        return self.get_context_state(self.context).get(
+            "replication_key_value",
+        ) or self.get_starting_replication_key_value(self.context)
+
     def _is_incremental_search(self, context: Context | None) -> bool:
         return (
             self.replication_method == REPLICATION_INCREMENTAL  # type: ignore[return-value]
-            and self.get_starting_replication_key_value(context)
+            and self.replication_key_value
             and hasattr(self, "incremental_path")
             and self.incremental_path
         )
@@ -325,21 +331,17 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
         if self._is_incremental_search(context):
             # Only filter in case we have a value to filter on
             # https://developers.hubspot.com/docs/api/crm/search
-            ts = datetime.datetime.fromisoformat(
-                self.get_starting_replication_key_value(context),  # type: ignore[arg-type]
-            )
             if next_page_token:
                 # Hubspot wont return more than 10k records so when we hit 10k we
                 # need to reset our epoch to most recent and not send the
                 # next_page_token
                 if int(next_page_token) + 100 >= 10000:  # noqa: PLR2004
-                    ts = strptime_to_utc(
-                        self.get_context_state(context)  # type: ignore[union-attr]
-                        .get("progress_markers")
-                        .get("replication_key_value"),
-                    )
+                    state = self.get_context_state(context)
+                    self.finalize_state_progress_markers(state)
                 else:
                     body["after"] = next_page_token
+
+            ts = datetime.datetime.fromisoformat(self.replication_key_value)
             epoch_ts = str(int(ts.timestamp() * 1000))
 
             body.update(

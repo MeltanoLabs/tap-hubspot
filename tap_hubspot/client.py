@@ -350,7 +350,9 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 else:
                     body["after"] = next_page_token
 
-            ts = datetime.datetime.fromisoformat(self.replication_key_value)
+            # _is_incremental_search(...) narrows the type of self.replication_key_value
+            # to str, so we need to ignore the type checker here
+            ts = datetime.datetime.fromisoformat(self.replication_key_value)  # type: ignore[arg-type]
             epoch_ts = str(int(ts.timestamp() * 1000))
 
             body.update(

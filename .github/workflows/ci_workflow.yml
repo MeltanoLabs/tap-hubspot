@@ -2,7 +2,9 @@
 
 name: Test tap-hubspot
 
-on: [push]
+on:
+- push
+- workflow_dispatch
 
 env:
   FORCE_COLOR: 1

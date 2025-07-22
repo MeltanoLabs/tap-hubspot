@@ -337,6 +337,15 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
                 # next_page_token
                 if int(next_page_token) + 100 >= 10000:  # noqa: PLR2004
                     state = self.get_context_state(context)
+                    # checkpoint progress to allow the next paginated batch of requests
+                    # to resolve the same new replication key value
+                    #
+                    # without finalizing (i.e. resolving from progress markers), there
+                    # is no guarantee the replication key value would stay the same
+                    # across all requests when paginating through the next 10k records
+                    # (a more recent replication key value may be encountered) - this
+                    # would result in a corrupted pagination loop, where data may be
+                    # skipped over unexpectedly
                     self.finalize_state_progress_markers(state)
                 else:
                     body["after"] = next_page_token

@@ -70,7 +70,7 @@ class HubspotStream(RESTStream):
             headers["User-Agent"] = self.config.get("user_agent")
         return headers
 
-    def get_new_paginator(self) -> BaseAPIPaginator:
+    def get_new_paginator(self) -> BaseAPIPaginator | None:
         """Create a new pagination helper instance.
 
         If the source API can make use of the `next_page_token_jsonpath`

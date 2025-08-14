@@ -126,6 +126,7 @@ class HubspotStream(RESTStream):
             params["order_by"] = self.replication_key
         return params
 
+
 class PropertyStream(HubspotStream):
     """Property stream class."""
 
@@ -177,7 +178,7 @@ class PropertyStream(HubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
     @property
-    def path(self) -> str:  # noqa: D102
+    def path(self) -> str:  # type: ignore[override] # noqa: D102
         return f"/properties/{self.name}"
 
     def validate_response(self, response: requests.Response) -> None:  # noqa: D102
@@ -195,6 +196,7 @@ class PropertyStream(HubspotStream):
             return []
 
         return super().parse_response(response)
+
 
 class DynamicHubspotStream(HubspotStream):
     """DynamicHubspotStream."""
@@ -266,7 +268,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             "replication_key_value",
         ) or self.get_starting_replication_key_value(self.context)
 
-    def _is_incremental_search(self, context: Context | None) -> bool:
+    def _is_incremental_search(self, context: Context | None) -> bool:  # noqa: ARG002
         return (
             self.replication_method == REPLICATION_INCREMENTAL  # type: ignore[return-value]
             and self.replication_key_value

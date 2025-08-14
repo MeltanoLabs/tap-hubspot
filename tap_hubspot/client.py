@@ -126,6 +126,75 @@ class HubspotStream(RESTStream):
             params["order_by"] = self.replication_key
         return params
 
+class PropertyStream(HubspotStream):
+    """Property stream class."""
+
+    schema = th.PropertiesList(
+        th.Property("updatedAt", th.StringType),
+        th.Property("createdAt", th.StringType),
+        th.Property("name", th.StringType),
+        th.Property("label", th.StringType),
+        th.Property("type", th.StringType),
+        th.Property("fieldType", th.StringType),
+        th.Property("description", th.StringType),
+        th.Property("groupName", th.StringType),
+        th.Property(
+            "options",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("label", th.StringType),
+                    th.Property("description", th.StringType),
+                    th.Property("value", th.StringType),
+                    th.Property("displayOrder", th.IntegerType),
+                    th.Property("hidden", th.BooleanType),
+                ),
+            ),
+        ),
+        th.Property("displayOrder", th.IntegerType),
+        th.Property("calculated", th.BooleanType),
+        th.Property("externalOptions", th.BooleanType),
+        th.Property("hasUniqueValue", th.BooleanType),
+        th.Property("hidden", th.BooleanType),
+        th.Property("hubspotDefined", th.BooleanType),
+        th.Property(
+            "modificationMetadata",
+            th.ObjectType(
+                th.Property("readOnlyOptions", th.BooleanType),
+                th.Property("readOnlyValue", th.BooleanType),
+                th.Property("readOnlyDefinition", th.BooleanType),
+                th.Property("archivable", th.BooleanType),
+            ),
+        ),
+        th.Property("formField", th.BooleanType),
+        th.Property("hubspot_object", th.StringType),
+    ).to_dict()
+
+    primary_keys = ("label",)
+    records_jsonpath = "$[results][*]"
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com/crm/v3"
+
+    @property
+    def path(self) -> str:  # noqa: D102
+        return f"/properties/{self.name}"
+
+    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
+        if response.status_code == HTTPStatus.FORBIDDEN:
+            self.logger.warning(self.response_error_message(response))
+            self.logger.warning(
+                "No properties available for object type '%s'",
+                self.name,
+            )
+        else:
+            super().validate_response(response)
+
+    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:  # noqa: D102
+        if response.status_code == HTTPStatus.FORBIDDEN:
+            return []
+
+        return super().parse_response(response)
 
 class DynamicHubspotStream(HubspotStream):
     """DynamicHubspotStream."""
@@ -159,28 +228,9 @@ class DynamicHubspotStream(HubspotStream):
         return schema.to_dict()
 
     def _get_available_properties(self) -> dict[str, str]:
-        session = requests.Session()
-        session.auth = self.authenticator
+        property_stream = PropertyStream(self._tap, self.name)
+        results = property_stream.get_records(None)
 
-        resp = session.get(
-            f"https://api.hubapi.com/crm/v3/properties/{self.name}",
-        )
-
-        try:
-            resp.raise_for_status()
-        except requests.HTTPError as e:
-            if e.response.status_code != HTTPStatus.FORBIDDEN:
-                raise
-
-            self.logger.warning(self.response_error_message(e.response))
-            self.logger.warning(
-                "No properties available for object type '%s'",
-                self.name,
-            )
-
-            return {}
-
-        results = resp.json().get("results", [])
         return {prop["name"]: prop["type"] for prop in results}
 
     def get_url_params(

@@ -212,7 +212,6 @@ class DynamicHubspotStream(HubspotStream):
     def schema(self) -> dict:
         """Return a draft JSON schema for this stream."""
         hs_props = []
-        self.hs_properties = self._get_available_properties()
         for name, prop_type in self.hs_properties.items():
             hs_props.append(
                 th.Property(name, self._get_datatype(prop_type)),
@@ -229,7 +228,9 @@ class DynamicHubspotStream(HubspotStream):
         )
         return schema.to_dict()
 
-    def _get_available_properties(self) -> dict[str, str]:
+    @cached_property
+    def hs_properties(self) -> dict[str, str]:
+        """Hubspot entity properties."""
         property_stream = PropertyStream(self._tap, self.name)
         results = property_stream.get_records(None)
 
@@ -280,7 +281,6 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     def schema(self) -> dict:
         """Return a draft JSON schema for this stream."""
         hs_props = []
-        self.hs_properties = self._get_available_properties()
         for name, prop_type in self.hs_properties.items():
             hs_props.append(
                 th.Property(name, self._get_datatype(prop_type)),

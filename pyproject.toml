@@ -14,15 +14,15 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4"
+python = ">=3.10"
 backports-datetime-fromisoformat = {version = "==2.0.3", python = "<3.11"}
 s3fs = { version = ">=2025.7.0", optional = true }
 requests = "==2.32.5"
-singer-sdk = { version="~=0.51.0" }
+singer-sdk = { version="~=0.52.0" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7"
-singer-sdk = { version="~=0.51.0", extras = ["testing"] }
+singer-sdk = { version="*", extras = ["testing"] }
 
 [tool.poetry.extras]
 s3 = ["s3fs"]

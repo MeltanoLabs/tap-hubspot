@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "meltano-tap-hubspot"
-version = "0.0.2"
+version = "0.0.3"
 description = "`tap-hubspot` is a Singer tap for tap-hubspot, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Ethan Stein"]
@@ -14,21 +14,21 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9"
-backports-datetime-fromisoformat = {version = "==2.0.3", python = "<3.11"}
+python = ">=3.11"
+backports-datetime-fromisoformat = {version = "==2.0.3", python = "<=3.11"}
 fs-s3fs = { version = "~=1.1.1", optional = true }
 requests = "==2.32.2"
-singer-sdk = { version="~=0.44.1" }
+singer-sdk = { version="~=0.53.5" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7"
-singer-sdk = { version="~=0.44.1", extras = ["testing"] }
+singer-sdk = { version="~=0.53.5", extras = ["testing"] }
 
 [tool.poetry.extras]
 s3 = ["fs-s3fs"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
@@ -41,7 +41,7 @@ module = [
 
 [tool.ruff]
 src = ["tap_hubspot"]
-target-version = "py39"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["ALL"]

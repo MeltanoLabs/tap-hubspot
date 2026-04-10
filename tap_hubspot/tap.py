@@ -79,6 +79,8 @@ class TapHubspot(Tap):
             streams.NoteStream(self),
             streams.PostalMailStream(self),
             streams.TaskStream(self),
+            streams.CustomObjectSchemasStream(self),
+            streams.CustomObjectsStream(self),
         ]
 
 

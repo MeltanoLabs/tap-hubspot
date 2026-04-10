@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import datetime
 import typing as t
+from collections.abc import Mapping
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
@@ -13,6 +15,7 @@ from tap_hubspot.client import (
 )
 
 if t.TYPE_CHECKING:
+    import requests
     from singer_sdk.helpers.types import Context
 
 PropertiesList = th.PropertiesList
@@ -23,6 +26,9 @@ StringType = th.StringType
 ArrayType = th.ArrayType
 BooleanType = th.BooleanType
 IntegerType = th.IntegerType
+
+HUBSPOT_SEARCH_PAGE_LIMIT = 100
+HUBSPOT_SEARCH_RESULT_LIMIT = 10000
 
 
 class ContactStream(DynamicIncrementalHubspotStream):
@@ -545,6 +551,267 @@ class FeedbackSubmissionsStream(HubspotStream):
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
         return "https://api.hubapi.com/crm/v3"
+
+
+class CustomObjectSchemasStream(HubspotStream):
+    """https://developers.hubspot.com/docs/api/crm-object-schemas.
+
+    Streams CRM custom object schemas from the `crm-object-schemas` API.
+    """
+
+    name = "custom_object_schemas"
+    path = "/schemas"
+    primary_keys = ("id",)
+    records_jsonpath = "$[results][*]"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property("name", StringType),
+        Property("objectTypeId", StringType),
+        Property("objectType", StringType),
+        Property(
+            "labels",
+            ObjectType(
+                Property("singular", StringType),
+                Property("plural", StringType),
+            ),
+        ),
+        Property("archived", BooleanType),
+        Property(
+            "properties",
+            ArrayType(
+                ObjectType(
+                    Property("name", StringType),
+                    Property("label", StringType),
+                    Property("type", StringType),
+                ),
+            ),
+        ),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """Returns an updated path which includes the api version."""
+        return "https://api.hubapi.com/crm-object-schemas/v3"
+
+    def generate_child_contexts(
+        self,
+        record: dict[str, object],
+        context: Context | None,  # noqa: ARG002
+    ) -> t.Iterator[dict[str, object]]:
+        """Yield child contexts for `CustomObjectsStream`.
+
+        The child needs the `objectTypeId` (or the API `name`) to target
+        the `/crm/objects/{objectType}` endpoint.
+        """
+        api_name = record.get("name")
+        object_type_id = record.get("objectTypeId")
+        if not api_name and not object_type_id:
+            return
+        yield {
+            "object_type_id": object_type_id,
+            "object_api_name": api_name,
+            "properties": record.get("properties", []),
+        }
+
+
+class CustomObjectsStream(DynamicIncrementalHubspotStream):
+    """Combined stream that yields records for all custom objects.
+
+    This stream discovers custom object schemas via
+    `CustomObjectSchemasStream` and, for each schema, instantiates
+    `CustomObjectRecordStream` to fetch records and yield them.
+    """
+
+    name = "custom_objects"
+    primary_keys = ("id",)
+    replication_key = "hs_lastmodifieddate"
+    replication_method = "INCREMENTAL"
+    state_partitioning_keys: t.ClassVar[list[str]] = ["object_type_id"]
+    records_jsonpath = "$[results][*]"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property("objectTypeId", StringType),
+        Property("name", StringType),
+        Property(
+            "properties",
+            ObjectType(additional_properties=StringType(nullable=True)),
+        ),
+        Property("createdAt", DateTimeType),
+        Property("updatedAt", DateTimeType),
+        Property("hs_lastmodifieddate", DateTimeType),
+        Property("archived", BooleanType),
+    ).to_dict()
+
+    parent_stream_type = CustomObjectSchemasStream
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com"
+
+    @staticmethod
+    def _get_context_object_type(context: Context | None) -> str | None:
+        """Return the HubSpot object type from a child stream context."""
+        if not context:
+            return None
+
+        object_type = context.get("object_type_id") or context.get(
+            "object_api_name",
+        )
+        return object_type if isinstance(object_type, str) else None
+
+    def _get_property_names(self, context: Context | None) -> list[str]:
+        """Return HubSpot property names from a child stream context."""
+        property_names: list[str] = []
+        if context:
+            properties = context.get("properties", [])
+            if isinstance(properties, list):
+                for prop in properties:
+                    if not isinstance(prop, Mapping):
+                        continue
+
+                    name = t.cast("Mapping[str, object]", prop).get("name")
+                    if isinstance(name, str):
+                        property_names.append(name)
+
+        if self.replication_key and self.replication_key not in property_names:
+            property_names.append(self.replication_key)
+
+        return property_names
+
+    def get_url_params(
+        self,
+        context: Context | None,
+        next_page_token: int | None,
+    ) -> dict[str, int | str]:
+        """Return params without dynamic property discovery."""
+        if self._is_incremental_search(context):
+            return {}
+
+        params: dict[str, int | str] = {}
+        if next_page_token:
+            params["after"] = next_page_token
+
+        property_names = self._get_property_names(context)
+        if property_names:
+            params["properties"] = ",".join(property_names)
+
+        return params
+
+    def prepare_request(
+        self,
+        context: Context | None,
+        next_page_token: int | None,
+    ) -> requests.PreparedRequest:
+        """Use GET for list requests and POST for incremental search requests."""
+        if self._is_incremental_search(context):
+            self.path = t.cast("str", self.incremental_path)
+            self.http_method = "POST"
+        else:
+            object_type = self._get_context_object_type(context)
+            if object_type:
+                self.path = f"/crm/v3/objects/{object_type}"
+            self.http_method = "GET"
+
+        return HubspotStream.prepare_request(self, context, next_page_token)
+
+    def prepare_request_payload(
+        self,
+        context: Context | None,
+        next_page_token: int | None,
+    ) -> dict[str, object] | None:
+        """Prepare HubSpot Search payload for incremental custom object syncs."""
+        if not self._is_incremental_search(context):
+            return None
+
+        body: dict[str, object] = {}
+        if next_page_token:
+            if int(next_page_token) + HUBSPOT_SEARCH_PAGE_LIMIT >= (
+                HUBSPOT_SEARCH_RESULT_LIMIT
+            ):
+                state = self.get_context_state(context)
+                self.finalize_state_progress_markers(state)
+            else:
+                body["after"] = next_page_token
+
+        replication_key_value = t.cast("str", self.replication_key_value)
+        ts = datetime.datetime.fromisoformat(replication_key_value)
+        epoch_ts = str(int(ts.timestamp() * 1000))
+
+        body.update(
+            {
+                "filterGroups": [
+                    {
+                        "filters": [
+                            {
+                                "propertyName": self.replication_key,
+                                "operator": "GTE",
+                                "value": epoch_ts,
+                            },
+                        ],
+                    },
+                ],
+                "sorts": [
+                    {
+                        "propertyName": self.replication_key,
+                        "direction": "ASCENDING",
+                    },
+                ],
+                "limit": HUBSPOT_SEARCH_PAGE_LIMIT,
+                "properties": self._get_property_names(context),
+            },
+        )
+
+        return body
+
+    def post_process(
+        self,
+        row: dict[str, object],
+        context: Context | None = None,
+    ) -> dict[str, object] | None:
+        """Attach parent custom object metadata to each record."""
+        props = row.get("properties")
+        if isinstance(props, Mapping):
+            row["hs_lastmodifieddate"] = t.cast(
+                "Mapping[str, object]",
+                props,
+            ).get("hs_lastmodifieddate")
+        if context:
+            row["objectTypeId"] = context.get("object_type_id")
+
+        return row
+
+    # The path must exist before the SDK performs metrics/request setup.
+    # Set the per-object path from the parent-provided context at the
+    # start of `get_records` so `self.path` is available to the SDK.
+
+    def get_records(
+        self,
+        context: Context | None,
+    ) -> t.Iterable[dict[str, object]]:
+        """Return records for one parent custom object context."""
+        # Expect the parent `CustomObjectSchemasStream` to call this stream
+        # with a context containing `object_type_id` or `object_api_name`.
+        if not context:
+            self.logger.warning(
+                "No parent context provided to customobjects stream; skipping",
+            )
+            return []
+
+        object_type = self._get_context_object_type(context)
+        if not object_type:
+            self.logger.warning(
+                "Parent context missing object type information; skipping",
+            )
+            return []
+
+        # Set the path before any SDK request/metrics use `self.path`.
+        self.path = f"/crm/v3/objects/{object_type}"
+        self.incremental_path = f"/crm/v3/objects/{object_type}/search"
+
+        # Delegate to the base class to handle pagination/requests.
+        yield from super().get_records(context)
 
 
 class LineItemStream(DynamicIncrementalHubspotStream):

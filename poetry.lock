@@ -1642,14 +1642,14 @@ fsspec = "2026.2.0"
 
 [[package]]
 name = "simpleeval"
-version = "1.0.3"
+version = "1.0.7"
 description = "A simple, safe single expression evaluator library."
 optional = false
 python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "simpleeval-1.0.3-py3-none-any.whl", hash = "sha256:e3bdbb8c82c26297c9a153902d0fd1858a6c3774bf53ff4f134788c3f2035c38"},
-    {file = "simpleeval-1.0.3.tar.gz", hash = "sha256:67bbf246040ac3b57c29cf048657b9cf31d4e7b9d6659684daa08ca8f1e45829"},
+    {file = "simpleeval-1.0.7-py3-none-any.whl", hash = "sha256:97ac271bfd8f2af9e7b9a36ceea67617f26fa873f9d5ae1922f64d4c1442534b"},
+    {file = "simpleeval-1.0.7.tar.gz", hash = "sha256:1e10e5f9fec597814444e20c0892ed15162fa214c8a88f434b5b077cf2fef85b"},
 ]
 
 [[package]]
@@ -1774,14 +1774,14 @@ files = [
 
 [[package]]
 name = "singer-sdk"
-version = "0.53.4"
+version = "0.54.4"
 description = "A framework for building Singer taps and targets"
 optional = false
 python-versions = ">=3.10"
 groups = ["main", "dev"]
 files = [
-    {file = "singer_sdk-0.53.4-py3-none-any.whl", hash = "sha256:0d3899eba6109dc4c2178248cfe6d0626b9743899f02a3107490e97ead3dd66b"},
-    {file = "singer_sdk-0.53.4.tar.gz", hash = "sha256:b380cffb7b32edcc25a22c920726845ebfc53220782cf475369bd10b67ff7e81"},
+    {file = "singer_sdk-0.54.4-py3-none-any.whl", hash = "sha256:d83d94a55870edabc5cec7cc7158fa59716b10e3753a0aa8a9e997f7ec915e72"},
+    {file = "singer_sdk-0.54.4.tar.gz", hash = "sha256:aebbaf1f0db4383b18a20bea4e19c1d939d52dc77d5bdd2e2897579b475d51d1"},
 ]
 
 [package.dependencies]
@@ -1800,11 +1800,12 @@ python-dotenv = ">=0.20"
 pyyaml = ">=6.0"
 referencing = ">=0.30.0"
 requests = ">=2.25.1"
-simpleeval = ">=0.9.13,<1.0.1 || >1.0.1"
+simpleeval = "1.0.7"
 simplejson = ">=3.17.6"
 sqlalchemy = ">=2"
 typing-extensions = {version = ">=4.5.0", markers = "python_version < \"3.13\""}
 universal-pathlib = ">=0.2.6"
+urllib3 = ">=1.26.20"
 
 [package.extras]
 faker = ["faker (>=22.5)"]
@@ -2295,4 +2296,4 @@ s3 = ["s3fs"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "ef15325d29140ae6039c5dafddc5564d4def82eee391f2abf2df2335e4a3bb41"
+content-hash = "d13a2bdfb1f2152f38c425d399b66856ee5ad3f449ba6be18361248fea51fd27"

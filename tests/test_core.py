@@ -17,7 +17,6 @@ TestTapHubspot = get_tap_test_class(
         ignore_no_records_for_streams=[
             "calls",
             "teams",
-            "tickets",
             "leads",
             "communications",
             "emails",

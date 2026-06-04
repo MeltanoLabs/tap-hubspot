@@ -39,7 +39,7 @@ The licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensa
 ## Installation
 
 ```bash
-pipx install git+https://github.com/ryan-miranda-partners/tap-hubspot.git
+pipx install git+https://github.com/MeltanoLabs/tap-hubspot.git
 ```
 
 ### Configure using environment variables
@@ -52,6 +52,85 @@ environment variable is set either in the terminal context or in the `.env` file
 
 A Hubspot access token is required to make API requests. (See [Hubspot API](https://developers.hubspot.com/docs/api/working-with-oauth) docs for more info)
 
+
+### Streams
+
+| Stream | Replication | Description |
+|:-------|:-----------:|:------------|
+| `contacts` | Incremental | People in your HubSpot CRM |
+| `companies` | Incremental | Company records in your CRM |
+| `deals` | Incremental | Sales opportunities and pipeline deals |
+| `leads` | Incremental | Individual sales leads linked to a contact and company (`objectTypeId: 0-136`) |
+| `line_items` | Incremental | Products attached to deals |
+| `goal_targets` | Incremental | Sales and activity goal records |
+| `calls` | Incremental | Call engagement records |
+| `communications` | Incremental | Communication engagement records |
+| `emails` | Incremental | Email engagement records |
+| `meetings` | Incremental | Meeting engagement records |
+| `notes` | Incremental | Note engagement records |
+| `postal_mail` | Incremental | Postal mail engagement records |
+| `tasks` | Incremental | Task engagement records |
+| `owners` | Full Table | HubSpot users who own CRM records |
+| `users` | Full Table | Users in your HubSpot account |
+| `products` | Full Table | Product library items |
+| `tickets` | Full Table | Customer support tickets |
+| `quotes` | Full Table | Sales quotes |
+| `feedback_submissions` | Full Table | Customer feedback survey responses |
+| `ticket_pipelines` | Full Table | Ticket pipeline and stage definitions |
+| `deal_pipelines` | Full Table | Deal pipeline and stage definitions |
+| `email_subscriptions` | Full Table | Email subscription type definitions |
+| `properties` | Full Table | Property definitions for all CRM object types |
+
+#### `leads` stream fields
+
+All fields are nested under the `properties` key in each record, alongside the top-level `id`, `createdAt`, `updatedAt`, and `archived` fields. The schema is discovered dynamically from the HubSpot properties API at sync time, so custom properties added in HubSpot will appear automatically.
+
+| Field | Description |
+|:------|:------------|
+| `id` | Unique HubSpot record ID for the lead |
+| `createdAt` | Timestamp when the lead record was created |
+| `updatedAt` | Timestamp when the lead record was last updated |
+| `archived` | Whether the lead has been archived |
+| `hs_object_id` | HubSpot internal object ID (same as `id`) |
+| `hs_createdate` | Date and time the lead was created |
+| `hs_lastmodifieddate` | Date and time the lead was last modified (used as the incremental replication key) |
+| `hs_lead_name` | Display name of the lead |
+| `hs_lead_title` | Title or label for the lead |
+| `hs_lead_type` | Type classification of the lead |
+| `hs_lead_source` | Source that originated the lead |
+| `hs_lead_label` | Pipeline stage label |
+| `hs_pipeline` | ID of the pipeline the lead belongs to |
+| `hs_pipeline_stage` | Current pipeline stage ID |
+| `hs_pipeline_stage_category` | Category of the current pipeline stage |
+| `hs_lead_is_new` | Whether the lead is in the New stage |
+| `hs_lead_is_open` | Whether the lead is currently open |
+| `hs_lead_is_in_progress` | Whether the lead is in progress |
+| `hs_lead_is_qualified` | Whether the lead has been marked as qualified |
+| `hs_lead_is_disqualified` | Whether the lead has been disqualified |
+| `hs_lead_disqualification_reason` | Reason the lead was disqualified |
+| `hs_lead_disqualification_note` | Free-text note on disqualification |
+| `hs_primary_contact_id` | HubSpot ID of the primary associated contact |
+| `hs_primary_company_id` | HubSpot ID of the primary associated company |
+| `hs_associated_contact_email` | Email address of the associated contact |
+| `hs_associated_contact_firstname` | First name of the associated contact |
+| `hs_associated_contact_lastname` | Last name of the associated contact |
+| `hs_associated_company_name` | Name of the associated company |
+| `hs_associated_company_domain` | Domain of the associated company |
+| `hubspot_owner_id` | HubSpot user ID of the lead owner |
+| `hubspot_owner_assigneddate` | Timestamp when the owner was assigned |
+| `hubspot_team_id` | ID of the team assigned to the lead |
+| `hs_last_activity_date` | Most recent activity date on the lead |
+| `hs_next_activity_date` | Next scheduled activity date |
+| `hs_lead_first_outreach_date` | Date of the first outreach attempt |
+| `hs_lead_call_count` | Number of calls logged against the lead |
+| `hs_lead_email_count` | Number of emails logged against the lead |
+| `hs_lead_meeting_count` | Number of meetings logged against the lead |
+| `hs_lead_pipeline_value` | Estimated value of the lead |
+| `hs_lead_currency_code` | Currency code for the pipeline value |
+| `lead_source` | Original traffic source of the lead |
+| `lead_medium` | Marketing medium that generated the lead |
+| `lead_type` | Custom lead type classification |
+| `original_form_name` | Name of the HubSpot form that captured the lead |
 
 ### Permissions
 

@@ -944,7 +944,7 @@ class CustomObjectSchemaStream(HubspotStream):
 
     @property
     def url_base(self) -> str:  # noqa: D102
-        return "https://api.hubapi.com/crm-object-schemas/2026-03"
+        return "https://api.hubapi.com/crm-object-schemas/v3"
 
     @property
     def path(self) -> str:  # type: ignore[override]  # noqa: D102

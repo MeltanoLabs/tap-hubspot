@@ -48,6 +48,17 @@ class TapHubspot(Tap):
             th.DateTimeType,
             description="Latest record date to sync",
         ),
+        th.Property(
+            "custom_object_types",
+            th.ArrayType(th.StringType),
+            required=False,
+            description=(
+                "List of HubSpot custom CRM object type names to sync "
+                "(e.g. ['patches']). Each name must match the API name or "
+                "fullyQualifiedName in HubSpot. Requires a HubSpot Enterprise plan "
+                "and the crm.objects.custom.read and crm.schemas.custom.read scopes."
+            ),
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[streams.HubspotStream]:
@@ -81,6 +92,10 @@ class TapHubspot(Tap):
             streams.NoteStream(self),
             streams.PostalMailStream(self),
             streams.TaskStream(self),
+            *[
+                streams.CustomObjectStream(self, object_type)
+                for object_type in self.config.get("custom_object_types", [])
+            ],
         ]
 
 

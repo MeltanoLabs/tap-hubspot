@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import typing as t
+from functools import cached_property
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
@@ -927,3 +928,69 @@ class TaskStream(DynamicIncrementalHubspotStream):
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
         return "https://api.hubapi.com/crm/v3"
+
+
+class CustomObjectSchemaStream(HubspotStream):
+    """Internal helper: discovers properties for a single custom CRM object type.
+
+    Not registered as a tap stream — used only by CustomObjectStream.hs_properties.
+    """
+
+    primary_keys = ("name",)
+    records_jsonpath = "$.properties[*]"
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com/crm-object-schemas/v3"
+
+    @property
+    def path(self) -> str:  # type: ignore[override]  # noqa: D102
+        return f"/schemas/{self.name}"
+
+
+class CustomObjectStream(DynamicIncrementalHubspotStream):
+    """Incremental stream for a HubSpot custom CRM object.
+
+    One instance is created per entry in the `custom_object_types` config list.
+    Schema is discovered dynamically from the HubSpot schema API at sync time.
+    Falls back to full-table refresh when hs_lastmodifieddate is absent from
+    the object's schema.
+    """
+
+    primary_keys = ("id",)
+    replication_key = "hs_lastmodifieddate"
+    replication_method = "INCREMENTAL"
+    records_jsonpath = "$[results][*]"
+
+    def __init__(self, tap: t.Any, object_type: str) -> None:  # noqa: D107
+        self._object_type = object_type
+        super().__init__(tap, name=object_type)
+        # Set as instance attributes so prepare_request can reassign self.path
+        # when switching to the incremental search endpoint
+        self.path = f"/objects/{object_type}"
+        self.incremental_path = f"/objects/{object_type}/search"
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com/crm/v3"
+
+    @cached_property
+    def hs_properties(self) -> dict[str, str]:  # noqa: D102
+        schema_stream = CustomObjectSchemaStream(self._tap, self._object_type)
+        return {prop["name"]: prop["type"] for prop in schema_stream.get_records(None)}
+
+    def _is_incremental_search(self, context: t.Any) -> bool:
+        return (
+            "hs_lastmodifieddate" in self.hs_properties
+            and super()._is_incremental_search(context)
+        )
+
+    def post_process(  # noqa: D102
+        self,
+        row: dict,
+        context: t.Any = None,  # noqa: ARG002
+    ) -> dict | None:
+        if self.replication_key:
+            props = row.get("properties") or {}
+            row[self.replication_key] = props.get(self.replication_key)
+        return row

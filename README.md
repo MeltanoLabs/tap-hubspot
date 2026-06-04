@@ -72,6 +72,7 @@ A Hubspot access token is required to make API requests. (See [Hubspot API](http
 | `tasks` | Incremental | Task engagement records |
 | `owners` | Full Table | HubSpot users who own CRM records |
 | `users` | Full Table | Users in your HubSpot account |
+| `teams` | Full Table | HubSpot Teams and their member user IDs |
 | `products` | Full Table | Product library items |
 | `tickets` | Full Table | Customer support tickets |
 | `quotes` | Full Table | Sales quotes |
@@ -87,6 +88,7 @@ The following scopes need to be added to your access token to access the followi
 
 - Contacts: `crm.schemas.contacts.read` or `crm.objects.contacts.read`
 - Users: `settings.users.read`
+- Teams: `settings.users.teams.read`
 - Ticket Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
 - Deal Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
 - Properties: All of `Tickets`, `crm.objects.deals.read`, `sales-email-read`, `crm.objects.contacts.read`, `crm.objects.companies.read`, `e-commerce`, `crm.objects.quotes.read`

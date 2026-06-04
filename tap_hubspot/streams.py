@@ -81,6 +81,27 @@ class UsersStream(HubspotStream):
         return "https://api.hubapi.com/settings/v3"
 
 
+class TeamsStream(HubspotStream):
+    """https://developers.hubspot.com/docs/api/settings/teams."""
+
+    name = "teams"
+    path = "/users/teams"
+    primary_keys = ("id",)
+    records_jsonpath = "$[results][*]"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property("name", StringType),
+        Property("userIds", ArrayType(StringType)),
+        Property("secondaryUserIds", ArrayType(StringType)),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:
+        """Returns an updated path which includes the api version."""
+        return "https://api.hubapi.com/settings/v3"
+
+
 class OwnersStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/owners#endpoint?spec=GET-/crm/v3/owners/."""
 

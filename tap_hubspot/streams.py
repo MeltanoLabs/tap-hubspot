@@ -525,6 +525,23 @@ class DealStream(DynamicIncrementalHubspotStream):
         return "https://api.hubapi.com/crm/v3"
 
 
+class LeadStream(DynamicIncrementalHubspotStream):
+    """https://developers.hubspot.com/docs/api/crm/leads."""
+
+    name = "leads"
+    path = "/objects/leads"
+    incremental_path = "/objects/leads/search"
+    primary_keys = ("id",)
+    replication_key = "hs_lastmodifieddate"
+    replication_method = "INCREMENTAL"
+    records_jsonpath = "$[results][*]"
+
+    @property
+    def url_base(self) -> str:
+        """Returns an updated path which includes the api version."""
+        return "https://api.hubapi.com/crm/v3"
+
+
 class FeedbackSubmissionsStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/crm/feedback-submissions."""
 

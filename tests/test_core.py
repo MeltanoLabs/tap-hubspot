@@ -18,6 +18,7 @@ TestTapHubspot = get_tap_test_class(
             "calls",
             "teams",
             "tickets",
+            "leads",
             "communications",
             "emails",
             "feedback_submissions",

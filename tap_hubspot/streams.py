@@ -3,11 +3,8 @@
 from __future__ import annotations
 
 import typing as t
-from http import HTTPStatus
 
-import requests
 from singer_sdk import typing as th  # JSON Schema typing helpers
-from singer_sdk.exceptions import FatalAPIError
 
 from tap_hubspot.client import (
     DynamicIncrementalHubspotStream,
@@ -103,16 +100,6 @@ class TeamsStream(HubspotStream):
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
         return "https://api.hubapi.com/settings/v3"
-
-    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
-        if response.status_code == HTTPStatus.FORBIDDEN:
-            msg = (
-                "403 Forbidden accessing the Teams API. "
-                "Grant the 'settings.users.teams.read' scope on your HubSpot "
-                "connection and retry."
-            )
-            raise FatalAPIError(msg)
-        super().validate_response(response)
 
 
 class OwnersStream(HubspotStream):

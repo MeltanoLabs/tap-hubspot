@@ -4,11 +4,8 @@ from __future__ import annotations
 
 import typing as t
 from functools import cached_property
-from http import HTTPStatus
 
-import requests
 from singer_sdk import typing as th  # JSON Schema typing helpers
-from singer_sdk.exceptions import FatalAPIError
 
 from tap_hubspot.client import (
     DynamicIncrementalHubspotStream,
@@ -950,20 +947,6 @@ class CustomObjectSchemaStream(HubspotStream):
     def path(self) -> str:  # type: ignore[override]  # noqa: D102
         return f"/schemas/{self.name}"
 
-    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
-        if response.status_code in (HTTPStatus.NOT_FOUND, HTTPStatus.BAD_REQUEST):
-            raise FatalAPIError(
-                f"Custom object '{self.name}' not found in HubSpot. "
-                "Use the fullyQualifiedName (e.g. 'p12345_patches') from "
-                "Settings → Objects → Custom objects.",
-            )
-        if response.status_code == HTTPStatus.FORBIDDEN:
-            raise FatalAPIError(
-                "403 Forbidden accessing the custom object schema API. "
-                "Grant the 'crm.schemas.custom.read' scope and retry.",
-            )
-        super().validate_response(response)
-
 
 class CustomObjectStream(DynamicIncrementalHubspotStream):
     """Incremental stream for a HubSpot custom CRM object.
@@ -1011,11 +994,3 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
             props = row.get("properties") or {}
             row[self.replication_key] = props.get(self.replication_key)
         return row
-
-    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
-        if response.status_code == HTTPStatus.FORBIDDEN:
-            raise FatalAPIError(
-                "403 Forbidden accessing custom objects. "
-                "Grant the 'crm.objects.custom.read' scope and retry.",
-            )
-        super().validate_response(response)

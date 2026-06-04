@@ -88,7 +88,7 @@ class TeamsStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/settings/teams."""
 
     name = "teams"
-    path = "/teams"
+    path = "/users/teams"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"
 
@@ -102,7 +102,7 @@ class TeamsStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/settings/users/2026-03"
+        return "https://api.hubapi.com/settings/v3"
 
     def validate_response(self, response: requests.Response) -> None:  # noqa: D102
         if response.status_code == HTTPStatus.FORBIDDEN:

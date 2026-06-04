@@ -39,7 +39,7 @@ The licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensa
 ## Installation
 
 ```bash
-pipx install git+https://github.com/ryan-miranda-partners/tap-hubspot.git
+pipx install git+https://github.com/MeltanoLabs/tap-hubspot.git
 ```
 
 ### Configure using environment variables
@@ -53,12 +53,51 @@ environment variable is set either in the terminal context or in the `.env` file
 A Hubspot access token is required to make API requests. (See [Hubspot API](https://developers.hubspot.com/docs/api/working-with-oauth) docs for more info)
 
 
+### Streams
+
+| Stream | Replication | Description |
+|:-------|:-----------:|:------------|
+| `contacts` | Incremental | People in your HubSpot CRM |
+| `companies` | Incremental | Company records in your CRM |
+| `deals` | Incremental | Sales opportunities and pipeline deals |
+| `leads` | Incremental | Individual sales leads linked to a contact and company (`objectTypeId: 0-136`) |
+| `line_items` | Incremental | Products attached to deals |
+| `goal_targets` | Incremental | Sales and activity goal records |
+| `calls` | Incremental | Call engagement records |
+| `communications` | Incremental | Communication engagement records |
+| `emails` | Incremental | Email engagement records |
+| `meetings` | Incremental | Meeting engagement records |
+| `notes` | Incremental | Note engagement records |
+| `postal_mail` | Incremental | Postal mail engagement records |
+| `tasks` | Incremental | Task engagement records |
+| `owners` | Full Table | HubSpot users who own CRM records |
+| `users` | Full Table | Users in your HubSpot account |
+| `teams` | Full Table | HubSpot Teams and their member user IDs |
+| `products` | Full Table | Product library items |
+| `tickets` | Full Table | Customer support tickets |
+| `quotes` | Full Table | Sales quotes |
+| `feedback_submissions` | Full Table | Customer feedback survey responses |
+| `ticket_pipelines` | Full Table | Ticket pipeline and stage definitions |
+| `deal_pipelines` | Full Table | Deal pipeline and stage definitions |
+| `email_subscriptions` | Full Table | Email subscription type definitions |
+| `properties` | Full Table | Property definitions for all CRM object types |
+
+#### `teams` stream fields
+
+| Field | Description |
+|:------|:------------|
+| `id` | Unique HubSpot ID for the team |
+| `name` | Display name of the team |
+| `userIds` | Array of HubSpot user IDs who are primary members of the team |
+| `secondaryUserIds` | Array of HubSpot user IDs who are secondary members of the team |
+
 ### Permissions
 
 The following scopes need to be added to your access token to access the following endpoints:
 
 - Contacts: `crm.schemas.contacts.read` or `crm.objects.contacts.read`
 - Users: `settings.users.read`
+- Teams: `settings.users.teams.read`
 - Ticket Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
 - Deal Pipeline: `media_bridge.read` or `crm.schemas.custom.read` or `timeline` or `tickets` or `e-commerce` or `crm.objects.goals.read`
 - Properties: All of `Tickets`, `crm.objects.deals.read`, `sales-email-read`, `crm.objects.contacts.read`, `crm.objects.companies.read`, `e-commerce`, `crm.objects.quotes.read`

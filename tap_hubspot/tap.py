@@ -59,6 +59,7 @@ class TapHubspot(Tap):
         return [
             streams.ContactStream(self),
             streams.UsersStream(self),
+            streams.TeamsStream(self),
             streams.OwnersStream(self),
             streams.TicketPipelineStream(self),
             streams.DealPipelineStream(self),

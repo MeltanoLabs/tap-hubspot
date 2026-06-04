@@ -103,23 +103,6 @@ class HubspotStream(RESTStream):
             next_page_token = None
         return next_page_token
 
-    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
-        if response.status_code == HTTPStatus.FORBIDDEN:
-            self.logger.warning(self.response_error_message(response))
-            self.logger.warning(
-                "Skipping stream '%s': missing required HubSpot scope. "
-                "Check the README for the required scope and re-authorise your connection.",
-                self.name,
-            )
-            return
-
-        super().validate_response(response)
-
-    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:  # noqa: D102
-        if response.status_code == HTTPStatus.FORBIDDEN:
-            return []
-        return super().parse_response(response)
-
     def get_url_params(
         self,
         context: Context | None,  # noqa: ARG002

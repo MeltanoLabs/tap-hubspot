@@ -65,6 +65,7 @@ The following scopes need to be added to your access token to access the followi
 - Owners: `crm.objects.owners.read`
 - Companies: `crm.objects.companies.read`
 - Deals: `crm.objects.deals.read`
+- Leads: `crm.objects.leads.read` or `crm.schemas.leads.read`
 - Feedback Submissions: `crm.objects.contacts.read`
 - Line Items: `e-commerce`
 - Products: `e-commerce`

@@ -111,8 +111,9 @@ class HubspotStream(RESTStream):
                 "Check the README for the required scope and re-authorise your connection.",
                 self.name,
             )
-        else:
-            super().validate_response(response)
+            return
+
+        super().validate_response(response)
 
     def parse_response(self, response: requests.Response) -> t.Iterable[dict]:  # noqa: D102
         if response.status_code == HTTPStatus.FORBIDDEN:

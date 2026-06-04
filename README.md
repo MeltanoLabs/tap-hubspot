@@ -29,6 +29,7 @@ Built with the [Meltano Singer SDK](https://sdk.meltano.com).
 | flattening_enabled  | False    | None    | 'True' to enable schema flattening and automatically expand nested properties. |
 | flattening_max_depth| False    | None    | The max depth to flatten schemas. |
 | batch_config        | False    | None    |             |
+| custom_object_types | False    | None    | List of HubSpot custom CRM object type names to sync (e.g. `['patches']`). Requires HubSpot Enterprise and `crm.objects.custom.read` + `crm.schemas.custom.read` scopes. |
 
 A full list of supported settings and capabilities is available by running: `tap-hubspot --about`
 
@@ -103,6 +104,7 @@ The following scopes need to be added to your access token to access the followi
 - Quotes: `crm.objects.quotes.read` or `crm.schemas.quotes.read`
 - Goals: `crm.objects.goals.read`
 - Emails: `sales-email-read`
+- Custom Objects: `crm.objects.custom.read` and `crm.schemas.custom.read` (HubSpot Enterprise only)
 
 For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).
 

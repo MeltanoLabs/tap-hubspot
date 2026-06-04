@@ -82,15 +82,6 @@ A Hubspot access token is required to make API requests. (See [Hubspot API](http
 | `email_subscriptions` | Full Table | Email subscription type definitions |
 | `properties` | Full Table | Property definitions for all CRM object types |
 
-#### `teams` stream fields
-
-| Field | Description |
-|:------|:------------|
-| `id` | Unique HubSpot ID for the team |
-| `name` | Display name of the team |
-| `userIds` | Array of HubSpot user IDs who are primary members of the team |
-| `secondaryUserIds` | Array of HubSpot user IDs who are secondary members of the team |
-
 ### Permissions
 
 The following scopes need to be added to your access token to access the following endpoints:

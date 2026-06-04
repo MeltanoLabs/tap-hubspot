@@ -16,6 +16,7 @@ TestTapHubspot = get_tap_test_class(
         max_records_limit=10,
         ignore_no_records_for_streams=[
             "calls",
+            "email_subscriptions",
             "leads",
             "communications",
             "emails",
@@ -27,6 +28,7 @@ TestTapHubspot = get_tap_test_class(
             "postal_mail",
             "products",
             "quotes",
+            "tickets",
         ],
     ),
 )

@@ -36,6 +36,8 @@ class HubspotStream(RESTStream):
         """Returns base url."""
         return "https://api.hubapi.com/"
 
+    required_scopes: tuple[str, ...] = ()
+
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
     # Set this value or override `get_new_paginator`.
@@ -102,6 +104,12 @@ class HubspotStream(RESTStream):
         else:
             next_page_token = None
         return next_page_token
+
+    def response_error_message(self, response: requests.Response) -> str:  # noqa: D102
+        msg = super().response_error_message(response)
+        if response.status_code == HTTPStatus.FORBIDDEN and self.required_scopes:
+            msg += f", requires scopes: {self.required_scopes}"
+        return msg
 
     def get_url_params(
         self,

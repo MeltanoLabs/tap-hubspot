@@ -39,6 +39,7 @@ class ContactStream(DynamicIncrementalHubspotStream):
     """
 
     name = "contacts"
+    required_scopes = ("crm.objects.contacts.read",)
     path = "/objects/contacts"
     incremental_path = "/objects/contacts/search"
     primary_keys = ("id",)
@@ -65,6 +66,7 @@ class UsersStream(HubspotStream):
     """
 
     name = "users"
+    required_scopes = ("settings.users.read",)
     path = "/users"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -86,6 +88,7 @@ class TeamsStream(HubspotStream):
     """https://developers.hubspot.com/docs/api/settings/teams."""
 
     name = "teams"
+    required_scopes = ("settings.users.teams.read",)
     path = "/users/teams"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"
@@ -116,6 +119,7 @@ class OwnersStream(HubspotStream):
     """
 
     name = "owners"
+    required_scopes = ("crm.objects.owners.read",)
     path = "/owners"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -150,6 +154,7 @@ class TicketPipelineStream(HubspotStream):
     """
 
     name = "ticket_pipelines"
+    required_scopes = ("tickets",)
     path = "/pipelines/tickets"
     primary_keys = ("createdAt",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -205,6 +210,7 @@ class DealPipelineStream(HubspotStream):
     """
 
     name = "deal_pipelines"
+    required_scopes = ("crm.objects.deals.read",)
     path = "/pipelines/deals"
     primary_keys = ("createdAt",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -260,6 +266,7 @@ class EmailSubscriptionStream(HubspotStream):
     """
 
     name = "email_subscriptions"
+    required_scopes = ("communication_preferences.read_write",)
     path = "/subscriptions"
     primary_keys = ("id",)
     records_jsonpath = "$[subscriptionDefinitions][*]"  # Or override `parse_response`.
@@ -292,6 +299,7 @@ class PropertyTicketStream(PropertyStream):
     """
 
     name = "property_tickets"
+    required_scopes = ("crm.schemas.tickets.read",)
     path = "/properties/tickets"
 
 
@@ -304,6 +312,7 @@ class PropertyDealStream(PropertyStream):
     """
 
     name = "property_deals"
+    required_scopes = ("crm.schemas.deals.read",)
     path = "/properties/deals"
 
 
@@ -316,6 +325,7 @@ class PropertyContactStream(PropertyStream):
     """
 
     name = "property_contacts"
+    required_scopes = ("crm.schemas.contacts.read",)
     path = "/properties/contacts"
 
 
@@ -328,6 +338,7 @@ class PropertyCompanyStream(PropertyStream):
     """
 
     name = "property_companies"
+    required_scopes = ("crm.schemas.companies.read",)
     path = "/properties/company"
 
 
@@ -340,6 +351,7 @@ class PropertyProductStream(PropertyStream):
     """
 
     name = "property_products"
+    required_scopes = ("crm.schemas.products.read",)
     path = "/properties/product"
 
 
@@ -352,6 +364,7 @@ class PropertyLineItemStream(PropertyStream):
     """
 
     name = "property_line_items"
+    required_scopes = ("crm.schemas.line_items.read",)
     path = "/properties/line_item"
 
 
@@ -364,6 +377,7 @@ class PropertyEmailStream(PropertyStream):
     """
 
     name = "property_emails"
+    required_scopes = ("crm.schemas.emails.read",)
     path = "/properties/email"
 
 
@@ -376,6 +390,7 @@ class PropertyPostalMailStream(PropertyStream):
     """
 
     name = "property_postal_mails"
+    required_scopes = ("crm.schemas.postal_mail.read",)
     path = "/properties/postal_mail"
 
 
@@ -388,6 +403,7 @@ class PropertyGoalStream(PropertyStream):
     """
 
     name = "goal_targets"
+    required_scopes = ("crm.schemas.goals.read",)
     path = "/properties/goal_targets"
 
 
@@ -400,6 +416,7 @@ class PropertyCallStream(PropertyStream):
     """
 
     name = "property_calls"
+    required_scopes = ("crm.schemas.calls.read",)
     path = "/properties/call"
 
 
@@ -412,6 +429,7 @@ class PropertyMeetingStream(PropertyStream):
     """
 
     name = "property_meetings"
+    required_scopes = ("crm.schemas.meetings.read",)
     path = "/properties/meeting"
 
 
@@ -424,6 +442,7 @@ class PropertyTaskStream(PropertyStream):
     """
 
     name = "property_tasks"
+    required_scopes = ("crm.schemas.tasks.read",)
     path = "/properties/task"
 
 
@@ -436,6 +455,7 @@ class PropertyCommunicationStream(PropertyStream):
     """
 
     name = "property_communications"
+    required_scopes = ("crm.schemas.communications.read",)
     path = "/properties/communication"
 
 
@@ -448,6 +468,7 @@ class PropertyNotesStream(PropertyStream):
     """
 
     name = "properties"
+    required_scopes = ("crm.schemas.contacts.read",)
     path = "/properties/notes"
 
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
@@ -487,6 +508,7 @@ class CompanyStream(DynamicIncrementalHubspotStream):
     """
 
     name = "companies"
+    required_scopes = ("crm.objects.companies.read",)
     path = "/objects/companies"
     incremental_path = "/objects/companies/search"
     primary_keys = ("id",)
@@ -513,6 +535,7 @@ class DealStream(DynamicIncrementalHubspotStream):
     """
 
     name = "deals"
+    required_scopes = ("crm.objects.deals.read",)
     path = "/objects/deals"
     incremental_path = "/objects/deals/search"
     primary_keys = ("id",)
@@ -530,6 +553,7 @@ class LeadStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/leads."""
 
     name = "leads"
+    required_scopes = ("crm.objects.leads.read",)
     path = "/objects/leads"
     incremental_path = "/objects/leads/search"
     primary_keys = ("id",)
@@ -556,6 +580,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     """
 
     name = "feedback_submissions"
+    required_scopes = ("crm.objects.feedback_submissions.read",)
     path = "/objects/feedback_submissions"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -599,6 +624,7 @@ class LineItemStream(DynamicIncrementalHubspotStream):
     """
 
     name = "line_items"
+    required_scopes = ("crm.objects.line_items.read",)
     path = "/objects/line_items"
     incremental_path = "/objects/line_items/search"
     primary_keys = ("id",)
@@ -625,6 +651,7 @@ class ProductStream(HubspotStream):
     """
 
     name = "products"
+    required_scopes = ("e-commerce",)
     path = "/objects/products"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -668,6 +695,7 @@ class TicketStream(HubspotStream):
     """
 
     name = "tickets"
+    required_scopes = ("crm.objects.tickets.read",)
     path = "/objects/tickets"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -709,6 +737,7 @@ class QuoteStream(HubspotStream):
     """
 
     name = "quotes"
+    required_scopes = ("crm.objects.quotes.read",)
     path = "/objects/quotes"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -751,6 +780,7 @@ class GoalStream(DynamicIncrementalHubspotStream):
     """
 
     name = "goal_targets"
+    required_scopes = ("crm.objects.goals.read",)
     path = "/objects/goal_targets"
     incremental_path = "/objects/goal_targets/search"
     primary_keys = ("id",)
@@ -776,6 +806,7 @@ class CallStream(DynamicIncrementalHubspotStream):
     """
 
     name = "calls"
+    required_scopes = ("crm.objects.calls.read",)
     path = "/objects/calls"
     incremental_path = "/objects/calls/search"
     primary_keys = ("id",)
@@ -801,6 +832,7 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
     """
 
     name = "communications"
+    required_scopes = ("crm.objects.communications.read",)
     path = "/objects/communications"
     incremental_path = "/objects/communications/search"
     primary_keys = ("id",)
@@ -818,6 +850,7 @@ class EmailStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/email."""
 
     name = "emails"
+    required_scopes = ("sales-email-read",)
     path = "/objects/emails"
     incremental_path = "/objects/emails/search"
     primary_keys = ("id",)
@@ -842,6 +875,7 @@ class MeetingStream(DynamicIncrementalHubspotStream):
     """
 
     name = "meetings"
+    required_scopes = ("crm.objects.meetings.read",)
     path = "/objects/meetings"
     incremental_path = "/objects/meetings/search"
     primary_keys = ("id",)
@@ -867,6 +901,7 @@ class NoteStream(DynamicIncrementalHubspotStream):
     """
 
     name = "notes"
+    required_scopes = ("crm.objects.notes.read",)
     path = "/objects/notes"
     incremental_path = "/objects/notes/search"
     primary_keys = ("id",)
@@ -892,6 +927,7 @@ class PostalMailStream(DynamicIncrementalHubspotStream):
     """
 
     name = "postal_mail"
+    required_scopes = ("crm.objects.postal_mail.read",)
     path = "/objects/postal_mail"
     incremental_path = "/objects/postal_mail/search"
     primary_keys = ("id",)
@@ -917,6 +953,7 @@ class TaskStream(DynamicIncrementalHubspotStream):
     """
 
     name = "tasks"
+    required_scopes = ("crm.objects.tasks.read",)
     path = "/objects/tasks"
     incremental_path = "/objects/tasks/search"
     primary_keys = ("id",)
@@ -957,6 +994,7 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
     the object's schema.
     """
 
+    required_scopes = ("crm.objects.custom.read", "crm.schemas.custom.read")
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"

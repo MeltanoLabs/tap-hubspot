@@ -996,7 +996,7 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
         schema_stream = CustomObjectSchemaStream(self._tap, self._object_type)
         return {prop["name"]: prop["type"] for prop in schema_stream.get_records(None)}
 
-    def _is_incremental_search(self, context: t.Any) -> bool:  # noqa: D102
+    def _is_incremental_search(self, context: t.Any) -> bool:
         return (
             "hs_lastmodifieddate" in self.hs_properties
             and super()._is_incremental_search(context)

@@ -104,6 +104,7 @@ The following scopes need to be added to your access token to access the followi
 - Quotes: `crm.objects.quotes.read` or `crm.schemas.quotes.read`
 - Goals: `crm.objects.goals.read`
 - Emails: `sales-email-read`
+- Email Subscriptions: `content`
 - Custom Objects: `crm.objects.custom.read` and `crm.schemas.custom.read` (HubSpot Enterprise only)
 
 For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).

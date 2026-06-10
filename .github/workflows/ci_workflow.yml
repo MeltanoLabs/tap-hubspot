@@ -11,8 +11,8 @@ on:
     - .github/workflows/constraints.txt
     - tap_hubspot/**
     - pyproject.toml
-    - poetry.lock
     - tox.ini
+    - uv.lock
   pull_request:
     branches: [ main ]
     paths:
@@ -20,8 +20,8 @@ on:
     - .github/workflows/constraints.txt
     - tap_hubspot/**
     - pyproject.toml
-    - poetry.lock
     - tox.ini
+    - uv.lock
   workflow_dispatch:
 
 env:
@@ -29,25 +29,18 @@ env:
 
 jobs:
   linting:
-
+    name: Lint
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Only lint using the primary version used for dev
-        python-version: [3.13]
-
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
     - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
     - env:
         UV_CONSTRAINT: ${{ github.workspace }}/.github/workflows/constraints.txt
-        UV_PYTHON: ${{ matrix.python-version }}
       run: |
-        uv tool install poetry
-        uvx tox -e lint
+        uvx --with tox-uv tox -e lint
 
   pytest:
-
+    name: Test
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -63,21 +56,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-      id: setup-python
+    - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
       with:
         python-version: ${{ matrix.python-version }}
-        allow-prereleases: true
-    - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
     - name: Test with pytest
       id: test_pytest
       continue-on-error: false
       env:
         TAP_HUBSPOT_ACCESS_TOKEN: ${{secrets.TAP_HUBSPOT_ACCESS_TOKEN}}
-        UV_CONSTRAINT: ${{ github.workspace }}/.github/workflows/constraints.txt
-        UV_PYTHON: ${{ steps.setup-python.outputs.python-path }}
       run: |
-        uv tool install poetry
-        poetry install
-        poetry run pytest --capture=no
+        uv run pytest --capture=no

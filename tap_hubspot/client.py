@@ -170,7 +170,7 @@ class PropertyStream(HubspotStream):
         th.Property("hubspot_object", th.StringType),
     ).to_dict()
 
-    primary_keys = ("label",)
+    primary_keys = ("name",)
     records_jsonpath = "$[results][*]"
 
     @property

@@ -30,6 +30,7 @@ Built with the [Meltano Singer SDK](https://sdk.meltano.com).
 | flattening_max_depth| False    | None    | The max depth to flatten schemas. |
 | batch_config        | False    | None    |             |
 | custom_object_types | False    | None    | List of HubSpot custom CRM object type names to sync (e.g. `['patches']`). Requires HubSpot Enterprise and `crm.objects.custom.read` + `crm.schemas.custom.read` scopes. |
+| associations        | False    | None    | Mapping of `from_object_type` to a list of `to_object_type`s to sync associations for (e.g. `{'contact': ['company', 'deal']}`). No association streams are created unless this is set. See [Associations](#associations) below. |
 
 A full list of supported settings and capabilities is available by running: `tap-hubspot --about`
 
@@ -90,6 +91,7 @@ The following scopes need to be added to your access token to access the followi
 - Contacts: `crm.objects.contacts.read`
 - Companies: `crm.objects.companies.read`
 - Deals: `crm.objects.deals.read`
+- Associations: the read scope for each object type configured in `associations` (e.g. syncing `['contact', 'company']` needs `crm.objects.contacts.read` and `crm.objects.companies.read`)
 - Leads: `crm.objects.leads.read`
 - Owners: `crm.objects.owners.read`
 - Users: `settings.users.read`
@@ -114,6 +116,46 @@ The following scopes need to be added to your access token to access the followi
 - Custom Objects: `crm.objects.custom.read` and `crm.schemas.custom.read` (HubSpot Enterprise only)
 
 For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).
+
+### Associations
+
+No association streams are created by default. To sync associations between two CRM object types, add an `associations` config setting mapping each `from_object_type` to a list of `to_object_type`s, using HubSpot's object type names (e.g. `contact`, `company`, `deal`, `ticket`):
+
+```json
+{
+  "associations": {
+    "contact": ["company", "deal"]
+  }
+}
+```
+
+Each from/to pair creates one full-table stream named `<from_object_type>_<to_object_type>_associations` (e.g. `contact_company_associations`), fetched via HubSpot's [CRM v4 associations batch/read endpoint](https://developers.hubspot.com/docs/api/crm/associations). Each record has `from_id`, `to_id`, `association_type_id`, `association_type_category`, and `association_type_label`.
+
+Associations aren't reflected in an object's `hs_lastmodifieddate`, so these streams always do a full resync — there's no way to fetch only associations that changed since the last run.
+
+Object type names must match HubSpot's CRM object type identifiers, not this tap's stream names. Common ones, including every object type this tap already has a stream for:
+
+| Object type name | Corresponding tap stream |
+|:------------------|:--------------------------|
+| `contact` | `contacts` |
+| `company` | `companies` |
+| `deal` | `deals` |
+| `lead` | `leads` |
+| `line_item` | `line_items` |
+| `product` | `products` |
+| `ticket` | `tickets` |
+| `quote` | `quotes` |
+| `call` | `calls` |
+| `communication` | `communications` |
+| `email` | `emails` |
+| `meeting` | `meetings` |
+| `note` | `notes` |
+| `postal_mail` | `postal_mail` |
+| `task` | `tasks` |
+| `feedback_submission` | `feedback_submissions` |
+| `goal` | `goal_targets` |
+
+Any other standard or custom HubSpot object type name is also valid (e.g. `order`, `invoice`, or a custom object's `fullyQualifiedName`), as long as your access token has read access to both object types in the pair.
 
 ## Usage
 

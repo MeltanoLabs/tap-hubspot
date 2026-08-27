@@ -11,6 +11,7 @@ from http import HTTPStatus
 import requests
 from singer_sdk import typing as th
 from singer_sdk.authenticators import BearerTokenAuthenticator
+from singer_sdk.pagination import SinglePagePaginator
 from singer_sdk.streams import RESTStream
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
 
@@ -436,3 +437,116 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             )
 
         return body
+
+
+class IdOnlyObjectStream(HubspotStream):
+    """Internal helper: lists bare record IDs for a single CRM object type.
+
+    Not registered as a tap stream - used only by AssociationsStream to
+    source `from_object_type` IDs without pulling every property for the
+    object (which, for objects with many properties, can make the GET
+    request's querystring too long - see DynamicHubspotStream).
+    """
+
+    primary_keys = ("id",)
+    records_jsonpath = "$[results][*]"
+
+    def __init__(self, tap: t.Any, object_type: str) -> None:  # noqa: D107
+        super().__init__(tap, name=object_type)
+        self.path = f"/objects/{object_type}"
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com/crm/v3"
+
+
+class AssociationsStream(HubspotStream):
+    """Batch-reads associations between two CRM object types.
+
+    Uses the CRM v4 associations batch/read endpoint
+    (https://developers.hubspot.com/docs/api/crm/associations) to fetch, for a
+    chunk of `from_object_type` record IDs, all associated `to_object_type`
+    record IDs. IDs are sourced from a minimal, id-only listing of
+    `from_object_type` and chunked into partitions so each request batch
+    stays well under HubSpot's 1,000-inputs-per-request limit.
+    """
+
+    primary_keys = ("from_id", "to_id", "association_type_id")
+    records_jsonpath = "$.results[*]"
+    http_method = "POST"
+
+    # Chunk size for the batch/read request body. HubSpot allows up to 1,000
+    # inputs per request.
+    chunk_size = 1000
+
+    schema = th.PropertiesList(
+        th.Property("from_id", th.StringType),
+        th.Property("to_id", th.StringType),
+        th.Property("association_type_category", th.StringType),
+        th.Property("association_type_id", th.IntegerType),
+        th.Property("association_type_label", th.StringType),
+    ).to_dict()
+
+    def __init__(
+        self,
+        tap: t.Any,
+        from_object_type: str,
+        to_object_type: str,
+    ) -> None:
+        """Create a new associations stream for a from/to object type pair."""
+        self.from_object_type = from_object_type
+        self.to_object_type = to_object_type
+        super().__init__(tap, name=f"{from_object_type}_{to_object_type}_associations")
+
+    @property
+    def state_partitioning_keys(self) -> t.Sequence[str] | None:
+        """Hold state in a single bookmark per stream; this is a full-table sync."""
+        return []
+
+    @property
+    def url_base(self) -> str:
+        """Returns base url."""
+        return "https://api.hubapi.com/crm/v4"
+
+    @property
+    def path(self) -> str:  # type: ignore[override]
+        """Returns the batch/read path for this object type pair."""
+        return f"/associations/{self.from_object_type}/{self.to_object_type}/batch/read"
+
+    def get_new_paginator(self) -> BaseAPIPaginator:
+        """The batch/read endpoint returns one full response per request."""
+        return SinglePagePaginator()
+
+    @property
+    def partitions(self) -> list[dict] | None:
+        """One partition per chunk of `from_object_type` record IDs."""
+        from_id_stream = IdOnlyObjectStream(self._tap, self.from_object_type)
+        ids = [record["id"] for record in from_id_stream.get_records(None)]
+        return [
+            {"ids": ids[i : i + self.chunk_size]}
+            for i in range(0, len(ids), self.chunk_size)
+        ] or None
+
+    def prepare_request_payload(
+        self,
+        context: Context | None,
+        next_page_token: int | None,  # noqa: ARG002
+    ) -> dict | None:
+        """Build the batch/read request body from the partition's chunk of IDs."""
+        ids = (context or {}).get("ids", [])
+        return {"inputs": [{"id": record_id} for record_id in ids]}
+
+    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
+        """Flatten batch/read results into one row per from/to association."""
+        for result in response.json().get("results", []):
+            from_id = result.get("from", {}).get("id")
+            for to in result.get("to", []):
+                to_id = to.get("toObjectId")
+                for association_type in to.get("associationTypes", []):
+                    yield {
+                        "from_id": from_id,
+                        "to_id": str(to_id),
+                        "association_type_category": association_type.get("category"),
+                        "association_type_id": association_type.get("typeId"),
+                        "association_type_label": association_type.get("label"),
+                    }

@@ -6,6 +6,7 @@ from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_hubspot import streams
+from tap_hubspot.client import AssociationsStream
 
 
 class TapHubspot(Tap):
@@ -59,6 +60,20 @@ class TapHubspot(Tap):
                 "and the crm.objects.custom.read and crm.schemas.custom.read scopes."
             ),
         ),
+        th.Property(
+            "associations",
+            th.ObjectType(additional_properties=th.ArrayType(th.StringType)),
+            required=False,
+            description=(
+                "Mapping of from_object_type to a list of to_object_types to "
+                "sync associations for, e.g. {'contact': ['company', "
+                "'deal']}. Each from/to pair creates a stream named "
+                "'<from_object_type>_<to_object_type>_associations'. Object "
+                "type names must match HubSpot's object type names (e.g. "
+                "'contact', 'company', 'deal', 'ticket'). No association "
+                "streams are created unless this is set."
+            ),
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[streams.HubspotStream]:
@@ -95,6 +110,14 @@ class TapHubspot(Tap):
             *[
                 streams.CustomObjectStream(self, object_type)
                 for object_type in self.config.get("custom_object_types", [])
+            ],
+            *[
+                AssociationsStream(self, from_object_type, to_object_type)
+                for from_object_type, to_object_types in self.config.get(
+                    "associations",
+                    {},
+                ).items()
+                for to_object_type in to_object_types
             ],
         ]
 

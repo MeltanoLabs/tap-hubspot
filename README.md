@@ -30,7 +30,7 @@ Built with the [Meltano Singer SDK](https://sdk.meltano.com).
 | flattening_max_depth| False    | None    | The max depth to flatten schemas. |
 | batch_config        | False    | None    |             |
 | custom_object_types | False    | None    | List of HubSpot custom CRM object type names to sync (e.g. `['patches']`). Requires HubSpot Enterprise and `crm.objects.custom.read` + `crm.schemas.custom.read` scopes. |
-| associations        | False    | None    | List of `[from_object_type, to_object_type]` pairs to sync associations for (e.g. `[['contact', 'company'], ['company', 'deal']]`). No association streams are created unless this is set. See [Associations](#associations) below. |
+| associations        | False    | None    | Mapping of `from_object_type` to a list of `to_object_type`s to sync associations for (e.g. `{'contact': ['company', 'deal']}`). No association streams are created unless this is set. See [Associations](#associations) below. |
 
 A full list of supported settings and capabilities is available by running: `tap-hubspot --about`
 
@@ -119,18 +119,17 @@ For more info on the streams and permissions, check the [Hubspot API Documentati
 
 ### Associations
 
-No association streams are created by default. To sync associations between two CRM object types, add an `associations` config setting with a list of `[from_object_type, to_object_type]` pairs, using HubSpot's object type names (e.g. `contact`, `company`, `deal`, `ticket`):
+No association streams are created by default. To sync associations between two CRM object types, add an `associations` config setting mapping each `from_object_type` to a list of `to_object_type`s, using HubSpot's object type names (e.g. `contact`, `company`, `deal`, `ticket`):
 
 ```json
 {
-  "associations": [
-    ["contact", "company"],
-    ["company", "deal"]
-  ]
+  "associations": {
+    "contact": ["company", "deal"]
+  }
 }
 ```
 
-Each pair creates one full-table stream named `<from_object_type>_<to_object_type>_associations` (e.g. `contact_company_associations`), fetched via HubSpot's [CRM v4 associations batch/read endpoint](https://developers.hubspot.com/docs/api/crm/associations). Each record has `from_id`, `to_id`, `association_type_id`, `association_type_category`, and `association_type_label`.
+Each from/to pair creates one full-table stream named `<from_object_type>_<to_object_type>_associations` (e.g. `contact_company_associations`), fetched via HubSpot's [CRM v4 associations batch/read endpoint](https://developers.hubspot.com/docs/api/crm/associations). Each record has `from_id`, `to_id`, `association_type_id`, `association_type_category`, and `association_type_label`.
 
 Associations aren't reflected in an object's `hs_lastmodifieddate`, so these streams always do a full resync — there's no way to fetch only associations that changed since the last run.
 

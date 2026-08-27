@@ -62,12 +62,12 @@ class TapHubspot(Tap):
         ),
         th.Property(
             "associations",
-            th.ArrayType(th.ArrayType(th.StringType)),
+            th.ObjectType(additional_properties=th.ArrayType(th.StringType)),
             required=False,
             description=(
-                "List of [from_object_type, to_object_type] pairs to sync "
-                "associations for, e.g. [['contact', 'company'], "
-                "['company', 'deal']]. Each pair creates a stream named "
+                "Mapping of from_object_type to a list of to_object_types to "
+                "sync associations for, e.g. {'contact': ['company', "
+                "'deal']}. Each from/to pair creates a stream named "
                 "'<from_object_type>_<to_object_type>_associations'. Object "
                 "type names must match HubSpot's object type names (e.g. "
                 "'contact', 'company', 'deal', 'ticket'). No association "
@@ -113,10 +113,11 @@ class TapHubspot(Tap):
             ],
             *[
                 AssociationsStream(self, from_object_type, to_object_type)
-                for from_object_type, to_object_type in self.config.get(
+                for from_object_type, to_object_types in self.config.get(
                     "associations",
-                    [],
-                )
+                    {},
+                ).items()
+                for to_object_type in to_object_types
             ],
         ]
 

@@ -29,7 +29,7 @@ else:
 
 if t.TYPE_CHECKING:
     from singer_sdk import Tap
-    from singer_sdk.helpers.types import Context, Record
+    from singer_sdk.helpers.types import Context
     from singer_sdk.pagination import BaseAPIPaginator
 
 

@@ -49,6 +49,7 @@ class HubspotStream(RESTStream):
     # Set this value or override `get_new_paginator`.
     next_page_token_jsonpath = "$.next_page"  # noqa: S105
 
+    @override
     @cached_property
     def authenticator(self) -> _Auth:
         """Return a new authenticator object.
@@ -66,6 +67,7 @@ class HubspotStream(RESTStream):
             token=self.config.get("access_token"),  # type: ignore[arg-type]
         )
 
+    @override
     @property
     def http_headers(self) -> dict:
         """Return the http headers needed.
@@ -78,6 +80,7 @@ class HubspotStream(RESTStream):
             headers["User-Agent"] = self.config.get("user_agent")
         return headers
 
+    @override
     def get_new_paginator(self) -> BaseAPIPaginator | None:
         """Create a new pagination helper instance.
 
@@ -111,9 +114,10 @@ class HubspotStream(RESTStream):
             next_page_token = None
         return next_page_token
 
+    @override
     def get_url_params(
         self,
-        context: Context | None,  # noqa: ARG002
+        context: Context | None,
         next_page_token: int | None,
     ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
@@ -181,15 +185,17 @@ class PropertyStream(HubspotStream):
     primary_keys = ("name",)
     records_jsonpath = "$[results][*]"
 
+    @override
     @property
-    def url_base(self) -> str:  # noqa: D102
+    def url_base(self) -> str:
         return "https://api.hubapi.com/crm/v3"
 
     @property
     def path(self) -> str:  # type: ignore[override] # noqa: D102
         return f"/properties/{self.name}"
 
-    def validate_response(self, response: requests.Response) -> None:  # noqa: D102
+    @override
+    def validate_response(self, response: requests.Response) -> None:
         if response.status_code == HTTPStatus.FORBIDDEN:
             self.logger.warning(self.response_error_message(response))
             self.logger.warning(
@@ -199,7 +205,8 @@ class PropertyStream(HubspotStream):
         else:
             super().validate_response(response)
 
-    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:  # noqa: D102
+    @override
+    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
         if response.status_code == HTTPStatus.FORBIDDEN:
             return []
 
@@ -244,6 +251,7 @@ class DynamicHubspotStream(HubspotStream):
 
         return {prop["name"]: prop["type"] for prop in results}
 
+    @override
     def get_url_params(
         self,
         context: Context | None,
@@ -314,6 +322,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             )
         return schema.to_dict()
 
+    @override
     def get_url_params(
         self,
         context: Context | None,
@@ -332,10 +341,11 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             return {}
         return super().get_url_params(context, next_page_token)
 
+    @override
     def post_process(
         self,
         row: dict,
-        context: Context | None = None,  # noqa: ARG002
+        context: Context | None = None,
     ) -> dict | None:
         """As needed, append or transform raw data to match expected structure.
 
@@ -360,7 +370,8 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             row[self.replication_key] = val
         return row
 
-    def prepare_request(  # noqa: D102
+    @override
+    def prepare_request(
         self,
         context: Context | None,
         next_page_token: int | None,
@@ -371,6 +382,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             self.http_method = "POST"
         return super().prepare_request(context, next_page_token)
 
+    @override
     def prepare_request_payload(
         self,
         context: Context | None,
@@ -464,8 +476,9 @@ class IdOnlyObjectStream(HubspotStream):
         super().__init__(tap, name=object_type)
         self.path = f"/objects/{object_type}"
 
+    @override
     @property
-    def url_base(self) -> str:  # noqa: D102
+    def url_base(self) -> str:
         return "https://api.hubapi.com/crm/v3"
 
 
@@ -516,6 +529,7 @@ class AssociationsStream(HubspotStream):
     def state_partitioning_keys(self, new_value: t.Sequence[str] | None) -> None:
         self._state_partitioning_keys = new_value
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns base url."""
@@ -526,10 +540,12 @@ class AssociationsStream(HubspotStream):
         """Returns the batch/read path for this object type pair."""
         return f"/associations/{self.from_object_type}/{self.to_object_type}/batch/read"
 
+    @override
     def get_new_paginator(self) -> BaseAPIPaginator:
         """The batch/read endpoint returns one full response per request."""
         return SinglePagePaginator()
 
+    @override
     @property
     def partitions(self) -> list[dict] | None:
         """One partition per chunk of `from_object_type` record IDs."""
@@ -540,15 +556,17 @@ class AssociationsStream(HubspotStream):
             for i in range(0, len(ids), self.chunk_size)
         ] or None
 
+    @override
     def prepare_request_payload(
         self,
         context: Context | None,
-        next_page_token: int | None,  # noqa: ARG002
+        next_page_token: int | None,
     ) -> dict | None:
         """Build the batch/read request body from the partition's chunk of IDs."""
         ids = (context or {}).get("ids", [])
         return {"inputs": [{"id": record_id} for record_id in ids]}
 
+    @override
     def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
         """Flatten batch/read results into one row per from/to association."""
         for result in response.json().get("results", []):

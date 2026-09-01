@@ -267,7 +267,7 @@ class DynamicHubspotStream(HubspotStream):
 class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream."""
 
-    incremental_path: str | None
+    incremental_path: str
 
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: D107
         super().__init__(*args, **kwargs)
@@ -367,7 +367,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     ) -> requests.PreparedRequest:
         if self._is_incremental_search(context):
             # Search endpoints use POST request
-            self.path = self.incremental_path  # type: ignore[attr-defined]
+            self.path = self.incremental_path
             self.http_method = "POST"
         return super().prepare_request(context, next_page_token)
 
@@ -511,6 +511,10 @@ class AssociationsStream(HubspotStream):
     def state_partitioning_keys(self) -> t.Sequence[str] | None:
         """Hold state in a single bookmark per stream; this is a full-table sync."""
         return []
+
+    @state_partitioning_keys.setter
+    def state_partitioning_keys(self, new_value: t.Sequence[str] | None) -> None:
+        self._state_partitioning_keys = new_value
 
     @property
     def url_base(self) -> str:

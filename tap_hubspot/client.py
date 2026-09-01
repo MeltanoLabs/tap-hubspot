@@ -17,14 +17,21 @@ from singer_sdk.streams.core import REPLICATION_INCREMENTAL
 
 from tap_hubspot.auth import HubSpotOAuthAuthenticator
 
-if t.TYPE_CHECKING:
-    from singer_sdk.helpers.types import Context
-    from singer_sdk.pagination import BaseAPIPaginator
-
 if sys.version_info < (3, 11):
     from backports.datetime_fromisoformat import MonkeyPatch
 
     MonkeyPatch.patch_fromisoformat()
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
+if t.TYPE_CHECKING:
+    from singer_sdk import Tap
+    from singer_sdk.helpers.types import Context, Record
+    from singer_sdk.pagination import BaseAPIPaginator
+
 
 _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
@@ -260,6 +267,8 @@ class DynamicHubspotStream(HubspotStream):
 class DynamicIncrementalHubspotStream(DynamicHubspotStream):
     """DynamicIncrementalHubspotStream."""
 
+    incremental_path: str | None
+
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: D107
         super().__init__(*args, **kwargs)
 
@@ -451,7 +460,7 @@ class IdOnlyObjectStream(HubspotStream):
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"
 
-    def __init__(self, tap: t.Any, object_type: str) -> None:  # noqa: D107
+    def __init__(self, tap: Tap, object_type: str) -> None:  # noqa: D107
         super().__init__(tap, name=object_type)
         self.path = f"/objects/{object_type}"
 
@@ -489,7 +498,7 @@ class AssociationsStream(HubspotStream):
 
     def __init__(
         self,
-        tap: t.Any,
+        tap: Tap,
         from_object_type: str,
         to_object_type: str,
     ) -> None:

@@ -25,6 +25,7 @@ dependencies = [
   "backports-datetime-fromisoformat==2.0.3; python_full_version<'3.11'",
   "requests==2.34.2",
   "singer-sdk~=0.54.4",
+  "typing-extensions>=4.15.0 ; python_full_version < '3.12'",
 ]
 [[project.authors]]
 name = "Ethan Stein"
@@ -49,10 +50,13 @@ source = "vcs"
 
 [tool.uv]
 default-groups = "all"
+required-version = ">=0.12"
 
 [tool.ruff]
+required-version = ">=0.16"
 src = [ "tap_hubspot" ]
 [tool.ruff.lint]
+ignore = ["CPY"]
 select = [ "ALL" ]
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true

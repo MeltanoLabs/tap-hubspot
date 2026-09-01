@@ -14,6 +14,7 @@ from tap_hubspot.client import (
 )
 
 if t.TYPE_CHECKING:
+    from singer_sdk import Tap
     from singer_sdk.helpers.types import Context
 
 PropertiesList = th.PropertiesList
@@ -962,7 +963,7 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"
 
-    def __init__(self, tap: t.Any, object_type: str) -> None:  # noqa: D107
+    def __init__(self, tap: Tap, object_type: str) -> None:  # noqa: D107
         self._object_type = object_type
         super().__init__(tap, name=object_type)
         # Set as instance attributes so prepare_request can reassign self.path
@@ -979,7 +980,7 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
         schema_stream = CustomObjectSchemaStream(self._tap, self._object_type)
         return {prop["name"]: prop["type"] for prop in schema_stream.get_records(None)}
 
-    def _is_incremental_search(self, context: t.Any) -> bool:
+    def _is_incremental_search(self, context: Context | None) -> bool:
         return (
             "hs_lastmodifieddate" in self.hs_properties
             and super()._is_incremental_search(context)
@@ -988,7 +989,7 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
     def post_process(  # noqa: D102
         self,
         row: dict,
-        context: t.Any = None,  # noqa: ARG002
+        context: Context | None = None,  # noqa: ARG002
     ) -> dict | None:
         if self.replication_key:
             props = row.get("properties") or {}

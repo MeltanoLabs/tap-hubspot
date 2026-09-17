@@ -61,6 +61,18 @@ class TapHubspot(Tap):
             ),
         ),
         th.Property(
+            "event_types",
+            th.ArrayType(th.StringType),
+            required=False,
+            description=(
+                "List of HubSpot event type names to sync into the events "
+                "stream (e.g. ['e_visited_page']). GET "
+                "/events/v3/events/event-types lists the types an account has. "
+                "No events stream is created unless this is set. Requires the "
+                "business-intelligence scope."
+            ),
+        ),
+        th.Property(
             "associations",
             th.ObjectType(additional_properties=th.ArrayType(th.StringType)),
             required=False,
@@ -107,6 +119,7 @@ class TapHubspot(Tap):
             streams.NoteStream(self),
             streams.PostalMailStream(self),
             streams.TaskStream(self),
+            *([streams.EventStream(self)] if self.config.get("event_types") else []),
             *[
                 streams.CustomObjectStream(self, object_type)
                 for object_type in self.config.get("custom_object_types", [])

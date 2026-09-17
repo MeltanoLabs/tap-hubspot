@@ -20,6 +20,7 @@ if t.TYPE_CHECKING:
 PropertiesList = th.PropertiesList
 Property = th.Property
 ObjectType = th.ObjectType
+CustomType = th.CustomType
 DateTimeType = th.DateTimeType
 StringType = th.StringType
 ArrayType = th.ArrayType
@@ -929,6 +930,61 @@ class TaskStream(DynamicIncrementalHubspotStream):
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
         return "https://api.hubapi.com/crm/v3"
+
+
+class EventStream(HubspotStream):
+    """https://developers.hubspot.com/docs/api-reference/events-events-v3.
+
+    The endpoint rejects a request that names neither an event type nor a
+    single object, so this reads one event type per partition, from the
+    `event_types` config list, and each type carries its own bookmark.
+    """
+
+    name = "events"
+    path = "/events"
+    primary_keys = ("id",)
+    replication_key = "occurredAt"
+    replication_method = "INCREMENTAL"
+    records_jsonpath = "$[results][*]"
+
+    schema = PropertiesList(
+        Property("id", StringType),
+        Property("eventType", StringType),
+        Property("occurredAt", DateTimeType),
+        Property("objectType", StringType),
+        Property("objectId", StringType),
+        # Every event type carries its own set, so this stays untyped. An
+        # ObjectType would declare an empty property map, which flattening
+        # expands to no columns at all, dropping the payload.
+        Property("properties", CustomType({"type": ["object", "null"]})),
+    ).to_dict()
+
+    @property
+    def url_base(self) -> str:  # noqa: D102
+        return "https://api.hubapi.com/events/v3"
+
+    @property
+    def partitions(self) -> list[dict]:
+        """One partition per configured event type."""
+        return [
+            {"eventType": event_type}
+            for event_type in self.config.get("event_types", [])
+        ]
+
+    def get_url_params(  # noqa: D102
+        self,
+        context: Context | None,
+        next_page_token: int | None,
+    ) -> dict[str, t.Any]:
+        # Not the inherited params: this endpoint rejects `sort`, and already
+        # returns events oldest first.
+        params: dict = {"limit": 100, "eventType": (context or {})["eventType"]}
+        if next_page_token:
+            params["after"] = next_page_token
+        starting_timestamp = self.get_starting_timestamp(context)
+        if starting_timestamp:
+            params["occurredAfter"] = starting_timestamp.isoformat()
+        return params
 
 
 class CustomObjectSchemaStream(HubspotStream):

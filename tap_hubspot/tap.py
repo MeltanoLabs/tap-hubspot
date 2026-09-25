@@ -2,17 +2,25 @@
 
 from __future__ import annotations
 
+import sys
+
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_hubspot import streams
 from tap_hubspot.client import AssociationsStream
 
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
 
 class TapHubspot(Tap):
     """tap-hubspot is a Singer tap for Hubspot."""
 
     name = "tap-hubspot"
+    package_name = "meltano-tap-hubspot"
 
     config_jsonschema = th.PropertiesList(
         th.Property(
@@ -76,6 +84,7 @@ class TapHubspot(Tap):
         ),
     ).to_dict()
 
+    @override
     def discover_streams(self) -> list[streams.HubspotStream]:
         """Return a list of discovered streams.
 

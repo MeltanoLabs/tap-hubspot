@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 import typing as t
 from functools import cached_property
 
@@ -12,6 +13,11 @@ from tap_hubspot.client import (
     HubspotStream,
     PropertyStream,
 )
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if t.TYPE_CHECKING:
     from singer_sdk import Tap
@@ -47,6 +53,7 @@ class ContactStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -77,6 +84,7 @@ class UsersStream(HubspotStream):
         Property("primaryteamid", StringType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -98,6 +106,7 @@ class TeamsStream(HubspotStream):
         Property("secondaryUserIds", ArrayType(StringType)),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -132,6 +141,7 @@ class OwnersStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -187,6 +197,7 @@ class TicketPipelineStream(HubspotStream):
         Property("default", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -242,6 +253,7 @@ class DealPipelineStream(HubspotStream):
         Property("default", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -278,6 +290,7 @@ class EmailSubscriptionStream(HubspotStream):
         Property("businessUnitId", IntegerType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -451,6 +464,7 @@ class PropertyNotesStream(PropertyStream):
     name = "properties"
     path = "/properties/notes"
 
+    @override
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
         """Merges all the property stream data into a single property table."""
         property_stream_classes: list[type[PropertyStream]] = [
@@ -495,6 +509,7 @@ class CompanyStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -521,6 +536,7 @@ class DealStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -538,6 +554,7 @@ class LeadStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -581,6 +598,7 @@ class FeedbackSubmissionsStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -607,6 +625,7 @@ class LineItemStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -650,6 +669,7 @@ class ProductStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -692,6 +712,7 @@ class TicketStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -734,6 +755,7 @@ class QuoteStream(HubspotStream):
         Property("archived", BooleanType),
     ).to_dict()
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -759,6 +781,7 @@ class GoalStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -784,6 +807,7 @@ class CallStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -809,6 +833,7 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -825,6 +850,7 @@ class EmailStream(DynamicIncrementalHubspotStream):
     replication_key = "hs_lastmodifieddate"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -850,6 +876,7 @@ class MeetingStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -875,6 +902,7 @@ class NoteStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -900,6 +928,7 @@ class PostalMailStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -925,6 +954,7 @@ class TaskStream(DynamicIncrementalHubspotStream):
     replication_method = "INCREMENTAL"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
@@ -940,8 +970,9 @@ class CustomObjectSchemaStream(HubspotStream):
     primary_keys = ("name",)
     records_jsonpath = "$.properties[*]"
 
+    @override
     @property
-    def url_base(self) -> str:  # noqa: D102
+    def url_base(self) -> str:
         return "https://api.hubapi.com/crm-object-schemas/v3"
 
     @property
@@ -971,25 +1002,29 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
         self.path = f"/objects/{object_type}"
         self.incremental_path = f"/objects/{object_type}/search"
 
+    @override
     @property
-    def url_base(self) -> str:  # noqa: D102
+    def url_base(self) -> str:
         return "https://api.hubapi.com/crm/v3"
 
+    @override
     @cached_property
-    def hs_properties(self) -> dict[str, str]:  # noqa: D102
+    def hs_properties(self) -> dict[str, str]:
         schema_stream = CustomObjectSchemaStream(self._tap, self._object_type)
         return {prop["name"]: prop["type"] for prop in schema_stream.get_records(None)}
 
+    @override
     def _is_incremental_search(self, context: Context | None) -> bool:
         return (
             "hs_lastmodifieddate" in self.hs_properties
             and super()._is_incremental_search(context)
         )
 
-    def post_process(  # noqa: D102
+    @override
+    def post_process(
         self,
         row: dict,
-        context: Context | None = None,  # noqa: ARG002
+        context: Context | None = None,
     ) -> dict | None:
         if self.replication_key:
             props = row.get("properties") or {}

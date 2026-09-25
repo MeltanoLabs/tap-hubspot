@@ -39,6 +39,7 @@ _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
 
+    @override
     @property
     def url_base(self) -> str:
         """Returns base url."""
@@ -223,6 +224,7 @@ class DynamicHubspotStream(HubspotStream):
         # TODO: consider typing more precisely  # noqa: TD002, TD003, FIX002
         return th.StringType()
 
+    @override
     @cached_property
     def schema(self) -> dict:
         """Return a draft JSON schema for this stream."""
@@ -295,6 +297,7 @@ class DynamicIncrementalHubspotStream(DynamicHubspotStream):
             and self.incremental_path
         )
 
+    @override
     @cached_property
     def schema(self) -> dict:
         """Return a draft JSON schema for this stream."""
@@ -520,11 +523,13 @@ class AssociationsStream(HubspotStream):
         self.to_object_type = to_object_type
         super().__init__(tap, name=f"{from_object_type}_{to_object_type}_associations")
 
+    @override
     @property
     def state_partitioning_keys(self) -> t.Sequence[str] | None:
         """Hold state in a single bookmark per stream; this is a full-table sync."""
         return []
 
+    @override
     @state_partitioning_keys.setter
     def state_partitioning_keys(self, new_value: t.Sequence[str] | None) -> None:
         self._state_partitioning_keys = new_value

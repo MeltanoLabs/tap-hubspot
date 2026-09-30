@@ -31,6 +31,7 @@ Built with the [Meltano Singer SDK](https://sdk.meltano.com).
 | batch_config        | False    | None    |             |
 | custom_object_types | False    | None    | List of HubSpot custom CRM object type names to sync (e.g. `['patches']`). Requires HubSpot Enterprise and `crm.objects.custom.read` + `crm.schemas.custom.read` scopes. |
 | associations        | False    | None    | Mapping of `from_object_type` to a list of `to_object_type`s to sync associations for (e.g. `{'contact': ['company', 'deal']}`). No association streams are created unless this is set. See [Associations](#associations) below. |
+| event_types         | False    | None    | List of HubSpot event type names to sync into the `events` stream (e.g. `['e_visited_page']`). No events stream is created unless this is set. See [Events](#events) below. |
 
 A full list of supported settings and capabilities is available by running: `tap-hubspot --about`
 
@@ -72,6 +73,7 @@ A Hubspot access token is required to make API requests. (See [Hubspot API](http
 | `notes` | Incremental | Note engagement records |
 | `postal_mail` | Incremental | Postal mail engagement records |
 | `tasks` | Incremental | Task engagement records |
+| `events` | Incremental | CRM and web analytics events, one partition per configured event type |
 | `owners` | Full Table | HubSpot users who own CRM records |
 | `users` | Full Table | Users in your HubSpot account |
 | `teams` | Full Table | HubSpot Teams and their member user IDs |
@@ -114,6 +116,7 @@ The following scopes need to be added to your access token to access the followi
 - Email Subscriptions: `content`
 - Properties: same scopes as the corresponding object type
 - Custom Objects: `crm.objects.custom.read` and `crm.schemas.custom.read` (HubSpot Enterprise only)
+- Events: `business-intelligence`
 
 For more info on the streams and permissions, check the [Hubspot API Documentation](https://developers.hubspot.com/docs/api/overview).
 
@@ -156,6 +159,22 @@ Object type names must match HubSpot's CRM object type identifiers, not this tap
 | `goal` | `goal_targets` |
 
 Any other standard or custom HubSpot object type name is also valid (e.g. `order`, `invoice`, or a custom object's `fullyQualifiedName`), as long as your access token has read access to both object types in the pair.
+
+### Events
+
+No events stream is created by default. To sync events, add an `event_types` config setting listing the HubSpot event types to read:
+
+```json
+{
+  "event_types": ["e_visited_page", "e_submitted_form"]
+}
+```
+
+`GET /events/v3/events/event-types` returns the event types an account has, both HubSpot's built-in analytics events and any custom ones. An event type that the account does not have makes the request fail with `Unable to infer object type`.
+
+All configured types feed one incremental stream named `events`, read from the [events endpoint](https://developers.hubspot.com/docs/api-reference/events-events-v3) one type per partition, because the endpoint rejects a request that names neither an event type nor a single object. Each type keeps its own `occurredAt` bookmark, so adding a type to the list syncs only that type from the start date.
+
+Each record has `id`, `eventType`, `occurredAt`, `objectType`, `objectId` and `properties`. The keys inside `properties` differ per event type, so it is left untyped.
 
 ## Usage
 

@@ -261,7 +261,7 @@ class DealPipelineStream(HubspotStream):
 
 
 class EmailSubscriptionStream(HubspotStream):
-    """https://legacydocs.hubspot.com/docs/methods/email/get_subscriptions."""
+    """https://developers.hubspot.com/docs/api-reference/legacy/communication-preferences/v1/get-subscription-types."""
 
     """
     name: stream name

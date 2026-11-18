@@ -12,6 +12,7 @@ from tap_hubspot.client import (
     DynamicIncrementalHubspotStream,
     HubspotStream,
     PropertyStream,
+    crm_url_base,
 )
 
 if sys.version_info >= (3, 12):
@@ -46,8 +47,8 @@ class ContactStream(DynamicIncrementalHubspotStream):
     """
 
     name = "contacts"
-    path = "/objects/contacts"
-    incremental_path = "/objects/contacts/search"
+    path = "/contacts"
+    incremental_path = "/contacts/search"
     primary_keys = ("id",)
     replication_key = "lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -57,7 +58,7 @@ class ContactStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class UsersStream(HubspotStream):
@@ -126,7 +127,7 @@ class OwnersStream(HubspotStream):
     """
 
     name = "owners"
-    path = "/owners"
+    path = ""
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -145,7 +146,7 @@ class OwnersStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("owners")
 
 
 class TicketPipelineStream(HubspotStream):
@@ -306,7 +307,7 @@ class PropertyTicketStream(PropertyStream):
     """
 
     name = "property_tickets"
-    path = "/properties/tickets"
+    path = "/tickets"
 
 
 class PropertyDealStream(PropertyStream):
@@ -318,7 +319,7 @@ class PropertyDealStream(PropertyStream):
     """
 
     name = "property_deals"
-    path = "/properties/deals"
+    path = "/deals"
 
 
 class PropertyContactStream(PropertyStream):
@@ -330,7 +331,7 @@ class PropertyContactStream(PropertyStream):
     """
 
     name = "property_contacts"
-    path = "/properties/contacts"
+    path = "/contacts"
 
 
 class PropertyCompanyStream(PropertyStream):
@@ -342,7 +343,7 @@ class PropertyCompanyStream(PropertyStream):
     """
 
     name = "property_companies"
-    path = "/properties/company"
+    path = "/company"
 
 
 class PropertyProductStream(PropertyStream):
@@ -354,7 +355,7 @@ class PropertyProductStream(PropertyStream):
     """
 
     name = "property_products"
-    path = "/properties/product"
+    path = "/product"
 
 
 class PropertyLineItemStream(PropertyStream):
@@ -366,7 +367,7 @@ class PropertyLineItemStream(PropertyStream):
     """
 
     name = "property_line_items"
-    path = "/properties/line_item"
+    path = "/line_item"
 
 
 class PropertyEmailStream(PropertyStream):
@@ -378,7 +379,7 @@ class PropertyEmailStream(PropertyStream):
     """
 
     name = "property_emails"
-    path = "/properties/email"
+    path = "/email"
 
 
 class PropertyPostalMailStream(PropertyStream):
@@ -390,7 +391,7 @@ class PropertyPostalMailStream(PropertyStream):
     """
 
     name = "property_postal_mails"
-    path = "/properties/postal_mail"
+    path = "/postal_mail"
 
 
 class PropertyGoalStream(PropertyStream):
@@ -402,7 +403,7 @@ class PropertyGoalStream(PropertyStream):
     """
 
     name = "goal_targets"
-    path = "/properties/goal_targets"
+    path = "/goal_targets"
 
 
 class PropertyCallStream(PropertyStream):
@@ -414,7 +415,7 @@ class PropertyCallStream(PropertyStream):
     """
 
     name = "property_calls"
-    path = "/properties/call"
+    path = "/call"
 
 
 class PropertyMeetingStream(PropertyStream):
@@ -426,7 +427,7 @@ class PropertyMeetingStream(PropertyStream):
     """
 
     name = "property_meetings"
-    path = "/properties/meeting"
+    path = "/meeting"
 
 
 class PropertyTaskStream(PropertyStream):
@@ -438,7 +439,7 @@ class PropertyTaskStream(PropertyStream):
     """
 
     name = "property_tasks"
-    path = "/properties/task"
+    path = "/task"
 
 
 class PropertyCommunicationStream(PropertyStream):
@@ -450,7 +451,7 @@ class PropertyCommunicationStream(PropertyStream):
     """
 
     name = "property_communications"
-    path = "/properties/communication"
+    path = "/communication"
 
 
 class PropertyNotesStream(PropertyStream):
@@ -462,7 +463,7 @@ class PropertyNotesStream(PropertyStream):
     """
 
     name = "properties"
-    path = "/properties/notes"
+    path = "/notes"
 
     @override
     def get_records(self, context: Context | None) -> t.Iterable[dict[str, t.Any]]:
@@ -502,8 +503,8 @@ class CompanyStream(DynamicIncrementalHubspotStream):
     """
 
     name = "companies"
-    path = "/objects/companies"
-    incremental_path = "/objects/companies/search"
+    path = "/companies"
+    incremental_path = "/companies/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -513,7 +514,7 @@ class CompanyStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class DealStream(DynamicIncrementalHubspotStream):
@@ -529,8 +530,8 @@ class DealStream(DynamicIncrementalHubspotStream):
     """
 
     name = "deals"
-    path = "/objects/deals"
-    incremental_path = "/objects/deals/search"
+    path = "/deals"
+    incremental_path = "/deals/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -540,15 +541,15 @@ class DealStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class LeadStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/leads."""
 
     name = "leads"
-    path = "/objects/leads"
-    incremental_path = "/objects/leads/search"
+    path = "/leads"
+    incremental_path = "/leads/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -558,7 +559,7 @@ class LeadStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class FeedbackSubmissionsStream(HubspotStream):
@@ -574,7 +575,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     """
 
     name = "feedback_submissions"
-    path = "/objects/feedback_submissions"
+    path = "/feedback_submissions"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -602,7 +603,7 @@ class FeedbackSubmissionsStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class LineItemStream(DynamicIncrementalHubspotStream):
@@ -618,8 +619,8 @@ class LineItemStream(DynamicIncrementalHubspotStream):
     """
 
     name = "line_items"
-    path = "/objects/line_items"
-    incremental_path = "/objects/line_items/search"
+    path = "/line_items"
+    incremental_path = "/line_items/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -629,7 +630,7 @@ class LineItemStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class ProductStream(HubspotStream):
@@ -645,7 +646,7 @@ class ProductStream(HubspotStream):
     """
 
     name = "products"
-    path = "/objects/products"
+    path = "/products"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -673,7 +674,7 @@ class ProductStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class TicketStream(HubspotStream):
@@ -689,7 +690,7 @@ class TicketStream(HubspotStream):
     """
 
     name = "tickets"
-    path = "/objects/tickets"
+    path = "/tickets"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -716,7 +717,7 @@ class TicketStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class QuoteStream(HubspotStream):
@@ -731,7 +732,7 @@ class QuoteStream(HubspotStream):
     """
 
     name = "quotes"
-    path = "/objects/quotes"
+    path = "/quotes"
     primary_keys = ("id",)
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
 
@@ -759,7 +760,7 @@ class QuoteStream(HubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class GoalStream(DynamicIncrementalHubspotStream):
@@ -774,8 +775,8 @@ class GoalStream(DynamicIncrementalHubspotStream):
     """
 
     name = "goal_targets"
-    path = "/objects/goal_targets"
-    incremental_path = "/objects/goal_targets/search"
+    path = "/goal_targets"
+    incremental_path = "/goal_targets/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -785,7 +786,7 @@ class GoalStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class CallStream(DynamicIncrementalHubspotStream):
@@ -800,8 +801,8 @@ class CallStream(DynamicIncrementalHubspotStream):
     """
 
     name = "calls"
-    path = "/objects/calls"
-    incremental_path = "/objects/calls/search"
+    path = "/calls"
+    incremental_path = "/calls/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -811,7 +812,7 @@ class CallStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class CommunicationStream(DynamicIncrementalHubspotStream):
@@ -826,8 +827,8 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
     """
 
     name = "communications"
-    path = "/objects/communications"
-    incremental_path = "/objects/communications/search"
+    path = "/communications"
+    incremental_path = "/communications/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -837,15 +838,15 @@ class CommunicationStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class EmailStream(DynamicIncrementalHubspotStream):
     """https://developers.hubspot.com/docs/api/crm/email."""
 
     name = "emails"
-    path = "/objects/emails"
-    incremental_path = "/objects/emails/search"
+    path = "/emails"
+    incremental_path = "/emails/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     records_jsonpath = "$[results][*]"  # Or override `parse_response`.
@@ -854,7 +855,7 @@ class EmailStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class MeetingStream(DynamicIncrementalHubspotStream):
@@ -869,8 +870,8 @@ class MeetingStream(DynamicIncrementalHubspotStream):
     """
 
     name = "meetings"
-    path = "/objects/meetings"
-    incremental_path = "/objects/meetings/search"
+    path = "/meetings"
+    incremental_path = "/meetings/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -880,7 +881,7 @@ class MeetingStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class NoteStream(DynamicIncrementalHubspotStream):
@@ -895,8 +896,8 @@ class NoteStream(DynamicIncrementalHubspotStream):
     """
 
     name = "notes"
-    path = "/objects/notes"
-    incremental_path = "/objects/notes/search"
+    path = "/notes"
+    incremental_path = "/notes/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -906,7 +907,7 @@ class NoteStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class PostalMailStream(DynamicIncrementalHubspotStream):
@@ -921,8 +922,8 @@ class PostalMailStream(DynamicIncrementalHubspotStream):
     """
 
     name = "postal_mail"
-    path = "/objects/postal_mail"
-    incremental_path = "/objects/postal_mail/search"
+    path = "/postal_mail"
+    incremental_path = "/postal_mail/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -932,7 +933,7 @@ class PostalMailStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class TaskStream(DynamicIncrementalHubspotStream):
@@ -947,8 +948,8 @@ class TaskStream(DynamicIncrementalHubspotStream):
     """
 
     name = "tasks"
-    path = "/objects/tasks"
-    incremental_path = "/objects/tasks/search"
+    path = "/tasks"
+    incremental_path = "/tasks/search"
     primary_keys = ("id",)
     replication_key = "hs_lastmodifieddate"
     replication_method = "INCREMENTAL"
@@ -958,7 +959,7 @@ class TaskStream(DynamicIncrementalHubspotStream):
     @property
     def url_base(self) -> str:
         """Returns an updated path which includes the api version."""
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class CustomObjectSchemaStream(HubspotStream):
@@ -999,13 +1000,13 @@ class CustomObjectStream(DynamicIncrementalHubspotStream):
         super().__init__(tap, name=object_type)
         # Set as instance attributes so prepare_request can reassign self.path
         # when switching to the incremental search endpoint
-        self.path = f"/objects/{object_type}"
-        self.incremental_path = f"/objects/{object_type}/search"
+        self.path = f"/{object_type}"
+        self.incremental_path = f"/{object_type}/search"
 
     @override
     @property
     def url_base(self) -> str:
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
     @override
     @cached_property

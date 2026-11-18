@@ -83,6 +83,15 @@ A Hubspot access token is required to make API requests. (See [Hubspot API](http
 | `deal_pipelines` | Full Table | Deal pipeline and stage definitions |
 | `email_subscriptions` | Full Table | Email subscription type definitions |
 | `properties` | Full Table | Property definitions for all CRM object types |
+| `email_events` | Incremental | Marketing email events (sent, delivered, open, click, bounce, ...) |
+| `subscription_changes` | Incremental | Timeline of email subscription changes per recipient |
+| `campaign_ids` | Full Table | Marketing email campaign ids (parent of `campaigns`) |
+| `campaigns` | Full Table | Marketing email campaigns with their counters |
+| `forms` | Full Table | Forms of all types |
+| `form_submissions` | Incremental | Submissions of each form (child of `forms`) |
+| `contact_lists` | Full Table | Lists of all object types |
+
+`email_events` and `subscription_changes` read one day at a time, from old to new, and save the bookmark after each day. They need a `start_date` or a bookmark. `form_submissions` keeps a bookmark per form and stops at the first page that reaches it. Submissions of `FACEBOOK_LEAD_AD`, `MEETING`, `DOCUMENT` and `BLOG_COMMENT` forms cannot be exported, so the tap does not request them.
 
 ### Permissions
 
@@ -112,6 +121,9 @@ The following scopes need to be added to your access token to access the followi
 - Quotes: `crm.objects.quotes.read`
 - Goal Targets: `crm.objects.goals.read`
 - Email Subscriptions: `content`
+- Email Events, Subscription Changes, Campaign Ids, Campaigns: `content`
+- Forms, Form Submissions: `forms`
+- Contact Lists: `crm.lists.read`
 - Properties: same scopes as the corresponding object type
 - Custom Objects: `crm.objects.custom.read` and `crm.schemas.custom.read` (HubSpot Enterprise only)
 
@@ -162,14 +174,22 @@ Any other standard or custom HubSpot object type name is also valid (e.g. `order
 You can easily run `tap-hubspot` by itself or in a pipeline using [Meltano](https://meltano.com/).
 
 
-### Streams Using v1 Endpoints
+### API Versions
 
-The following Streams use the v1 (legacy) endpoint in the Hubspot API:
+The CRM streams (objects, properties, owners and lists) use the
+[date-based API version](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)
+`2026-09`. HubSpot stops support for the numbered versions (v1 to v4) in 2027.
+
+The following Streams still use legacy endpoints in the Hubspot API:
 
 1. [TicketPipeline & DealPipeline](https://legacydocs.hubspot.com/docs/methods/pipelines/pipelines_overview): The v3 endpoint requires a pipeline ID parameter to make calls to the API. Because of this,
 you are limited to only pulling data for a single pipeline ID from v3, whereas the v1 API allows you to pull from all pipelines.
 2. [EmailSubscriptions](https://legacydocs.hubspot.com/docs/methods/email/email_subscriptions_overview): The v3 endpoint requires you to set a single email address to pull subscription data, whereas
 the v1 endpoint allows you to pull data from all emails.
+3. [EmailEvents](https://legacydocs.hubspot.com/docs/methods/email/get_events), [SubscriptionChanges](https://legacydocs.hubspot.com/docs/methods/email/get_subscriptions_timeline),
+[CampaignIds and Campaigns](https://legacydocs.hubspot.com/docs/methods/email/get_campaigns_by_id), [Forms](https://legacydocs.hubspot.com/docs/methods/forms/v2/get_forms) and
+[FormSubmissions](https://legacydocs.hubspot.com/docs/methods/forms/get-submissions-for-a-form): these APIs have no date-based replacement yet.
+4. Users, Teams, custom object schemas and associations use the v3 and v4 endpoints.
 
 
 ## Stream Inheritance

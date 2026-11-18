@@ -7,7 +7,7 @@ import sys
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-from tap_hubspot import streams
+from tap_hubspot import marketing_streams, streams
 from tap_hubspot.client import AssociationsStream
 
 if sys.version_info >= (3, 12):
@@ -56,6 +56,26 @@ class TapHubspot(Tap):
             "end_date",
             th.DateTimeType,
             description="Latest record date to sync",
+        ),
+        th.Property(
+            "max_requests_per_second",
+            th.NumberType,
+            required=False,
+            description=(
+                "Maximum requests per second for all streams of one tap process. "
+                "HubSpot limits each app to a burst of requests per 10 seconds and "
+                "the search endpoints to 5 requests per second per account."
+            ),
+        ),
+        th.Property(
+            "daily_request_reserve",
+            th.IntegerType,
+            required=False,
+            description=(
+                "Stop the sync when the account has fewer daily API requests left "
+                "than this number. The daily limit is shared by all apps of the "
+                "account."
+            ),
         ),
         th.Property(
             "custom_object_types",
@@ -116,6 +136,13 @@ class TapHubspot(Tap):
             streams.NoteStream(self),
             streams.PostalMailStream(self),
             streams.TaskStream(self),
+            marketing_streams.EmailEventsStream(self),
+            marketing_streams.SubscriptionChangesStream(self),
+            marketing_streams.CampaignIdsStream(self),
+            marketing_streams.CampaignsStream(self),
+            marketing_streams.FormsStream(self),
+            marketing_streams.FormSubmissionsStream(self),
+            marketing_streams.ContactListsStream(self),
             *[
                 streams.CustomObjectStream(self, object_type)
                 for object_type in self.config.get("custom_object_types", [])

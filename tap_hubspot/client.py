@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import datetime
 import sys
+import threading
+import time
 import typing as t
 from functools import cached_property
 from http import HTTPStatus
@@ -11,6 +13,7 @@ from http import HTTPStatus
 import requests
 from singer_sdk import typing as th
 from singer_sdk.authenticators import BearerTokenAuthenticator
+from singer_sdk.exceptions import FatalAPIError
 from singer_sdk.pagination import SinglePagePaginator
 from singer_sdk.streams import RESTStream
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
@@ -35,9 +38,58 @@ if t.TYPE_CHECKING:
 
 _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
+DAILY_REMAINING_HEADER = "X-HubSpot-RateLimit-Daily-Remaining"
+
+
+class RequestThrottle:
+    """Spaces the requests of all streams in this process."""
+
+    def __init__(self) -> None:  # noqa: D107
+        self._lock = threading.Lock()
+        self._next_request_at = 0.0
+
+    def wait(self, requests_per_second: float) -> None:
+        """Sleep until the next request is allowed."""
+        with self._lock:
+            now = time.monotonic()
+            if self._next_request_at > now:
+                time.sleep(self._next_request_at - now)
+                now = self._next_request_at
+            self._next_request_at = now + 1 / requests_per_second
+
+
+THROTTLE = RequestThrottle()
+
 
 class HubspotStream(RESTStream):
     """tap-hubspot stream class."""
+
+    @override
+    def _request(
+        self,
+        prepared_request: requests.PreparedRequest,
+        context: Context | None,
+    ) -> requests.Response:
+        # Retries also go through here, so they count against the rate too.
+        if rate := self.config.get("max_requests_per_second"):
+            THROTTLE.wait(rate)
+        return super()._request(prepared_request, context)
+
+    @override
+    def validate_response(self, response: requests.Response) -> None:
+        super().validate_response(response)
+        reserve = self.config.get("daily_request_reserve")
+        remaining = response.headers.get(DAILY_REMAINING_HEADER)
+        # The daily limit is shared by all apps of the account. The HubSpot docs
+        # list no rate limit headers for search responses, so a response without
+        # the header passes.
+        if reserve is not None and remaining is not None and int(remaining) < reserve:
+            msg = (
+                f"HubSpot daily API limit: {remaining} requests left for the account, "
+                f"below the daily_request_reserve of {reserve}. The sync stops so "
+                "other apps of the account keep their requests."
+            )
+            raise FatalAPIError(msg)
 
     @override
     @property

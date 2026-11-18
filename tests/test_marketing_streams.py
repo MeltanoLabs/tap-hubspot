@@ -42,7 +42,7 @@ class FakeHubSpot:
         url = urlparse(t.cast("str", request.url))
         query = {k: v[0] for k, v in parse_qs(url.query).items()}
         if request.body:
-            query.update(json.loads(t.cast("str | bytes", request.body)))
+            query.update(json.loads(request.body))
         self.calls.append((url.path, query))
         body = self._route(url.path, query)
         response = requests.Response()
@@ -120,7 +120,7 @@ def run_tap(
     """Sync the given streams and return (records, states) from the Singer output."""
 
     class Tap(TapHubspot):
-        def discover_streams(self) -> list:  # type: ignore[override]
+        def discover_streams(self) -> list:
             return [cls(self) for cls in stream_classes]
 
     tap = Tap(
@@ -281,7 +281,7 @@ def test_crm_streams_use_date_based_urls() -> None:
     """The CRM streams call the date-based API version."""
 
     class Tap(TapHubspot):
-        def discover_streams(self) -> list:  # type: ignore[override]
+        def discover_streams(self) -> list:
             return []
 
     tap = Tap(config={"access_token": "x"}, setup_mapper=False)

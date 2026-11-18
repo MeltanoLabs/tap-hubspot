@@ -174,9 +174,13 @@ Any other standard or custom HubSpot object type name is also valid (e.g. `order
 You can easily run `tap-hubspot` by itself or in a pipeline using [Meltano](https://meltano.com/).
 
 
-### Streams Using v1 Endpoints
+### API Versions
 
-The following Streams use the v1 (legacy) endpoint in the Hubspot API:
+The CRM streams (objects, properties, owners and lists) use the
+[date-based API version](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)
+`2026-09`. HubSpot stops support for the numbered versions (v1 to v4) in 2027.
+
+The following Streams still use legacy endpoints in the Hubspot API:
 
 1. [TicketPipeline & DealPipeline](https://legacydocs.hubspot.com/docs/methods/pipelines/pipelines_overview): The v3 endpoint requires a pipeline ID parameter to make calls to the API. Because of this,
 you are limited to only pulling data for a single pipeline ID from v3, whereas the v1 API allows you to pull from all pipelines.
@@ -184,7 +188,8 @@ you are limited to only pulling data for a single pipeline ID from v3, whereas t
 the v1 endpoint allows you to pull data from all emails.
 3. [EmailEvents](https://legacydocs.hubspot.com/docs/methods/email/get_events), [SubscriptionChanges](https://legacydocs.hubspot.com/docs/methods/email/get_subscriptions_timeline),
 [CampaignIds and Campaigns](https://legacydocs.hubspot.com/docs/methods/email/get_campaigns_by_id), [Forms](https://legacydocs.hubspot.com/docs/methods/forms/v2/get_forms) and
-[FormSubmissions](https://legacydocs.hubspot.com/docs/methods/forms/get-submissions-for-a-form): these APIs have no v3 replacement.
+[FormSubmissions](https://legacydocs.hubspot.com/docs/methods/forms/get-submissions-for-a-form): these APIs have no date-based replacement yet.
+4. Users, Teams, custom object schemas and associations use the v3 and v4 endpoints.
 
 
 ## Stream Inheritance

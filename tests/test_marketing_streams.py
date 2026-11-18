@@ -11,7 +11,7 @@ from urllib.parse import parse_qs, urlparse
 import pytest
 import requests
 
-from tap_hubspot import client
+from tap_hubspot import client, streams
 from tap_hubspot import marketing_streams as ms
 from tap_hubspot.client import DAILY_REMAINING_HEADER
 from tap_hubspot.tap import TapHubspot
@@ -19,12 +19,14 @@ from tap_hubspot.tap import TapHubspot
 DAY = ms.DAY_MS
 # 2026-11-10T00:00:00Z
 T0 = 1794268800000
+LISTS_SEARCH_PATH = f"/crm/lists/{client.API_VERSION}/search"
 
 
 class FakeHubSpot:
     """Answers the requests of the marketing streams and records each request."""
 
     def __init__(self) -> None:
+        """Start with no data."""
         self.events: list[dict] = []
         self.forms: list[dict] = []
         self.submissions: dict[str, list[dict]] = {}
@@ -36,10 +38,11 @@ class FakeHubSpot:
         self.daily_remaining: int | None = None
 
     def send(self, request: requests.PreparedRequest, **_: t.Any) -> requests.Response:
+        """Return the response for a request, as `requests.Session.send` does."""
         url = urlparse(t.cast("str", request.url))
         query = {k: v[0] for k, v in parse_qs(url.query).items()}
         if request.body:
-            query.update(json.loads(request.body))
+            query.update(json.loads(t.cast("str | bytes", request.body)))
         self.calls.append((url.path, query))
         body = self._route(url.path, query)
         response = requests.Response()
@@ -54,7 +57,7 @@ class FakeHubSpot:
         page = rows[offset : offset + self.page_size]
         return page, offset + self.page_size < len(rows)
 
-    def _route(self, path: str, query: dict) -> t.Any:
+    def _route(self, path: str, query: dict) -> dict | list:
         offset = int(query.get("offset", 0))
         if path == "/email/public/v1/events":
             start, end = int(query["startTimestamp"]), int(query["endTimestamp"])
@@ -82,19 +85,35 @@ class FakeHubSpot:
             return {"campaigns": page, "hasMore": more, "offset": offset + len(page)}
         if path.startswith("/email/public/v1/campaigns/"):
             campaign_id = int(path.rsplit("/", 1)[1])
-            return {"id": campaign_id, "name": f"c{campaign_id}", "counters": {"sent": 3}}
-        if path == "/crm/v3/lists/search":
+            return {
+                "id": campaign_id,
+                "name": f"c{campaign_id}",
+                "counters": {"sent": 3},
+            }
+        if path == LISTS_SEARCH_PATH:
             page, more = self._page(self.lists, offset)
             return {"lists": page, "hasMore": more, "offset": offset + len(page)}
         raise AssertionError(path)
 
 
+@pytest.fixture
+def fake(monkeypatch: pytest.MonkeyPatch) -> FakeHubSpot:
+    """Send all HTTP requests of the test to a fake HubSpot API."""
+    api = FakeHubSpot()
+    monkeypatch.setattr(
+        requests.Session,
+        "send",
+        lambda _, req, **kw: api.send(req, **kw),
+    )
+    monkeypatch.setattr(ms.TimeWindowStream, "page_size", api.page_size)
+    monkeypatch.setattr(ms.HubspotStream, "backoff_max_tries", lambda _: 1)
+    return api
+
+
 def run_tap(
-    fake: FakeHubSpot,
     stream_classes: list[type],
-    monkeypatch: pytest.MonkeyPatch,
-    state: dict | None = None,
     *,
+    state: dict | None = None,
     expect_error: bool = False,
     config: dict | None = None,
 ) -> tuple[list[dict], list[dict]]:
@@ -104,9 +123,6 @@ def run_tap(
         def discover_streams(self) -> list:  # type: ignore[override]
             return [cls(self) for cls in stream_classes]
 
-    monkeypatch.setattr(requests.Session, "send", lambda _, req, **kw: fake.send(req, **kw))
-    monkeypatch.setattr(ms.TimeWindowStream, "page_size", fake.page_size)
-    monkeypatch.setattr(ms.HubspotStream, "backoff_max_tries", lambda _: 1)
     tap = Tap(
         config={"access_token": "x", "start_date": ms.ms_to_iso(T0), **(config or {})},
         state=state or {},
@@ -126,11 +142,12 @@ def run_tap(
 
 
 def bookmark(state: dict, stream: str) -> str | None:
+    """Return the bookmark of a stream that keeps a single state entry."""
     return state["bookmarks"].get(stream, {}).get("replication_key_value")
 
 
-def test_email_events_bookmark_moves_after_each_window(monkeypatch):
-    fake = FakeHubSpot()
+def test_email_events_bookmark_moves_after_each_window(fake: FakeHubSpot) -> None:
+    """An interrupted sync continues from the last complete day."""
     # Three events in each of the first three days.
     fake.events = [
         {"id": f"{d}-{i}", "created": T0 + d * DAY + i * 1000, "type": "SENT"}
@@ -139,34 +156,37 @@ def test_email_events_bookmark_moves_after_each_window(monkeypatch):
     ]
     fake.fail_on_window_start = T0 + 2 * DAY
 
-    records, states = run_tap(
-        fake,
-        [ms.EmailEventsStream],
-        monkeypatch,
-        expect_error=True,
-    )
+    records, states = run_tap([ms.EmailEventsStream], expect_error=True)
 
-    assert {r["record"]["id"] for r in records} == {f"{d}-{i}" for d in range(2) for i in range(3)}
+    assert {r["record"]["id"] for r in records} == {
+        f"{d}-{i}" for d in range(2) for i in range(3)
+    }
     # The last state before the failure keeps the newest event of day 1.
     assert bookmark(states[-1], "email_events") == ms.ms_to_iso(T0 + DAY + 2000)
 
     fake.fail_on_window_start = None
-    records, _ = run_tap(fake, [ms.EmailEventsStream], monkeypatch, state=states[-1])
+    records, _ = run_tap([ms.EmailEventsStream], state=states[-1])
 
     ids = sorted(r["record"]["id"] for r in records)
     # The resumed sync starts at the bookmark, so only the bookmark event repeats.
     assert ids == ["1-2", "2-0", "2-1", "2-2"]
 
 
-def test_form_submissions_stop_at_bookmark_and_skip_unexportable_forms(monkeypatch):
-    fake = FakeHubSpot()
+def test_form_submissions_stop_at_bookmark_and_skip_unexportable_forms(
+    fake: FakeHubSpot,
+) -> None:
+    """Paging stops at the bookmark of each form and skips unexportable forms."""
     fake.forms = [
         {"guid": "f-hubspot", "formType": "HUBSPOT"},
         {"guid": "f-facebook", "formType": "FACEBOOK_LEAD_AD"},
         {"guid": "f-captured", "formType": "CAPTURED"},
     ]
     newest_first = [
-        {"conversionId": f"s{i}", "submittedAt": T0 + (10 - i) * DAY, "pageUrl": "https://x"}
+        {
+            "conversionId": f"s{i}",
+            "submittedAt": T0 + (10 - i) * DAY,
+            "pageUrl": "https://x",
+        }
         for i in range(10)
     ]
     fake.submissions = {"f-hubspot": newest_first, "f-captured": newest_first[:1]}
@@ -185,17 +205,14 @@ def test_form_submissions_stop_at_bookmark_and_skip_unexportable_forms(monkeypat
         },
     }
 
-    records, _ = run_tap(
-        fake,
-        [ms.FormsStream, ms.FormSubmissionsStream],
-        monkeypatch,
-        state=state,
-    )
+    records, _ = run_tap([ms.FormsStream, ms.FormSubmissionsStream], state=state)
 
     submissions = [r["record"] for r in records if r["stream"] == "form_submissions"]
-    hubspot = [s["conversionId"] for s in submissions if s["formId"] == "f-hubspot"]
-    assert hubspot == ["s0", "s1", "s2", "s3"]
-    assert [s["conversionId"] for s in submissions if s["formId"] == "f-captured"] == ["s0"]
+    by_form = {
+        form: [s["conversionId"] for s in submissions if s["formId"] == form]
+        for form in ("f-hubspot", "f-captured")
+    }
+    assert by_form == {"f-hubspot": ["s0", "s1", "s2", "s3"], "f-captured": ["s0"]}
     assert all(s["pageUrl"] == "https://x" for s in submissions)
     paths = [path for path, _ in fake.calls]
     assert "/form-integrations/v1/submissions/forms/f-facebook" not in paths
@@ -203,15 +220,11 @@ def test_form_submissions_stop_at_bookmark_and_skip_unexportable_forms(monkeypat
     assert paths.count("/form-integrations/v1/submissions/forms/f-hubspot") == 3
 
 
-def test_campaigns_read_each_campaign_with_one_state_entry(monkeypatch):
-    fake = FakeHubSpot()
+def test_campaigns_read_each_campaign_with_one_state_entry(fake: FakeHubSpot) -> None:
+    """Campaign details keep one state entry, not one per campaign."""
     fake.campaign_ids = [11, 12, 13]
 
-    records, states = run_tap(
-        fake,
-        [ms.CampaignIdsStream, ms.CampaignsStream],
-        monkeypatch,
-    )
+    records, states = run_tap([ms.CampaignIdsStream, ms.CampaignsStream])
 
     campaigns = [r["record"] for r in records if r["stream"] == "campaigns"]
     assert [c["id"] for c in campaigns] == [11, 12, 13]
@@ -219,26 +232,24 @@ def test_campaigns_read_each_campaign_with_one_state_entry(monkeypatch):
     assert "partitions" not in states[-1]["bookmarks"].get("campaigns", {})
 
 
-def test_contact_lists_page_with_offset(monkeypatch):
-    fake = FakeHubSpot()
+def test_contact_lists_page_with_offset(fake: FakeHubSpot) -> None:
+    """The lists search pages with the offset of the previous response."""
     fake.lists = [{"listId": str(i), "name": f"l{i}"} for i in range(5)]
 
-    records, _ = run_tap(fake, [ms.ContactListsStream], monkeypatch)
+    records, _ = run_tap([ms.ContactListsStream])
 
     assert [r["record"]["listId"] for r in records] == ["0", "1", "2", "3", "4"]
-    offsets = [q["offset"] for path, q in fake.calls if path == "/crm/v3/lists/search"]
+    offsets = [q["offset"] for path, q in fake.calls if path == LISTS_SEARCH_PATH]
     assert offsets == [0, 2, 4]
 
 
-def test_sync_stops_below_daily_request_reserve(monkeypatch):
-    fake = FakeHubSpot()
+def test_sync_stops_below_daily_request_reserve(fake: FakeHubSpot) -> None:
+    """The sync stops after the first response below the daily reserve."""
     fake.lists = [{"listId": str(i), "name": f"l{i}"} for i in range(5)]
     fake.daily_remaining = 999
 
     records, _ = run_tap(
-        fake,
         [ms.ContactListsStream],
-        monkeypatch,
         expect_error=True,
         config={"daily_request_reserve": 1000},
     )
@@ -247,7 +258,8 @@ def test_sync_stops_below_daily_request_reserve(monkeypatch):
     assert len(fake.calls) == 1
 
 
-def test_throttle_spaces_requests(monkeypatch):
+def test_throttle_spaces_requests(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Requests are spaced by 1 / max_requests_per_second."""
     clock = {"now": 100.0}
     sleeps: list[float] = []
 
@@ -263,3 +275,22 @@ def test_throttle_spaces_requests(monkeypatch):
         throttle.wait(4)
 
     assert sleeps == [0.25, 0.25]
+
+
+def test_crm_streams_use_date_based_urls() -> None:
+    """The CRM streams call the date-based API version."""
+
+    class Tap(TapHubspot):
+        def discover_streams(self) -> list:  # type: ignore[override]
+            return []
+
+    tap = Tap(config={"access_token": "x"}, setup_mapper=False)
+    base = "https://api.hubapi.com/crm"
+    version = client.API_VERSION
+
+    assert streams.OwnersStream(tap).get_url(None) == f"{base}/owners/{version}"
+    properties = client.PropertyStream(tap, "contacts")
+    assert properties.get_url(None) == f"{base}/properties/{version}/contacts"
+    ids = client.IdOnlyObjectStream(tap, "deals")
+    assert ids.get_url(None) == f"{base}/objects/{version}/deals"
+    assert streams.ContactStream.incremental_path == "/contacts/search"

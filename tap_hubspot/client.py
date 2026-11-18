@@ -40,6 +40,15 @@ _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 
 DAILY_REMAINING_HEADER = "X-HubSpot-RateLimit-Daily-Remaining"
 
+# Date-based version of the CRM APIs. HubSpot stops support for the numbered
+# versions (v1 to v4) in 2027.
+API_VERSION = "2026-09"
+
+
+def crm_url_base(api: str) -> str:
+    """Return the base URL of a date-based CRM API, for example "objects"."""
+    return f"https://api.hubapi.com/crm/{api}/{API_VERSION}"
+
 
 class RequestThrottle:
     """Spaces the requests of all streams in this process."""
@@ -241,11 +250,11 @@ class PropertyStream(HubspotStream):
     @override
     @property
     def url_base(self) -> str:
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("properties")
 
     @property
     def path(self) -> str:  # type: ignore[override] # noqa: D102
-        return f"/properties/{self.name}"
+        return f"/{self.name}"
 
     @override
     def validate_response(self, response: requests.Response) -> None:
@@ -529,12 +538,12 @@ class IdOnlyObjectStream(HubspotStream):
 
     def __init__(self, tap: Tap, object_type: str) -> None:  # noqa: D107
         super().__init__(tap, name=object_type)
-        self.path = f"/objects/{object_type}"
+        self.path = f"/{object_type}"
 
     @override
     @property
     def url_base(self) -> str:
-        return "https://api.hubapi.com/crm/v3"
+        return crm_url_base("objects")
 
 
 class AssociationsStream(HubspotStream):

@@ -58,6 +58,8 @@ src = [ "tap_hubspot" ]
 [tool.ruff.lint]
 ignore = ["CPY"]
 select = [ "ALL" ]
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [ "S101", "PLR2004" ]
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 [tool.ruff.lint.isort]

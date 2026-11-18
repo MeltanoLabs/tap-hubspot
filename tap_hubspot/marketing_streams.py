@@ -1,6 +1,6 @@
 """Streams for the HubSpot marketing APIs: email events, campaigns, forms and lists.
 
-Most of these endpoints are legacy v1 APIs that have no v3 replacement.
+Most of these endpoints are legacy v1 APIs that have no date-based replacement yet.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ import typing as t
 from singer_sdk import typing as th
 from singer_sdk.streams.core import REPLICATION_INCREMENTAL
 
-from tap_hubspot.client import HubspotStream
+from tap_hubspot.client import HubspotStream, crm_url_base
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -530,14 +530,14 @@ class FormSubmissionsStream(HubspotStream):
 
 
 class ContactListsStream(HubspotStream):
-    """https://developers.hubspot.com/docs/api-reference/crm-lists-v3/lists/post-crm-v3-lists-search.
+    """https://developers.hubspot.com/docs/api-reference/latest/crm/lists/search/search-lists.
 
     Lists of every object type. The search endpoint stops at 10,000 lists and
     returns HTTP 400 after that.
     """
 
     name = "contact_lists"
-    path = "/crm/v3/lists/search"
+    path = "/search"
     http_method = "POST"
     primary_keys = ("listId",)
     records_jsonpath = "$.lists[*]"
@@ -561,7 +561,7 @@ class ContactListsStream(HubspotStream):
     @override
     @property
     def url_base(self) -> str:
-        return "https://api.hubapi.com"
+        return crm_url_base("lists")
 
     @override
     def get_url_params(
